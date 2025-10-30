@@ -7,25 +7,18 @@ import androidx.room.OnConflictStrategy
 /**
  * Общий дао-интерфейс для получения связанных сущностей
  *
+ * @param D дао-объект
  * @param T первая сущность
  * @param Y вторая сущность
  * @param U join-сущность(таблица) с id для связывания сущностей
  * @param I pojo дата-класс для получения связанных сущностей
  */
 @Dao
-interface DBDaoJoin<T, Y, U, I> {
+interface DBDaoJoinBehaviour<D,T,Y,U,I>: DBDaoJoin<T,Y,U,I> {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertT(entity: T)
+    var entityDAO: D
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertY(entity: Y)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertJoin(join: U)
-
-    fun getAllLinkedEntities() : List<I>
-
-    fun getOneLinkedEntity(id: Long) : I
-
+    fun setDAO(dao:D){
+        entityDAO = dao
+    }
 }

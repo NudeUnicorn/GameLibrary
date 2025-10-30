@@ -8,7 +8,7 @@ import androidx.room.Update
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 
 
-interface AuthorDAO: DBDaoBehaviour<AuthorEntity> {
+interface AuthorDAO: DBDao<AuthorEntity> {
 
     @Query("SELECT * FROM authors")
     override fun getAll(): LiveData<List<AuthorEntity>>

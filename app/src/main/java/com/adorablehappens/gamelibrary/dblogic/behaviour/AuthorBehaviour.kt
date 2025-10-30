@@ -2,10 +2,10 @@ package com.adorablehappens.gamelibrary.dblogic.behaviour
 
 import androidx.lifecycle.LiveData
 import com.adorablehappens.gamelibrary.dblogic.dao.AuthorDAO
-import com.adorablehappens.gamelibrary.dblogic.dao.DBEntityBehaviour
+import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoBehaviour
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 
-object AuthorBehaviour: DBEntityBehaviour<AuthorEntity, AuthorDAO> {
+object AuthorBehaviour: DBDaoBehaviour<AuthorEntity, AuthorDAO> {
     override lateinit var entityList: LiveData<List<AuthorEntity>>
     override lateinit var entityCurrent: AuthorEntity
     override lateinit var entityDAO: AuthorDAO

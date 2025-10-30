@@ -5,11 +5,10 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
 
 
-interface CheatDAO: DBDaoBehaviour<CheatEntity> {
+interface CheatDAO: DBDao<CheatEntity> {
 
     @Query("SELECT * FROM cheats")
     override fun getAll(): LiveData<List<CheatEntity>>
