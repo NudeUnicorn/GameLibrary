@@ -5,6 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.adorablehappens.gamelibrary.dblogic.dao.AuthorDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.CheatDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.GameDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 
 @Database(
@@ -14,6 +16,8 @@ import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 abstract class DB: RoomDatabase() {
 
     abstract fun getAuthorDAO(): AuthorDAO
+    abstract fun getCheatDAO(): CheatDAO
+    abstract fun getGameDAO(): GameDAO
 
     companion object{
         private var dbInstance: DB? = null

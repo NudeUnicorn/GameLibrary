@@ -7,12 +7,12 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "tags")
 data class TagEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "tag_id")
-    var id: Int = 0,
-    @ColumnInfo(name = "tag_name")
+    @ColumnInfo(name = "id")
+    val id: Long,
+    @ColumnInfo(name = "name")
     var name: String = "",
-    @ColumnInfo(name = "tag_description")
+    @ColumnInfo(name = "description")
     var description: String = "",
-    @ColumnInfo(name = "tag_comment")
+    @ColumnInfo(name = "comment")
     var comment: String = "",
 )

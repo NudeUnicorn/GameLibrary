@@ -13,12 +13,12 @@ interface CheatDAO: DBDaoBehaviour<CheatEntity> {
 
     @Query("SELECT * FROM cheats")
     override fun getAll(): LiveData<List<CheatEntity>>
-    @Query("SELECT * FROM cheats WHERE cheat_id=:id OR cheat_name=:name")
+    @Query("SELECT * FROM cheats WHERE id=:id OR name=:name")
     override fun getWhere(id: Long, name: String): LiveData<List<CheatEntity>>
-    @Query("SELECT * FROM cheats WHERE cheat_id=:id")
+    @Query("SELECT * FROM cheats WHERE id=:id")
     override fun getOne(id: Long): LiveData<CheatEntity>
     @Insert
-    override suspend fun saveNew(entity: CheatEntity)
+    override suspend fun addNew(entity: CheatEntity)
     @Update
     override suspend fun update(entity: CheatEntity)
     //override fun deleteAll()

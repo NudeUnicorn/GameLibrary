@@ -7,12 +7,12 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "devs")
 data class DevEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "dev_id")
-    var id: Int = 0,
-    @ColumnInfo(name = "dev_name")
+    @ColumnInfo(name = "id")
+    val id: Long,
+    @ColumnInfo(name = "name")
     var name: String = "",
-    @ColumnInfo(name = "dev_description")
+    @ColumnInfo(name = "description")
     var description: String = "",
-    @ColumnInfo(name = "dev_comment")
+    @ColumnInfo(name = "comment")
     var comment: String = "",
 )

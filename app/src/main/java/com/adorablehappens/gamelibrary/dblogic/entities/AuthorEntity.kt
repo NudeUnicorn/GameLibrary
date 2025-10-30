@@ -7,12 +7,12 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "authors")
 data class AuthorEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "author_id")
-    var id: Long = 0,
-    @ColumnInfo(name = "author_name")
+    @ColumnInfo(name = "id")
+    val id: Long,
+    @ColumnInfo(name = "name")
     var name: String = "",
-    @ColumnInfo(name = "author_description")
+    @ColumnInfo(name = "description")
     var description: String = "",
-    @ColumnInfo(name = "author_comment")
+    @ColumnInfo(name = "comment")
     var comment: String = "",
 )

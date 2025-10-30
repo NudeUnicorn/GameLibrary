@@ -24,8 +24,8 @@ object AuthorBehaviour: DBEntityBehaviour<AuthorEntity, AuthorDAO> {
         return entityDAO.getOne(id)
     }
 
-    override suspend fun saveNew(entity: AuthorEntity) {
-        entityDAO.saveNew(entity)
+    override suspend fun addNew(entity: AuthorEntity) {
+        entityDAO.addNew(entity)
     }
 
     override suspend fun update(entity: AuthorEntity) {

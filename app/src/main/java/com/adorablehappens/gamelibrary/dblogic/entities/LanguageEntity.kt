@@ -7,12 +7,12 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "languages")
 data class LanguageEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "language_id")
-    var id: Int = 0,
-    @ColumnInfo(name = "language_name")
+    @ColumnInfo(name = "id")
+    val id: Long,
+    @ColumnInfo(name = "name")
     var name: String = "",
-    @ColumnInfo(name = "language_description")
+    @ColumnInfo(name = "description")
     var description: String = "",
-    @ColumnInfo(name = "language_comment")
+    @ColumnInfo(name = "comment")
     var comment: String = "",
 )

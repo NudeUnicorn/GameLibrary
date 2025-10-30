@@ -12,12 +12,12 @@ interface AuthorDAO: DBDaoBehaviour<AuthorEntity> {
 
     @Query("SELECT * FROM authors")
     override fun getAll(): LiveData<List<AuthorEntity>>
-    @Query("SELECT * FROM authors WHERE author_id=:id OR author_name=:name")
+    @Query("SELECT * FROM authors WHERE id=:id OR name=:name")
     override fun getWhere(id: Long, name: String): LiveData<List<AuthorEntity>>
-    @Query("SELECT * FROM authors WHERE author_id=:id")
+    @Query("SELECT * FROM authors WHERE id=:id")
     override fun getOne(id: Long): LiveData<AuthorEntity>
     @Insert
-    override suspend fun saveNew(entity: AuthorEntity)
+    override suspend fun addNew(entity: AuthorEntity)
     @Update
     override suspend fun update(entity: AuthorEntity)
     //override fun deleteAll()

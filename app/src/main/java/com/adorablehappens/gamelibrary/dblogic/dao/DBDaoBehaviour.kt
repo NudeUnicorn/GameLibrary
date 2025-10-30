@@ -24,7 +24,7 @@ interface DBDaoBehaviour <T>{
     /**
      * Сохраняет новую сущность
      */
-    suspend fun saveNew(entity: T)
+    suspend fun addNew(entity: T)
 
     /**
      * Обновляет сущность, где ==id или сущность саму по себе

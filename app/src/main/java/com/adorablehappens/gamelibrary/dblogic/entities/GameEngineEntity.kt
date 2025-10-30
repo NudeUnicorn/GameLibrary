@@ -7,12 +7,12 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "gameEngines")
 data class GameEngineEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "game_engine_id")
-    var id: Int = 0,
-    @ColumnInfo(name = "game_engine_name")
+    @ColumnInfo(name = "id")
+    val id: Long,
+    @ColumnInfo(name = "name")
     var name: String = "",
-    @ColumnInfo(name = "game_engine_description")
+    @ColumnInfo(name = "description")
     var description: String = "",
-    @ColumnInfo(name = "game_engine_comment")
+    @ColumnInfo(name = "comment")
     var comment: String = "",
 )

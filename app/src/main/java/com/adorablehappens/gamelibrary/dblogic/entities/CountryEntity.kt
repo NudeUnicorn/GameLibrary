@@ -7,12 +7,12 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "countries")
 data class CountryEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "country_id")
-    var id: Int = 0,
-    @ColumnInfo(name = "country_name")
+    @ColumnInfo(name = "id")
+    val id: Long,
+    @ColumnInfo(name = "name")
     var name: String = "",
-    @ColumnInfo(name = "country_description")
+    @ColumnInfo(name = "description")
     var description: String = "",
-    @ColumnInfo(name = "country_comment")
+    @ColumnInfo(name = "comment")
     var comment: String = "",
 )

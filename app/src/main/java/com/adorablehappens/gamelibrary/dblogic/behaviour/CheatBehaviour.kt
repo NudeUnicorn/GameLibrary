@@ -26,8 +26,8 @@ object CheatBehaviour: DBEntityBehaviour<CheatEntity, CheatDAO> {
         return entityDAO.getOne(id)
     }
 
-    override suspend fun saveNew(entity: CheatEntity) {
-        entityDAO.saveNew(entity)
+    override suspend fun addNew(entity: CheatEntity) {
+        entityDAO.addNew(entity)
     }
 
     override suspend fun update(entity: CheatEntity) {

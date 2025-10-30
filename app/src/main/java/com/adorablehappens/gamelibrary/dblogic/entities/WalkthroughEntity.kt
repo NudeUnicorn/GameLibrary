@@ -7,12 +7,14 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "walkthroughes")
 data class WalkthroughEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "walkthrough_id")
-    var id: Int = 0,
-    @ColumnInfo(name = "walkthrough_name")
+    @ColumnInfo(name = "id")
+    val id: Long,
+    @ColumnInfo(name = "name")
     var name: String = "",
-    @ColumnInfo(name = "walkthrough_description")
+    @ColumnInfo(name = "description")
     var description: String = "",
-    @ColumnInfo(name = "walkthrough_comment")
+    @ColumnInfo(name = "comment")
     var comment: String = "",
+    @ColumnInfo(name = "timestamp")    //дата добавления в игру
+    val timestamp: Long,
 )

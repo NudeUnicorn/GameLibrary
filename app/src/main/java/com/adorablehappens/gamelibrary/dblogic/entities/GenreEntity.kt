@@ -7,12 +7,12 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "genres")
 data class GenreEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "genre_id")
-    var id: Int = 0,
-    @ColumnInfo(name = "genre_name")
+    @ColumnInfo(name = "id")
+    val id: Long,
+    @ColumnInfo(name = "name")
     var name: String = "",
-    @ColumnInfo(name = "genre_description")
+    @ColumnInfo(name = "description")
     var description: String = "",
-    @ColumnInfo(name = "genre_comment")
+    @ColumnInfo(name = "comment")
     var comment: String = "",
 )

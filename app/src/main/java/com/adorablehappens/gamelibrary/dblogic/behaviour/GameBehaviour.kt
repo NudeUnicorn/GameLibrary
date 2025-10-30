@@ -28,8 +28,8 @@ object GameBehaviour: DBEntityBehaviour<GameEntity, GameDAO> {
         return entityDAO.getOne(id)
     }
 
-    override suspend fun saveNew(entity: GameEntity) {
-        entityDAO.saveNew(entity)
+    override suspend fun addNew(entity: GameEntity) {
+        entityDAO.addNew(entity)
     }
 
     override suspend fun update(entity: GameEntity) {

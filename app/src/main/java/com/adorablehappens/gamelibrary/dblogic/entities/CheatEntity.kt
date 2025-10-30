@@ -7,14 +7,14 @@ import androidx.room.PrimaryKey
 @Entity("cheats")
 data class CheatEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "cheat_id")
-    var id: Int = 0,
-    @ColumnInfo(name = "cheat_name")
+    @ColumnInfo(name = "id")
+    val id: Long,
+    @ColumnInfo(name = "name")
     var name: String = "",
-//    @ColumnInfo(name = "cheat_author")
+//    @ColumnInfo(name = "author")
 //    var author: String = "",
-    @ColumnInfo(name = "cheat_description")
+    @ColumnInfo(name = "description")
     var description: String = "",
-    @ColumnInfo(name = "cheat_comment")
+    @ColumnInfo(name = "comment")
     var comment: String = "",
 )

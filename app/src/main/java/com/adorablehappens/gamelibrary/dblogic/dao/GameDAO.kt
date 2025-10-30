@@ -14,12 +14,12 @@ interface GameDAO: DBDaoBehaviour<GameEntity> {
 
     @Query("SELECT * FROM games")
     override fun getAll(): LiveData<List<GameEntity>>
-    @Query("SELECT * FROM games WHERE game_id=:id OR game_name=:name")
+    @Query("SELECT * FROM games WHERE id=:id OR name=:name")
     override fun getWhere(id: Long, name: String): LiveData<List<GameEntity>>
-    @Query("SELECT * FROM games WHERE game_id=:id")
+    @Query("SELECT * FROM games WHERE id=:id")
     override fun getOne(id: Long): LiveData<GameEntity>
     @Insert
-    override suspend fun saveNew(entity: GameEntity)
+    override suspend fun addNew(entity: GameEntity)
     @Update
     override suspend fun update(entity: GameEntity)
     //override fun deleteAll()
