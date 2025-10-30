@@ -24,21 +24,21 @@ interface DBDaoBehaviour <T>{
     /**
      * Сохраняет новую сущность
      */
-    fun saveNew(entity: T)
+    suspend fun saveNew(entity: T)
 
     /**
      * Обновляет сущность, где ==id или сущность саму по себе
      */
-    fun update(entity : T)
+    suspend fun update(entity : T)
 
     /**
      * Удаляет всё из таблицы
      */
-    fun deleteAll()
+    suspend fun deleteAll()
 
     /**
      * Удаляет одну сущность, где сущность.id == id
      */
-    fun deleteOne(entity : T)
+    suspend fun deleteOne(entity : T)
 
 }

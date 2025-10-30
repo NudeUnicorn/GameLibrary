@@ -24,19 +24,19 @@ object AuthorBehaviour: DBEntityBehaviour<AuthorEntity, AuthorDAO> {
         return entityDAO.getOne(id)
     }
 
-    override fun saveNew(entity: AuthorEntity) {
+    override suspend fun saveNew(entity: AuthorEntity) {
         entityDAO.saveNew(entity)
     }
 
-    override fun update(entity: AuthorEntity) {
+    override suspend fun update(entity: AuthorEntity) {
         entityDAO.update(entity)
     }
 
-    override fun deleteAll() {
+    override suspend fun deleteAll() {
 
     }
 
-    override fun deleteOne(entity: AuthorEntity) {
+    override suspend fun deleteOne(entity: AuthorEntity) {
         entityDAO.deleteOne(entity)
     }
 

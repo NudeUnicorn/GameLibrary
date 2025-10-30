@@ -17,12 +17,10 @@ interface AuthorDAO: DBDaoBehaviour<AuthorEntity> {
     @Query("SELECT * FROM authors WHERE author_id=:id")
     override fun getOne(id: Long): LiveData<AuthorEntity>
     @Insert
-    override fun saveNew(entity: AuthorEntity)
+    override suspend fun saveNew(entity: AuthorEntity)
     @Update
-    override fun update(
-        entity: AuthorEntity
-    )
+    override suspend fun update(entity: AuthorEntity)
     //override fun deleteAll()
     @Delete
-    override fun deleteOne(entity: AuthorEntity)
+    override suspend fun deleteOne(entity: AuthorEntity)
 }
