@@ -1,5 +1,6 @@
 package com.adorablehappens.gamelibrary.dblogic.behaviour
 
+import com.adorablehappens.gamelibrary.dblogic.Repository
 import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoJoinBehaviour
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
@@ -7,27 +8,37 @@ import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameCheatEntity
 import com.adorablehappens.gamelibrary.dblogic.pojo.GameWithCheats
 
-object JOINGameWithCheatBehaviour: DBDaoJoinBehaviour<JOINGameWithCheatDAO, GameEntity, CheatEntity, UGameCheatEntity, GameWithCheats> {
+object JOINGameWithCheatBehaviour{
 
-    override lateinit var entityDAO: JOINGameWithCheatDAO
+    private val obj = object : DBDaoJoinBehaviour<GameEntity, CheatEntity, UGameCheatEntity, GameWithCheats>(){}
 
-    override suspend fun insertT(entity: GameEntity) {
-        entityDAO.insertT(entity)
+    fun setDAO(dao: JOINGameWithCheatDAO){
+        obj.setDAO(dao)
     }
 
-    override suspend fun insertY(entity: CheatEntity) {
-        entityDAO.insertY(entity)
+    fun insertT(entity: GameEntity) {
+        Repository.execCoroutine {
+            obj.insertT(entity)
+        }
     }
 
-    override suspend fun insertJoin(join: UGameCheatEntity) {
-        entityDAO.insertJoin(join)
+    fun insertY(entity: CheatEntity) {
+        Repository.execCoroutine {
+            obj.insertY(entity)
+        }
     }
 
-    override fun getAllLinkedEntities(): List<GameWithCheats> {
-        return entityDAO.getAllLinkedEntities()
+    fun insertJoin(join: UGameCheatEntity) {
+        Repository.execCoroutine {
+            obj.insertJoin(join)
+        }
     }
 
-    override fun getOneLinkedEntity(id: Long): GameWithCheats {
-        return entityDAO.getOneLinkedEntity(id)
+    fun getAllLinkedEntities(): List<GameWithCheats> {
+        return obj.getAllLinkedEntities()
+    }
+
+    fun getOneLinkedEntity(id: Long): GameWithCheats {
+        return obj.getOneLinkedEntity(id)
     }
 }
