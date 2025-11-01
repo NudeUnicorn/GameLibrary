@@ -5,29 +5,29 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 
 /**
- * Класс-таблица(join-таблица) для связи GameEntity и CheatEntity по id
+ * Класс-таблица(join-таблица) для связи GameEntity и GameEngineEntity по id
  *
  * @see GameEntity
- * @see CheatEntity
+ * @see GameEngineEntity
  */
-@Entity(tableName = "game_cheat_join",
-    primaryKeys = ["gameId", "cheatId"],
+@Entity(tableName = "game_engine_join",
     foreignKeys = [
         ForeignKey(
             entity = GameEntity::class,
             parentColumns = ["id"],
             childColumns = ["gameId"],
             onDelete = CASCADE
-    ),
+        ),
         ForeignKey(
-            entity = CheatEntity::class,
+            entity = GameEngineEntity::class,
             parentColumns = ["id"],
-            childColumns = ["cheatId"],
+            childColumns = ["gameEngineId"],
             onDelete = CASCADE
         )
     ],
-    )
-data class UGameCheatEntity(
+    primaryKeys = ["gameId", "gameEngineId"]
+)
+data class UGameEngineEntity(
     val gameId: Long,
-    val cheatId: Long
+    val gameEngineId: Long
 )

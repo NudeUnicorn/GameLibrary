@@ -6,13 +6,18 @@ import kotlinx.coroutines.MainScope
 
 class App: Application() {
 
-    val repository = Repository
+    val repository: Repository = Repository
     val repositoryCoroutineScope = MainScope()
 
     init {
-        repository.initDB(this, repositoryCoroutineScope)
     }
 
+    override fun onCreate() {
+        super.onCreate()
+
+        repository.initDB(applicationContext, repositoryCoroutineScope)
+
+    }
 
 
 }

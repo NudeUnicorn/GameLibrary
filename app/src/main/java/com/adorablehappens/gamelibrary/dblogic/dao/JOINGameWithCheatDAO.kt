@@ -16,7 +16,7 @@ interface JOINGameWithCheatDAO: DBDaoJoin<GameEntity, CheatEntity, UGameCheatEnt
     override fun getAllLinkedEntities(): List<GameWithCheats>
 
     @Transaction
-    @Query("SELECT * FROM games WHERE gameId=:id")
+    @Query("SELECT * FROM games WHERE id=:id")
     override fun getOneLinkedEntity(id: Long): GameWithCheats
 
 

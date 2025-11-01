@@ -18,12 +18,12 @@ object Repository {
 
     private lateinit var db: DB
     private lateinit var coroutineScope: CoroutineScope
-    private lateinit var cheatDAO: CheatDAO
-    val cheatBehaviour: CheatBehaviour = CheatBehaviour
-    private lateinit var gameDAO: GameDAO
-    val gameBehaviour: GameBehaviour = GameBehaviour
-    private lateinit var joinGameWithCheatDAO: JOINGameWithCheatDAO
-    val joinGameWithCheatBehaviour: JOINGameWithCheatBehaviour = JOINGameWithCheatBehaviour
+    private lateinit var cheatDAORepo: CheatDAO
+    val cheatBehaviourRepo: CheatBehaviour = CheatBehaviour
+    private lateinit var gameDAORepo: GameDAO
+    val gameBehaviourRepo: GameBehaviour = GameBehaviour
+    private lateinit var joinGameWithCheatDAORepo: JOINGameWithCheatDAO
+    val joinGameWithCheatBehaviourRepo: JOINGameWithCheatBehaviour = JOINGameWithCheatBehaviour
 
     init {
 
@@ -36,18 +36,18 @@ object Repository {
         db = DB.getInstance(context)
         coroutineScope = scope
 
-        cheatDAO = db.getCheatDAO()
-        cheatBehaviour.setDAO(cheatDAO)
-        gameDAO = db.getGameDAO()
-        gameBehaviour.setDAO(gameDAO)
-        joinGameWithCheatDAO = db.getJOINGameWithCheatDAO()
-        joinGameWithCheatBehaviour.setDAO(joinGameWithCheatDAO)
+        cheatDAORepo = db.getCheatDAO()
+        cheatBehaviourRepo.setDAO(cheatDAORepo)
+        gameDAORepo = db.getGameDAO()
+        gameBehaviourRepo.setDAO(gameDAORepo)
+        joinGameWithCheatDAORepo = db.getJOINGameWithCheatDAO()
+        joinGameWithCheatBehaviourRepo.setDAO(joinGameWithCheatDAORepo)
 
 
     }
 
     fun getCheatBehaviour(): CheatBehaviour {
-        return cheatBehaviour
+        return cheatBehaviourRepo
     }
 
     fun execCoroutine( func: suspend ()-> Unit){

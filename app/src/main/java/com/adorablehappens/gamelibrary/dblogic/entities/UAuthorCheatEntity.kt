@@ -7,16 +7,16 @@ import androidx.room.ForeignKey.Companion.CASCADE
 /**
  * Класс-таблица(join-таблица) для связи GameEntity и CheatEntity по id
  *
- * @see GameEntity
+ * @see AuthorEntity
  * @see CheatEntity
  */
-@Entity(tableName = "game_cheat_join",
-    primaryKeys = ["gameId", "cheatId"],
+@Entity(tableName = "author_cheat_join",
+    primaryKeys = ["authorId", "cheatId"],
     foreignKeys = [
         ForeignKey(
-            entity = GameEntity::class,
+            entity = AuthorEntity::class,
             parentColumns = ["id"],
-            childColumns = ["gameId"],
+            childColumns = ["authorId"],
             onDelete = CASCADE
     ),
         ForeignKey(
@@ -27,7 +27,7 @@ import androidx.room.ForeignKey.Companion.CASCADE
         )
     ],
     )
-data class UGameCheatEntity(
-    val gameId: Long,
+data class UAuthorCheatEntity(
+    val authorId: Long,
     val cheatId: Long
 )

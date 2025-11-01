@@ -18,9 +18,9 @@ interface AuthorDAO: DBDao<AuthorEntity> {
     @Query("SELECT * FROM authors WHERE id=:id")
     override fun getOne(id: Long): LiveData<AuthorEntity>
     @Insert
-    override suspend fun addNew(entity: AuthorEntity)
+    override fun addNew(entity: AuthorEntity)
     @Update
-    override suspend fun update(entity: AuthorEntity)
+    override fun update(entity: AuthorEntity)
     @Delete
-    override suspend fun deleteOne(entity: AuthorEntity)
+    override fun deleteOne(entity: AuthorEntity)
 }

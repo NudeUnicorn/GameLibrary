@@ -14,7 +14,7 @@ import androidx.room.ForeignKey.Companion.CASCADE
     foreignKeys = [
         ForeignKey(
             entity = GameEntity::class,
-            parentColumns = ["gameId"],
+            parentColumns = ["id"],
             childColumns = ["gameId"],
             onDelete = CASCADE
         ),

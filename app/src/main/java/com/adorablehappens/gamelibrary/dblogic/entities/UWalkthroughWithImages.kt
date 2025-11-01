@@ -7,27 +7,27 @@ import androidx.room.ForeignKey.Companion.CASCADE
 /**
  * Класс-таблица(join-таблица) для связи GameEntity и CheatEntity по id
  *
- * @see GameEntity
- * @see CheatEntity
+ * @see WalkthroughEntity
+ * @see WalkthroughImageEntity
  */
-@Entity(tableName = "game_cheat_join",
-    primaryKeys = ["gameId", "cheatId"],
+@Entity(tableName = "walkthrough_image_join",
+    primaryKeys = ["walkthroughId", "walkthroughImageId"],
     foreignKeys = [
         ForeignKey(
-            entity = GameEntity::class,
+            entity = AuthorEntity::class,
             parentColumns = ["id"],
-            childColumns = ["gameId"],
+            childColumns = ["walkthroughId"],
             onDelete = CASCADE
     ),
         ForeignKey(
             entity = CheatEntity::class,
             parentColumns = ["id"],
-            childColumns = ["cheatId"],
+            childColumns = ["walkthroughImageId"],
             onDelete = CASCADE
         )
     ],
     )
-data class UGameCheatEntity(
-    val gameId: Long,
-    val cheatId: Long
+data class UWalkthroughWithImages(
+    val walkthroughId: Long,
+    val walkthroughImageId: Long
 )

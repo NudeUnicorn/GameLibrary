@@ -13,9 +13,9 @@ interface GameDAO: DBDao<GameEntity> {
 
     @Query("SELECT * FROM games")
     override fun getAll(): LiveData<List<GameEntity>>
-    @Query("SELECT * FROM games WHERE gameId=:id OR name=:name")
+    @Query("SELECT * FROM games WHERE id=:id OR name=:name")
     override fun getWhere(id: Long, name: String): LiveData<List<GameEntity>>
-    @Query("SELECT * FROM games WHERE gameId=:id")
+    @Query("SELECT * FROM games WHERE id=:id")
     override fun getOne(id: Long): LiveData<GameEntity>
     @Insert
     override suspend fun addNew(entity: GameEntity)

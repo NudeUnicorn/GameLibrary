@@ -5,7 +5,9 @@ import com.adorablehappens.gamelibrary.dblogic.Repository
 import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithCheatBehaviour
 import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithCheatBehaviourI
 
-class LibraryViewModel(private val gwc: JOINGameWithCheatBehaviour = Repository.joinGameWithCheatBehaviour): ViewModel(), JOINGameWithCheatBehaviourI by gwc{
+class LibraryViewModel(): ViewModel(){
+
+    private val gwc: JOINGameWithCheatBehaviourI = Repository.joinGameWithCheatBehaviourRepo
 
     override fun onCleared() {
         super.onCleared()
