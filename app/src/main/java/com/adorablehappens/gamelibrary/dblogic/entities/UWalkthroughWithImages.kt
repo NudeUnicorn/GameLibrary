@@ -3,9 +3,10 @@ package com.adorablehappens.gamelibrary.dblogic.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
+import androidx.room.Index
 
 /**
- * Класс-таблица(join-таблица) для связи GameEntity и CheatEntity по id
+ * Класс-таблица(join-таблица) для связи WalkthroughEntity и WalkthroughImageEntity по id
  *
  * @see WalkthroughEntity
  * @see WalkthroughImageEntity
@@ -14,18 +15,19 @@ import androidx.room.ForeignKey.Companion.CASCADE
     primaryKeys = ["walkthroughId", "walkthroughImageId"],
     foreignKeys = [
         ForeignKey(
-            entity = AuthorEntity::class,
+            entity = WalkthroughEntity::class,
             parentColumns = ["id"],
             childColumns = ["walkthroughId"],
             onDelete = CASCADE
     ),
         ForeignKey(
-            entity = CheatEntity::class,
+            entity = WalkthroughImageEntity::class,
             parentColumns = ["id"],
             childColumns = ["walkthroughImageId"],
             onDelete = CASCADE
         )
     ],
+    indices = [Index("walkthroughId"), Index("walkthroughImageId"),]
     )
 data class UWalkthroughWithImages(
     val walkthroughId: Long,

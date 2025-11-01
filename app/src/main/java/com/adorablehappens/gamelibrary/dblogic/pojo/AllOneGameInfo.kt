@@ -11,11 +11,12 @@ import com.adorablehappens.gamelibrary.dblogic.entities.TagEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameCheatEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameDevsEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameEngineEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.UGameGenreEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameTagEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UWalkthroughWithImages
 
 /**
- * POJO-класс для сбора всеё информации из базы данных об одной игре
+ * POJO-класс для сбора всей информации из базы данных об одной игре
  */
 data class AllOneGameInfo(
     @Embedded
@@ -31,14 +32,14 @@ data class AllOneGameInfo(
     )
     val cheats: List<CheatWithAuthors>,
 
-    @Embedded("genre")
+    @Embedded("genre_")
     @Relation(
         parentColumn = "id",
         entityColumn = "id",
         associateBy = Junction(
-            value = UGameTagEntity::class,
+            value = UGameGenreEntity::class,
             parentColumn = "gameId",
-            entityColumn = "tagId"
+            entityColumn = "genreId"
         )
     )
     val genres: List<GenreEntity>,

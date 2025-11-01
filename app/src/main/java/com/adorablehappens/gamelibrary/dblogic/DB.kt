@@ -17,8 +17,12 @@ import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GenreEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.LanguageEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.TagEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.UAuthorCheatEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameCheatEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.UGameDevsEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.UGameEngineEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameTagEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.UWalkthroughWithImages
 import com.adorablehappens.gamelibrary.dblogic.entities.WalkthroughEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.WalkthroughImageEntity
 
@@ -33,8 +37,12 @@ import com.adorablehappens.gamelibrary.dblogic.entities.WalkthroughImageEntity
         GenreEntity::class,
         LanguageEntity::class,
         TagEntity::class,
+        UAuthorCheatEntity::class,
         UGameCheatEntity::class,
+        UGameDevsEntity::class,
+        UGameEngineEntity::class,
         UGameTagEntity::class,
+        UWalkthroughWithImages::class,
         WalkthroughEntity::class,
         WalkthroughImageEntity::class
                ],

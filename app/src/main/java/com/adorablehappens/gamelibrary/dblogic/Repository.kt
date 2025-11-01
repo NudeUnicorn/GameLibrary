@@ -1,10 +1,13 @@
 package com.adorablehappens.gamelibrary.dblogic
 
 import android.content.Context
+import com.adorablehappens.gamelibrary.dblogic.behaviour.AuthorBehaviour
 import com.adorablehappens.gamelibrary.dblogic.behaviour.CheatBehaviour
 import com.adorablehappens.gamelibrary.dblogic.behaviour.GameBehaviour
 import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithCheatBehaviour
+import com.adorablehappens.gamelibrary.dblogic.dao.AuthorDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.CheatDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoBehaviour
 import com.adorablehappens.gamelibrary.dblogic.dao.GameDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +21,9 @@ object Repository {
 
     private lateinit var db: DB
     private lateinit var coroutineScope: CoroutineScope
+
+    private lateinit var authorDAORepo: AuthorDAO
+    val authorBehaviourRepo: AuthorBehaviour = AuthorBehaviour
     private lateinit var cheatDAORepo: CheatDAO
     val cheatBehaviourRepo: CheatBehaviour = CheatBehaviour
     private lateinit var gameDAORepo: GameDAO
@@ -36,6 +42,8 @@ object Repository {
         db = DB.getInstance(context)
         coroutineScope = scope
 
+        authorDAORepo = db.getAuthorDAO()
+        authorBehaviourRepo.setDAO(authorDAORepo)
         cheatDAORepo = db.getCheatDAO()
         cheatBehaviourRepo.setDAO(cheatDAORepo)
         gameDAORepo = db.getGameDAO()
@@ -47,6 +55,7 @@ object Repository {
     }
 
     fun getCheatBehaviour(): CheatBehaviour {
+        Repository.Constants.AuthorEntity.queries
         return cheatBehaviourRepo
     }
 
@@ -56,8 +65,16 @@ object Repository {
         }
     }
 
-    fun onFinish(msg: String = ""){
-        coroutineScope.cancel(msg)
+    fun onFinish(coroutineMsg: String = ""){
+        coroutineScope.cancel(coroutineMsg)
+    }
+
+    enum class Constants(
+        val queries: String
+    ){
+        AuthorEntity(
+            queries = "s"
+        )
     }
 
 }
