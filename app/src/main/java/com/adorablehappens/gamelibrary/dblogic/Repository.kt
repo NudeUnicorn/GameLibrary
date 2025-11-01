@@ -55,7 +55,8 @@ object Repository {
     }
 
     fun getCheatBehaviour(): CheatBehaviour {
-        Repository.Constants.AuthorEntity.queries
+        Repository.Constants.AuthorConstants.AuthorQueries.Quer.q.query
+
         return cheatBehaviourRepo
     }
 
@@ -69,12 +70,25 @@ object Repository {
         coroutineScope.cancel(coroutineMsg)
     }
 
-    enum class Constants(
-        val queries: String
-    ){
-        AuthorEntity(
-            queries = "s"
-        )
+    class Constants private constructor(){
+
+        class AuthorConstants{
+
+            enum class AuthorQueries(
+                val q: Query
+            ){
+                Quer(Query("s"))
+            }
+
+        }
+
+
+
     }
+
+    data class Query(
+        val query: String
+    )
+
 
 }
