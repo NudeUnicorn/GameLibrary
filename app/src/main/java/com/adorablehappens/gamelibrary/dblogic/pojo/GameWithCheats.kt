@@ -11,8 +11,8 @@ data class GameWithCheats(
     @Embedded
     val game: GameEntity,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "id",
+        parentColumn = "gameId",
+        entityColumn = "cheatId",
         associateBy = Junction(UGameCheatEntity::class)
     )
     val cheats: List<CheatEntity>

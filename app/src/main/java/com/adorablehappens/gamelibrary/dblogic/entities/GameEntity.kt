@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "games")
 data class GameEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    val id: Long,
+    //@ColumnInfo(name = "id")
+    val gameId: Long,
     @ColumnInfo(name = "name")
     var name: String = "",
     @ColumnInfo(name = "subname")

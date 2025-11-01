@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 @Entity("cheats")
 data class CheatEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    val id: Long,
+    //@ColumnInfo(name = "id")
+    val cheatId: Long,
     @ColumnInfo(name = "name")
     var name: String = "",
 //    @ColumnInfo(name = "author")

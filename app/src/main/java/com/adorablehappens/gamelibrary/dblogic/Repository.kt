@@ -23,7 +23,7 @@ object Repository {
     private lateinit var gameDAO: GameDAO
     val gameBehaviour: GameBehaviour = GameBehaviour
     private lateinit var joinGameWithCheatDAO: JOINGameWithCheatDAO
-    private val joinGameWithCheatBehaviour: JOINGameWithCheatBehaviour = JOINGameWithCheatBehaviour
+    val joinGameWithCheatBehaviour: JOINGameWithCheatBehaviour = JOINGameWithCheatBehaviour
 
     init {
 

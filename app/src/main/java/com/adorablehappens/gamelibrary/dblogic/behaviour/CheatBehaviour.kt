@@ -32,10 +32,6 @@ object CheatBehaviour: DBDaoBehaviour<CheatEntity, CheatDAO> {
         entityDAO.update(entity)
     }
 
-    override suspend fun deleteAll() {
-
-    }
-
     override suspend fun deleteOne(entity: CheatEntity) {
         entityDAO.deleteOne(entity)
     }

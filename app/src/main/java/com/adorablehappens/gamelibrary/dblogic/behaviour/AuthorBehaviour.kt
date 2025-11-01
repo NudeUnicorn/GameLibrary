@@ -32,10 +32,6 @@ object AuthorBehaviour: DBDaoBehaviour<AuthorEntity, AuthorDAO> {
         entityDAO.update(entity)
     }
 
-    override suspend fun deleteAll() {
-
-    }
-
     override suspend fun deleteOne(entity: AuthorEntity) {
         entityDAO.deleteOne(entity)
     }

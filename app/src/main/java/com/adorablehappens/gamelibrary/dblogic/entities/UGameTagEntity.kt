@@ -10,11 +10,11 @@ import androidx.room.ForeignKey.Companion.CASCADE
  * @see GameEntity
  * @see TagEntity
  */
-@Entity(tableName = "gameCheat",
+@Entity(tableName = "game_tag_join",
     foreignKeys = [
         ForeignKey(
             entity = GameEntity::class,
-            parentColumns = ["id"],
+            parentColumns = ["gameId"],
             childColumns = ["gameId"],
             onDelete = CASCADE
         ),

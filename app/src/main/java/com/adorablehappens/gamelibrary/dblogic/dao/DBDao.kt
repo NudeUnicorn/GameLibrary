@@ -3,7 +3,7 @@ package com.adorablehappens.gamelibrary.dblogic.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 
-@Dao
+
 interface DBDao <T>{
 
     /**
@@ -30,11 +30,6 @@ interface DBDao <T>{
      * Обновляет сущность, где ==id или сущность саму по себе
      */
     suspend fun update(entity : T)
-
-    /**
-     * Удаляет всё из таблицы
-     */
-    suspend fun deleteAll()
 
     /**
      * Удаляет одну сущность, где сущность.id == id

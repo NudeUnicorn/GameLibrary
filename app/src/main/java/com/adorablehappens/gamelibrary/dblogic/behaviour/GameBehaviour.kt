@@ -32,10 +32,6 @@ object GameBehaviour: DBDaoBehaviour<GameEntity, GameDAO> {
         entityDAO.update(entity)
     }
 
-    override suspend fun deleteAll() {
-
-    }
-
     override suspend fun deleteOne(entity: GameEntity) {
         entityDAO.deleteOne(entity)
     }

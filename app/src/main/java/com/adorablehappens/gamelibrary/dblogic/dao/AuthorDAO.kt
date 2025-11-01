@@ -1,13 +1,14 @@
 package com.adorablehappens.gamelibrary.dblogic.dao
 
 import androidx.lifecycle.LiveData
+import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 
-
+@Dao
 interface AuthorDAO: DBDao<AuthorEntity> {
 
     @Query("SELECT * FROM authors")
@@ -20,7 +21,6 @@ interface AuthorDAO: DBDao<AuthorEntity> {
     override suspend fun addNew(entity: AuthorEntity)
     @Update
     override suspend fun update(entity: AuthorEntity)
-    //override fun deleteAll()
     @Delete
     override suspend fun deleteOne(entity: AuthorEntity)
 }
