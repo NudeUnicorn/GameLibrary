@@ -18,10 +18,10 @@ interface GameDAO: DBDao<GameEntity> {
     @Query("SELECT * FROM games WHERE id=:id")
     override fun getOne(id: Long): LiveData<GameEntity>
     @Insert
-    override suspend fun addNew(entity: GameEntity)
+    override fun addNew(entity: GameEntity)
     @Update
-    override suspend fun update(entity: GameEntity)
+    override fun update(entity: GameEntity)
     //override fun deleteAll()
     @Delete
-    override suspend fun deleteOne(entity: GameEntity)
+    override fun deleteOne(entity: GameEntity)
 }
