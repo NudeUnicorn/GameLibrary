@@ -23,6 +23,13 @@ data class GameEntity(
 //    var devs: String = "",
 //    @ColumnInfo(name = "devs_site")
 //    var devsSite: String = "",
+    //стоимость игры
+//    @ColumnInfo(name = "price")
+//    var price: Int = "",
+    //валюта стоимости игры
+//    @ColumnInfo(name = "price_currency")
+//    var currency: Long = "",
+
     @ColumnInfo(name = "startPlaying")
     //по нажатию на кнопку отмечается начало прохождения в целом или части игры, если поле уже задано
     val startPlaying: Long,

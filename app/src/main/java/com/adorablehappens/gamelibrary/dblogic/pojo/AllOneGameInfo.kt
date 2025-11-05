@@ -32,7 +32,7 @@ data class AllOneGameInfo(
     )
     val cheats: List<CheatWithAuthors>,
 
-    @Embedded("genre_")
+    //@Embedded("genre_")
     @Relation(
         parentColumn = "id",
         entityColumn = "id",
