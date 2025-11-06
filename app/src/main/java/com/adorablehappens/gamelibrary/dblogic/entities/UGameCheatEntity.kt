@@ -3,6 +3,8 @@ package com.adorablehappens.gamelibrary.dblogic.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
+import androidx.room.Index
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINEntity
 
 /**
  * Класс-таблица(join-таблица) для связи GameEntity и CheatEntity по id
@@ -11,23 +13,27 @@ import androidx.room.ForeignKey.Companion.CASCADE
  * @see CheatEntity
  */
 @Entity(tableName = "game_cheat_join",
-    primaryKeys = ["gameId", "cheatId"],
+    primaryKeys = [JOINEntity.Companion.PARENTIDNAME, JOINEntity.Companion.CHILDIDNAME],
     foreignKeys = [
         ForeignKey(
             entity = GameEntity::class,
             parentColumns = ["id"],
-            childColumns = ["gameId"],
+            childColumns = [JOINEntity.Companion.PARENTIDNAME],
             onDelete = CASCADE
     ),
         ForeignKey(
             entity = CheatEntity::class,
             parentColumns = ["id"],
-            childColumns = ["cheatId"],
+            childColumns = [JOINEntity.Companion.CHILDIDNAME],
             onDelete = CASCADE
         )
     ],
+    indices = [
+        Index(JOINEntity.Companion.PARENTIDNAME),
+        Index(JOINEntity.Companion.CHILDIDNAME),
+    ]
     )
 data class UGameCheatEntity(
-    val gameId: Long,
-    val cheatId: Long
-)
+    override val parentEntityID: Long,
+    override val childEntityID: Long
+): JOINEntity(parentEntityID, childEntityID)

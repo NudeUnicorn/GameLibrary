@@ -3,6 +3,7 @@ package com.adorablehappens.gamelibrary.dblogic.pojo
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.DevEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEngineEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
@@ -26,8 +27,8 @@ data class AllOneGameInfo(
         entityColumn = "id",
         associateBy = Junction(
             value = UGameCheatEntity::class,
-            parentColumn = "gameId",
-            entityColumn = "cheatId"
+            parentColumn = JOINEntity.Companion.PARENTIDNAME,
+            entityColumn = JOINEntity.Companion.CHILDIDNAME
         )
     )
     val cheats: List<CheatWithAuthors>,
@@ -38,8 +39,8 @@ data class AllOneGameInfo(
         entityColumn = "id",
         associateBy = Junction(
             value = UGameGenreEntity::class,
-            parentColumn = "gameId",
-            entityColumn = "genreId"
+            parentColumn = JOINEntity.Companion.PARENTIDNAME,
+            entityColumn = JOINEntity.Companion.CHILDIDNAME
         )
     )
     val genres: List<GenreEntity>,
@@ -49,8 +50,8 @@ data class AllOneGameInfo(
         entityColumn = "id",
         associateBy = Junction(
             value = UGameTagEntity::class,
-            parentColumn = "gameId",
-            entityColumn = "tagId"
+            parentColumn = JOINEntity.Companion.PARENTIDNAME,
+            entityColumn = JOINEntity.Companion.CHILDIDNAME
         )
     )
     val tags: List<TagEntity>,
@@ -60,8 +61,8 @@ data class AllOneGameInfo(
         entityColumn = "id",
         associateBy = Junction(
             value = UGameDevsEntity::class,
-            parentColumn = "gameId",
-            entityColumn = "devId"
+            parentColumn = JOINEntity.Companion.PARENTIDNAME,
+            entityColumn = JOINEntity.Companion.CHILDIDNAME
         )
     )
     val devs: List<DevEntity>,
@@ -71,8 +72,8 @@ data class AllOneGameInfo(
         entityColumn = "id",
         associateBy = Junction(
             value = UGameEngineEntity::class,
-            parentColumn = "gameId",
-            entityColumn = "gameEngineId"
+            parentColumn = JOINEntity.Companion.PARENTIDNAME,
+            entityColumn = JOINEntity.Companion.CHILDIDNAME
         )
     )
     val gEngines: List<GameEngineEntity>,
@@ -82,8 +83,8 @@ data class AllOneGameInfo(
         entityColumn = "id",
         associateBy = Junction(
             value = UWalkthroughWithImages::class,
-            parentColumn = "gameId",
-            entityColumn = "walkthroughId"
+            parentColumn = JOINEntity.Companion.PARENTIDNAME,
+            entityColumn = JOINEntity.Companion.CHILDIDNAME
         )
     )
     val walkthroughes: List<WalkthroughWithImages>,

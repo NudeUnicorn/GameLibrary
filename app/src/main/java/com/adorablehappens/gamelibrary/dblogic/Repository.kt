@@ -10,6 +10,7 @@ import com.adorablehappens.gamelibrary.dblogic.dao.CheatDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoBehaviour
 import com.adorablehappens.gamelibrary.dblogic.dao.GameDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
+import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -25,7 +26,7 @@ object Repository {
     private lateinit var authorDAORepo: AuthorDAO
     val authorBehaviourRepo: AuthorBehaviour = AuthorBehaviour
     private lateinit var cheatDAORepo: CheatDAO
-    val cheatBehaviourRepo: CheatBehaviour = CheatBehaviour
+    val cheatBehaviourRepo: DBDaoBehaviour<CheatEntity> = CheatBehaviour
     private lateinit var gameDAORepo: GameDAO
     val gameBehaviourRepo: GameBehaviour = GameBehaviour
     private lateinit var joinGameWithCheatDAORepo: JOINGameWithCheatDAO
@@ -54,7 +55,7 @@ object Repository {
 
     }
 
-    fun getCheatBehaviour(): CheatBehaviour {
+    fun getCheatBehaviour(): DBDaoBehaviour<CheatEntity> {
         Repository.Constants.AuthorConstants.AuthorQueries.Quer.q.query
 
         return cheatBehaviourRepo
