@@ -2,8 +2,10 @@ package com.adorablehappens.gamelibrary.dblogic.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.Query
 
 /**
  * Общий дао-интерфейс для получения связанных сущностей
@@ -17,11 +19,15 @@ import androidx.room.OnConflictStrategy
 interface DBDaoAllOneInfo<T, Y, U, I> {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertJoin(join: JOINEntity)
+    fun joinInsert(join: JOINEntity)
 
+    @Delete
+    fun joinDelete(join: JOINEntity)
 
+    @Query("SELECT * FROM games")
     fun getAllLinkedEntities() : LiveData<List<I>>
 
+    @Query("SELECT * FROM games WHERE id=:id")
     fun getOneLinkedEntity(id: Long) : LiveData<I>
 
 }
