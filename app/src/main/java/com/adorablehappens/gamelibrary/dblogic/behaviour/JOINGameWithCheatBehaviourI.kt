@@ -1,12 +1,10 @@
 package com.adorablehappens.gamelibrary.dblogic.behaviour
 
-import com.adorablehappens.gamelibrary.dblogic.Repository
-import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoJoinBehaviour
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameCheatEntity
-import com.adorablehappens.gamelibrary.dblogic.pojo.GameWithCheats
+import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithCheats
 
 interface JOINGameWithCheatBehaviourI {
 
@@ -19,7 +17,7 @@ interface JOINGameWithCheatBehaviourI {
 
     fun insertJoin(join: UGameCheatEntity)
 
-    fun getAllLinkedEntities(): List<GameWithCheats>
+    fun getAllLinkedEntities(): List<POJOGameWithCheats>
 
-    fun getOneLinkedEntity(id: Long): GameWithCheats
+    fun getOneLinkedEntity(id: Long): POJOGameWithCheats
 }

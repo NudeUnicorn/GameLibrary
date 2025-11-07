@@ -9,7 +9,7 @@ import androidx.room.Update
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 
 @Dao
-interface GameDAO: DBDao<GameEntity> {
+interface DAOGame: DBDao<GameEntity> {
 
     @Query("SELECT * FROM games")
     override fun getAll(): LiveData<List<GameEntity>>

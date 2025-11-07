@@ -9,7 +9,7 @@ import androidx.room.Update
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
 
 @Dao
-interface CheatDAO: DBDao<CheatEntity> {
+interface DAOCheat: DBDao<CheatEntity> {
 
     @Query("SELECT * FROM cheats")
     override fun getAll(): LiveData<List<CheatEntity>>

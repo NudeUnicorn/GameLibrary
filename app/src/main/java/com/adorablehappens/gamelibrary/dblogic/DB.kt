@@ -4,12 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.adorablehappens.gamelibrary.dblogic.dao.AuthorDAO
-import com.adorablehappens.gamelibrary.dblogic.dao.CheatDAO
-import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoOneFullInfo
-import com.adorablehappens.gamelibrary.dblogic.dao.EntityBase
-import com.adorablehappens.gamelibrary.dblogic.dao.GameDAO
-import com.adorablehappens.gamelibrary.dblogic.dao.JOINEntity
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOAuthor
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOCheat
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOGame
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
@@ -26,10 +23,10 @@ import com.adorablehappens.gamelibrary.dblogic.entities.UGameDevsEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameEngineEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameGenreEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameTagEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.UGameWalkthrough
 import com.adorablehappens.gamelibrary.dblogic.entities.UWalkthroughWithImages
 import com.adorablehappens.gamelibrary.dblogic.entities.WalkthroughEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.WalkthroughImageEntity
-import com.adorablehappens.gamelibrary.dblogic.pojo.OneGameFullInfo
 
 @Database(
     entities = [
@@ -50,6 +47,7 @@ import com.adorablehappens.gamelibrary.dblogic.pojo.OneGameFullInfo
         UGameEngineEntity::class,
         UGameGenreEntity::class,
         UGameTagEntity::class,
+        UGameWalkthrough::class,
         UWalkthroughWithImages::class,
         WalkthroughEntity::class,
         WalkthroughImageEntity::class
@@ -58,9 +56,9 @@ import com.adorablehappens.gamelibrary.dblogic.pojo.OneGameFullInfo
 )
 abstract class DB: RoomDatabase() {
 
-    abstract fun getAuthorDAO(): AuthorDAO
-    abstract fun getCheatDAO(): CheatDAO
-    abstract fun getGameDAO(): GameDAO
+    abstract fun getAuthorDAO(): DAOAuthor
+    abstract fun getCheatDAO(): DAOCheat
+    abstract fun getGameDAO(): DAOGame
     abstract fun getJOINGameWithCheatDAO(): JOINGameWithCheatDAO
     //abstract fun createOneGameFullInfoDAO(): DBDaoOneFullInfo
 
@@ -78,7 +76,7 @@ abstract class DB: RoomDatabase() {
                         context,
                         DB::class.java,
                         dbName
-                    ).fallbackToDestructiveMigration(false).build()
+                    ).fallbackToDestructiveMigration(true).build()
                     dbInstance = instance
                 }
                 return instance

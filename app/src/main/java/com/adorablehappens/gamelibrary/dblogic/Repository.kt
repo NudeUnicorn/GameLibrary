@@ -6,24 +6,25 @@ import com.adorablehappens.gamelibrary.dblogic.behaviour.AuthorBehaviour
 import com.adorablehappens.gamelibrary.dblogic.behaviour.CheatBehaviour
 import com.adorablehappens.gamelibrary.dblogic.behaviour.GameBehaviour
 import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithCheatBehaviour
-import com.adorablehappens.gamelibrary.dblogic.behaviour.OneGameFullInfoBehaviour
-import com.adorablehappens.gamelibrary.dblogic.dao.AuthorDAO
-import com.adorablehappens.gamelibrary.dblogic.dao.CheatDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOAuthor
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOCheat
 import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoBehaviour
-import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoOneFullInfo
-import com.adorablehappens.gamelibrary.dblogic.dao.GameDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOGame
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
-import com.adorablehappens.gamelibrary.dblogic.entities.CountryEntity
-import com.adorablehappens.gamelibrary.dblogic.entities.DevEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEngineEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GenreEntity
-import com.adorablehappens.gamelibrary.dblogic.entities.LanguageEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.TagEntity
-import com.adorablehappens.gamelibrary.dblogic.entities.WalkthroughEntity
-import com.adorablehappens.gamelibrary.dblogic.entities.WalkthroughImageEntity
+import com.adorablehappens.gamelibrary.dblogic.pojo.POJOCheatWithAuthors
+import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithCheats
+import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithDevs
+import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithEngines
+import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithGenres
+import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithTags
+import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithWalkthroughes
+import com.adorablehappens.gamelibrary.dblogic.pojo.POJOWalkthroughWithImages
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -36,11 +37,11 @@ object Repository {
     private lateinit var db: DB
     private lateinit var coroutineScope: CoroutineScope
 
-    private lateinit var authorDAORepo: AuthorDAO
+    private lateinit var authorDAORepo: DAOAuthor
     val authorBehaviourRepo: AuthorBehaviour = AuthorBehaviour
-    private lateinit var cheatDAORepo: CheatDAO
+    private lateinit var cheatDAORepo: DAOCheat
     val cheatBehaviourRepo: DBDaoBehaviour<CheatEntity> = CheatBehaviour
-    private lateinit var gameDAORepo: GameDAO
+    private lateinit var gameDAORepo: DAOGame
     val gameBehaviourRepo: GameBehaviour = GameBehaviour
     private lateinit var joinGameWithCheatDAORepo: JOINGameWithCheatDAO
     val joinGameWithCheatBehaviourRepo: JOINGameWithCheatBehaviour = JOINGameWithCheatBehaviour
@@ -49,16 +50,22 @@ object Repository {
 
     lateinit var gameEntities: LiveData<List<GameEntity>>
     lateinit var gameEntityCurrent: LiveData<GameEntity>
-    lateinit var cheatEntities: LiveData<List<CheatEntity>>
-    lateinit var genreEntities: LiveData<List<GenreEntity>>
-    lateinit var tagEntities: LiveData<List<TagEntity>>
-    lateinit var authorEntities: LiveData<List<AuthorEntity>>
-    lateinit var devEntities: LiveData<List<DevEntity>>
-    lateinit var countryEntities: LiveData<List<CountryEntity>>
-    lateinit var languageEntities: LiveData<List<LanguageEntity>>
-    lateinit var gameEngineEntities: LiveData<List<GameEngineEntity>>
-    lateinit var walkthroughEntities: LiveData<List<WalkthroughEntity>>
-    lateinit var walkthroughImageEntities: LiveData<List<WalkthroughImageEntity>>
+    var gameEntityCurrentID: Long = 0
+    lateinit var cheatEntities: LiveData<List<POJOGameWithCheats>>
+    lateinit var genreEntities: LiveData<List<POJOGameWithGenres>>
+    lateinit var tagEntities: LiveData<List<POJOGameWithTags>>
+    lateinit var authorEntities: LiveData<List<POJOCheatWithAuthors>>
+    lateinit var devEntities: LiveData<List<POJOGameWithDevs>>
+//    lateinit var countryEntities: LiveData<List<CountryEntity>>
+//    lateinit var languageEntities: LiveData<List<LanguageEntity>>
+    lateinit var gameEngineEntities: LiveData<List<POJOGameWithEngines>>
+    lateinit var walkthroughEntities: LiveData<List<POJOGameWithWalkthroughes>>
+    lateinit var walkthroughImageEntities: LiveData<List<POJOWalkthroughWithImages>>
+
+    lateinit var genreEntitiesAll: LiveData<List<GenreEntity>>
+    lateinit var tagEntitiesAll: LiveData<List<TagEntity>>
+    lateinit var authorEntitiesAll: LiveData<List<AuthorEntity>>
+    lateinit var gameEngineEntitiesAll: LiveData<List<GameEngineEntity>>
 
 
     init {

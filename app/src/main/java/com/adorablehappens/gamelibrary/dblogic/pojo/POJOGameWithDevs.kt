@@ -4,23 +4,21 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINEntity
-import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
-import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.DevEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
-import com.adorablehappens.gamelibrary.dblogic.entities.UAuthorCheatEntity
-import com.adorablehappens.gamelibrary.dblogic.entities.UGameCheatEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.UGameDevsEntity
 
-data class CheatWithAuthors(
+data class POJOGameWithDevs(
     @Embedded
-    val cheat: CheatEntity,
+    val game: GameEntity,
     @Relation(
         parentColumn = "id",
         entityColumn = "id",
         associateBy = Junction(
-            value = UAuthorCheatEntity::class,
+            value = UGameDevsEntity::class,
             parentColumn = JOINEntity.Companion.PARENTIDNAME,
             entityColumn = JOINEntity.Companion.CHILDIDNAME
         )
     )
-    val authors: List<AuthorEntity>
+    val cheats: List<DevEntity>
 )

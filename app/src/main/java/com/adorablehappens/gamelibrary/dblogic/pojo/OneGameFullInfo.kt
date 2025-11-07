@@ -14,6 +14,7 @@ import com.adorablehappens.gamelibrary.dblogic.entities.UGameDevsEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameEngineEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameGenreEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameTagEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.UGameWalkthrough
 import com.adorablehappens.gamelibrary.dblogic.entities.UWalkthroughWithImages
 
 /**
@@ -31,7 +32,7 @@ data class OneGameFullInfo(
             entityColumn = JOINEntity.Companion.CHILDIDNAME
         )
     )
-    val cheats: List<CheatWithAuthors>,
+    val cheats: List<POJOCheatWithAuthors>,
 
     //@Embedded("genre_")
     @Relation(
@@ -82,11 +83,11 @@ data class OneGameFullInfo(
         parentColumn = "id",
         entityColumn = "id",
         associateBy = Junction(
-            value = UWalkthroughWithImages::class,
+            value = UGameWalkthrough::class,
             parentColumn = JOINEntity.Companion.PARENTIDNAME,
             entityColumn = JOINEntity.Companion.CHILDIDNAME
         )
     )
-    val walkthroughes: List<WalkthroughWithImages>,
+    val walkthroughes: List<POJOWalkthroughWithImages>,
 
     )

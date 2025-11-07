@@ -6,11 +6,11 @@ import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameCheatEntity
-import com.adorablehappens.gamelibrary.dblogic.pojo.GameWithCheats
+import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithCheats
 
 object JOINGameWithCheatBehaviour:JOINGameWithCheatBehaviourI{
 
-    private val obj = object : DBDaoJoinBehaviour<GameEntity, CheatEntity, UGameCheatEntity, GameWithCheats>(){}
+    private val obj = object : DBDaoJoinBehaviour<GameEntity, CheatEntity, UGameCheatEntity, POJOGameWithCheats>(){}
 
     override fun setDAO(dao: JOINGameWithCheatDAO){
         obj.setDAO(dao)
@@ -34,11 +34,11 @@ object JOINGameWithCheatBehaviour:JOINGameWithCheatBehaviourI{
         }
     }
 
-    override fun getAllLinkedEntities(): List<GameWithCheats> {
+    override fun getAllLinkedEntities(): List<POJOGameWithCheats> {
         return obj.getAllLinkedEntities()
     }
 
-    override fun getOneLinkedEntity(id: Long): GameWithCheats {
+    override fun getOneLinkedEntity(id: Long): POJOGameWithCheats {
         return obj.getOneLinkedEntity(id)
     }
 }
