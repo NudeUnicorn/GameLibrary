@@ -1,6 +1,7 @@
 package com.adorablehappens.gamelibrary.dblogic
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import com.adorablehappens.gamelibrary.dblogic.behaviour.AuthorBehaviour
 import com.adorablehappens.gamelibrary.dblogic.behaviour.CheatBehaviour
 import com.adorablehappens.gamelibrary.dblogic.behaviour.GameBehaviour
@@ -12,7 +13,17 @@ import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoBehaviour
 import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoOneFullInfo
 import com.adorablehappens.gamelibrary.dblogic.dao.GameDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
+import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.CountryEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.DevEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.GameEngineEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.GenreEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.LanguageEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.TagEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.WalkthroughEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.WalkthroughImageEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -35,6 +46,20 @@ object Repository {
     val joinGameWithCheatBehaviourRepo: JOINGameWithCheatBehaviour = JOINGameWithCheatBehaviour
 //    private lateinit var oneGameFullInfoDAORepo: DBDaoOneFullInfo
 //    val oneGameFullInfoBehaviourRepo: OneGameFullInfoBehaviour = OneGameFullInfoBehaviour
+
+    lateinit var gameEntities: LiveData<List<GameEntity>>
+    lateinit var gameEntityCurrent: LiveData<GameEntity>
+    lateinit var cheatEntities: LiveData<List<CheatEntity>>
+    lateinit var genreEntities: LiveData<List<GenreEntity>>
+    lateinit var tagEntities: LiveData<List<TagEntity>>
+    lateinit var authorEntities: LiveData<List<AuthorEntity>>
+    lateinit var devEntities: LiveData<List<DevEntity>>
+    lateinit var countryEntities: LiveData<List<CountryEntity>>
+    lateinit var languageEntities: LiveData<List<LanguageEntity>>
+    lateinit var gameEngineEntities: LiveData<List<GameEngineEntity>>
+    lateinit var walkthroughEntities: LiveData<List<WalkthroughEntity>>
+    lateinit var walkthroughImageEntities: LiveData<List<WalkthroughImageEntity>>
+
 
     init {
 

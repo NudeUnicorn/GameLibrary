@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.adorablehappens.gamelibrary.dblogic.pojo.OneGameFullInfo
 
@@ -48,12 +49,14 @@ interface DBDaoOneFullInfo {
     /**
      * Возвращает все связанные сущности из таблицы
      */
+    @Transaction
     @Query("SELECT * FROM games")
     fun getAllLinkedEntities() : LiveData<List<OneGameFullInfo>>
 
     /**
      * Возвращает одну сущность из таблицы
      */
+    @Transaction
     @Query("SELECT * FROM games WHERE id=:id")
     fun getOneLinkedEntity(id: Long) : LiveData<OneGameFullInfo>
 
