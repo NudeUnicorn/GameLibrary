@@ -34,11 +34,6 @@ import com.adorablehappens.gamelibrary.dblogic.dao.JOINEntity
     ]
     )
 data class UGameDevsEntity(
-    override val id: Long,
-    override val parentEntityID: Long,
-    override val childEntityID: Long
-): JOINEntity(
-    id = id,
-    parentEntityID = parentEntityID,
-    childEntityID = childEntityID
+    val parentEntityID: Long,
+    val childEntityID: Long
 )
