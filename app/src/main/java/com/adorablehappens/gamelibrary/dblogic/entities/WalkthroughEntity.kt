@@ -9,21 +9,17 @@ import com.adorablehappens.gamelibrary.dblogic.dao.EntityBase
 data class WalkthroughEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    override val id: Long,
+    val id: Long,
 
     @ColumnInfo(name = "name")
-    override var name: String = "",
+    var name: String = "",
 
     @ColumnInfo(name = "description")
-    override var description: String = "",
+    var description: String = "",
 
     @ColumnInfo(name = "comment")
-    override var comment: String = "",
+    var comment: String = "",
 
     @ColumnInfo(name = "timestamp")    //дата добавления в игру
     val timestamp: Long,
-): EntityBase(
-    id = id,
-    name = name,
-    description = description,
-    comment = comment)
+)

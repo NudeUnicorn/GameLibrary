@@ -6,7 +6,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.adorablehappens.gamelibrary.dblogic.dao.AuthorDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.CheatDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoOneFullInfo
+import com.adorablehappens.gamelibrary.dblogic.dao.EntityBase
 import com.adorablehappens.gamelibrary.dblogic.dao.GameDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINEntity
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
@@ -21,13 +24,17 @@ import com.adorablehappens.gamelibrary.dblogic.entities.UAuthorCheatEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameCheatEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameDevsEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameEngineEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.UGameGenreEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameTagEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UWalkthroughWithImages
 import com.adorablehappens.gamelibrary.dblogic.entities.WalkthroughEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.WalkthroughImageEntity
+import com.adorablehappens.gamelibrary.dblogic.pojo.OneGameFullInfo
 
 @Database(
     entities = [
+//        JOINEntity::class,
+//        EntityBase::class,
         AuthorEntity::class,
         CheatEntity::class,
         CountryEntity::class,
@@ -41,6 +48,7 @@ import com.adorablehappens.gamelibrary.dblogic.entities.WalkthroughImageEntity
         UGameCheatEntity::class,
         UGameDevsEntity::class,
         UGameEngineEntity::class,
+        UGameGenreEntity::class,
         UGameTagEntity::class,
         UWalkthroughWithImages::class,
         WalkthroughEntity::class,
@@ -54,6 +62,7 @@ abstract class DB: RoomDatabase() {
     abstract fun getCheatDAO(): CheatDAO
     abstract fun getGameDAO(): GameDAO
     abstract fun getJOINGameWithCheatDAO(): JOINGameWithCheatDAO
+    //abstract fun createOneGameFullInfoDAO(): DBDaoOneFullInfo
 
     companion object{
         private var dbInstance: DB? = null

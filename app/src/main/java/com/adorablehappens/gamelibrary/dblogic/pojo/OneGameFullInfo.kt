@@ -19,7 +19,7 @@ import com.adorablehappens.gamelibrary.dblogic.entities.UWalkthroughWithImages
 /**
  * POJO-класс для сбора всей информации из базы данных об одной игре
  */
-data class AllOneGameInfo(
+data class OneGameFullInfo(
     @Embedded
     val game: GameEntity,
     @Relation(

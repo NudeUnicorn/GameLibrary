@@ -5,9 +5,11 @@ import com.adorablehappens.gamelibrary.dblogic.behaviour.AuthorBehaviour
 import com.adorablehappens.gamelibrary.dblogic.behaviour.CheatBehaviour
 import com.adorablehappens.gamelibrary.dblogic.behaviour.GameBehaviour
 import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithCheatBehaviour
+import com.adorablehappens.gamelibrary.dblogic.behaviour.OneGameFullInfoBehaviour
 import com.adorablehappens.gamelibrary.dblogic.dao.AuthorDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.CheatDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoBehaviour
+import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoOneFullInfo
 import com.adorablehappens.gamelibrary.dblogic.dao.GameDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
@@ -31,6 +33,8 @@ object Repository {
     val gameBehaviourRepo: GameBehaviour = GameBehaviour
     private lateinit var joinGameWithCheatDAORepo: JOINGameWithCheatDAO
     val joinGameWithCheatBehaviourRepo: JOINGameWithCheatBehaviour = JOINGameWithCheatBehaviour
+//    private lateinit var oneGameFullInfoDAORepo: DBDaoOneFullInfo
+//    val oneGameFullInfoBehaviourRepo: OneGameFullInfoBehaviour = OneGameFullInfoBehaviour
 
     init {
 
@@ -51,6 +55,8 @@ object Repository {
         gameBehaviourRepo.setDAO(gameDAORepo)
         joinGameWithCheatDAORepo = db.getJOINGameWithCheatDAO()
         joinGameWithCheatBehaviourRepo.setDAO(joinGameWithCheatDAORepo)
+//        oneGameFullInfoDAORepo = db.createOneGameFullInfoDAO()
+//        oneGameFullInfoBehaviourRepo.setDAO(oneGameFullInfoDAORepo)
 
 
     }
