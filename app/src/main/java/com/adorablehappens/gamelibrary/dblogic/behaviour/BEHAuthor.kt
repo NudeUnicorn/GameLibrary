@@ -1,9 +1,10 @@
 package com.adorablehappens.gamelibrary.dblogic.behaviour
 
 import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoBehaviour
-import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 
-object GameBehaviour: DBDaoBehaviour<GameEntity>() {
+object BEHAuthor : DBDaoBehaviour<AuthorEntity>(){
+
 
 
 }

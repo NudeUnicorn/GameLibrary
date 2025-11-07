@@ -1,10 +1,9 @@
 package com.adorablehappens.gamelibrary.dblogic.behaviour
 
 import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoBehaviour
-import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.LanguageEntity
 
-object AuthorBehaviour : DBDaoBehaviour<AuthorEntity>(){
-
+object BEHLanguage: DBDaoBehaviour<LanguageEntity>() {
 
 
 }

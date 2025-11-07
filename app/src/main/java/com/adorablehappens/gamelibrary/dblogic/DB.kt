@@ -7,7 +7,9 @@ import androidx.room.RoomDatabase
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOAuthor
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOCheat
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOGame
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOTag
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithTagsDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CountryEntity
@@ -56,10 +58,13 @@ import com.adorablehappens.gamelibrary.dblogic.entities.WalkthroughImageEntity
 )
 abstract class DB: RoomDatabase() {
 
-    abstract fun getAuthorDAO(): DAOAuthor
-    abstract fun getCheatDAO(): DAOCheat
-    abstract fun getGameDAO(): DAOGame
-    abstract fun getJOINGameWithCheatDAO(): JOINGameWithCheatDAO
+    abstract fun createAuthorDAO(): DAOAuthor
+    abstract fun createCheatDAO(): DAOCheat
+    abstract fun createGameDAO(): DAOGame
+    abstract fun createDAOTag(): DAOTag
+    abstract fun createJOINGameWithCheatDAO(): JOINGameWithCheatDAO
+    abstract fun createJOINGameWithTagsDAO(): JOINGameWithTagsDAO
+
     //abstract fun createOneGameFullInfoDAO(): DBDaoOneFullInfo
 
     companion object{

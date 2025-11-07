@@ -1,5 +1,6 @@
 package com.adorablehappens.gamelibrary.dblogic.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -16,16 +17,16 @@ import androidx.room.OnConflictStrategy
 interface DBDaoJoin<T, Y, U, I> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertT(entity: T)
+    fun insertT(entity: T)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertY(entity: Y)
+    fun insertY(entity: Y)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertJoin(join: U)
+    fun insertJoin(join: U)
 
-    fun getAllLinkedEntities() : List<I>
+    fun getAllLinkedEntities() : LiveData<List<I>>
 
-    fun getOneLinkedEntity(id: Long) : I
+    fun getOneLinkedEntity(id: Long) : LiveData<I>
 
 }

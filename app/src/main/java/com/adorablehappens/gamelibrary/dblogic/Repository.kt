@@ -2,15 +2,19 @@ package com.adorablehappens.gamelibrary.dblogic
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import com.adorablehappens.gamelibrary.dblogic.behaviour.AuthorBehaviour
-import com.adorablehappens.gamelibrary.dblogic.behaviour.CheatBehaviour
-import com.adorablehappens.gamelibrary.dblogic.behaviour.GameBehaviour
-import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithCheatBehaviour
+import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHAuthor
+import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHCheat
+import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHGame
+import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHTag
+import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithCheatBEH
+import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithTagsBEH
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOAuthor
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOCheat
 import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoBehaviour
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOGame
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOTag
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithTagsDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEngineEntity
@@ -38,34 +42,40 @@ object Repository {
     private lateinit var coroutineScope: CoroutineScope
 
     private lateinit var authorDAORepo: DAOAuthor
-    val authorBehaviourRepo: AuthorBehaviour = AuthorBehaviour
+    val authorBEHRepo: BEHAuthor = BEHAuthor
     private lateinit var cheatDAORepo: DAOCheat
-    val cheatBehaviourRepo: DBDaoBehaviour<CheatEntity> = CheatBehaviour
+    val cheatBEHRepo: DBDaoBehaviour<CheatEntity> = BEHCheat
     private lateinit var gameDAORepo: DAOGame
-    val gameBehaviourRepo: GameBehaviour = GameBehaviour
+    val gameBEHRepo: BEHGame = BEHGame
+    private lateinit var tagDAORepo: DAOTag
+    val tagBEHRepo: BEHTag = BEHTag
+    private lateinit var joinGameWithTagsDAORepo: JOINGameWithTagsDAO
+    val joinGameWithTagsBehaviourRepo: JOINGameWithTagsBEH = JOINGameWithTagsBEH
     private lateinit var joinGameWithCheatDAORepo: JOINGameWithCheatDAO
-    val joinGameWithCheatBehaviourRepo: JOINGameWithCheatBehaviour = JOINGameWithCheatBehaviour
+    val joinGameWithCheatBehaviourRepo: JOINGameWithCheatBEH = JOINGameWithCheatBEH
 //    private lateinit var oneGameFullInfoDAORepo: DBDaoOneFullInfo
 //    val oneGameFullInfoBehaviourRepo: OneGameFullInfoBehaviour = OneGameFullInfoBehaviour
 
     lateinit var gameEntities: LiveData<List<GameEntity>>
     lateinit var gameEntityCurrent: LiveData<GameEntity>
     var gameEntityCurrentID: Long = 0
-    lateinit var cheatEntities: LiveData<List<POJOGameWithCheats>>
-    lateinit var genreEntities: LiveData<List<POJOGameWithGenres>>
-    lateinit var tagEntities: LiveData<List<POJOGameWithTags>>
-    lateinit var authorEntities: LiveData<List<POJOCheatWithAuthors>>
-    lateinit var devEntities: LiveData<List<POJOGameWithDevs>>
-//    lateinit var countryEntities: LiveData<List<CountryEntity>>
-//    lateinit var languageEntities: LiveData<List<LanguageEntity>>
-    lateinit var gameEngineEntities: LiveData<List<POJOGameWithEngines>>
-    lateinit var walkthroughEntities: LiveData<List<POJOGameWithWalkthroughes>>
-    lateinit var walkthroughImageEntities: LiveData<List<POJOWalkthroughWithImages>>
+    lateinit var cheatEntitiesCurrent: LiveData<POJOGameWithCheats>
+    lateinit var genreEntitiesCurrent: LiveData<POJOGameWithGenres>
+    lateinit var tagEntitiesCurrent: LiveData<POJOGameWithTags>
+    lateinit var authorEntitiesCurrent: LiveData<POJOCheatWithAuthors>
+    lateinit var devEntitiesCurrent: LiveData<POJOGameWithDevs>
+//    lateinit var countryEntitiesCurrent: LiveData<List<CountryEntity>>
+//    lateinit var languageEntitiesCurrent: LiveData<List<LanguageEntity>>
+    lateinit var gameEngineEntitiesCurrent: LiveData<POJOGameWithEngines>
+    lateinit var walkthroughEntitiesCurrent: LiveData<POJOGameWithWalkthroughes>
+    lateinit var walkthroughImageEntitiesCurrent: LiveData<POJOWalkthroughWithImages>
 
     lateinit var genreEntitiesAll: LiveData<List<GenreEntity>>
     lateinit var tagEntitiesAll: LiveData<List<TagEntity>>
     lateinit var authorEntitiesAll: LiveData<List<AuthorEntity>>
     lateinit var gameEngineEntitiesAll: LiveData<List<GameEngineEntity>>
+//  lateinit var countryEntitiesAll: LiveData<List<CountryEntity>>
+//  lateinit var languageEntitiesAll: LiveData<List<LanguageEntity>>
 
 
     init {
@@ -79,14 +89,19 @@ object Repository {
         db = DB.getInstance(context)
         coroutineScope = scope
 
-        authorDAORepo = db.getAuthorDAO()
-        authorBehaviourRepo.setDAO(authorDAORepo)
-        cheatDAORepo = db.getCheatDAO()
-        cheatBehaviourRepo.setDAO(cheatDAORepo)
-        gameDAORepo = db.getGameDAO()
-        gameBehaviourRepo.setDAO(gameDAORepo)
-        joinGameWithCheatDAORepo = db.getJOINGameWithCheatDAO()
-        joinGameWithCheatBehaviourRepo.setDAO(joinGameWithCheatDAORepo)
+        authorDAORepo = db.createAuthorDAO()
+        authorBEHRepo.setDAO(authorDAORepo)
+        cheatDAORepo = db.createCheatDAO()
+        cheatBEHRepo.setDAO(cheatDAORepo)
+        gameDAORepo = db.createGameDAO()
+        gameBEHRepo.setDAO(gameDAORepo)
+        tagDAORepo = db.createDAOTag()
+        tagBEHRepo.setDAO(tagDAORepo)
+        joinGameWithTagsDAORepo = db.createJOINGameWithTagsDAO()
+        joinGameWithTagsBehaviourRepo.obj.setDAO(joinGameWithTagsDAORepo)
+
+        joinGameWithCheatDAORepo = db.createJOINGameWithCheatDAO()
+        joinGameWithCheatBehaviourRepo.obj.setDAO(joinGameWithCheatDAORepo)
 //        oneGameFullInfoDAORepo = db.createOneGameFullInfoDAO()
 //        oneGameFullInfoBehaviourRepo.setDAO(oneGameFullInfoDAORepo)
 
@@ -96,7 +111,7 @@ object Repository {
     fun getCheatBehaviour(): DBDaoBehaviour<CheatEntity> {
         Repository.Constants.AuthorConstants.AuthorQueries.Quer.q.query
 
-        return cheatBehaviourRepo
+        return cheatBEHRepo
     }
 
     fun execCoroutine( func: suspend ()-> Unit){
@@ -107,6 +122,67 @@ object Repository {
 
     fun onFinish(coroutineMsg: String = ""){
         coroutineScope.cancel(coroutineMsg)
+    }
+
+    class Data(){
+        fun getAllGames(id: Long? = null){
+            try {
+                if (id != null){
+                    gameEntityCurrent = gameBEHRepo.getOne(id)
+                }
+                else{
+                    gameEntities = gameBEHRepo.getAll()
+                }
+            }
+            catch (e: Exception){
+                print(e)
+            }
+        }
+        fun getAllGenres(){
+            try {
+                genreEntitiesAll
+            }
+            catch (e: Exception){
+                print(e)
+            }
+        }
+        fun getAllCheats(id: Long){
+            try {
+                cheatEntitiesCurrent = joinGameWithCheatBehaviourRepo.obj.getOneLinkedEntity(id)
+            }
+            catch (e: Exception){
+                print(e)
+            }
+        }
+        fun getAllAuthors(){
+            try {
+                authorEntitiesAll = BEHAuthor.getAll()
+            }
+            catch (e: Exception){
+                print(e)
+            }
+        }
+        fun getAllCountries(){
+
+        }
+        fun getAllDevs(){
+            devEntitiesCurrent
+        }
+        fun getAllLanguages(){
+
+        }
+        fun getAllTags(id: Long? = null){
+            try {
+                when(id){
+                    null -> tagEntitiesAll = tagBEHRepo.getAll()
+                    else -> tagEntitiesCurrent = joinGameWithTagsBehaviourRepo.obj.getOneLinkedEntity(id)
+                }
+
+            }
+            catch (e: Exception){
+                print(e)
+            }
+        }
     }
 
     class Constants private constructor(){
