@@ -6,17 +6,23 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 /**
  * Общий дао-интерфейс для получения связанных сущностей
  *
- * @param T первая сущность
- * @param Y вторая сущность
- * @param U join-сущность(таблица) с id для связывания сущностей
  * @param I pojo дата-класс для получения связанных сущностей
  */
 @Dao
-interface DBDaoAllOneInfo<T, Y, U, I> {
+interface DBDaoAllOneInfo<I> {
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun entityInsert(entity: EntityBase)
+
+    @Update(onConflict = OnConflictStrategy.IGNORE)
+    fun entityUpdate(entity: EntityBase)
+
+    @Delete
+    fun entityDelete(entity: EntityBase)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun joinInsert(join: JOINEntity)
