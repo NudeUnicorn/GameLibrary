@@ -6,8 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOAuthor
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOCheat
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOCountry
+import com.adorablehappens.gamelibrary.dblogic.dao.DAODev
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOGame
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOGameEngine
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOGenre
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOLanguage
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOTag
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOWalkthrough
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOWalkthroughImage
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithTagsDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
@@ -62,6 +69,14 @@ abstract class DB: RoomDatabase() {
     abstract fun createCheatDAO(): DAOCheat
     abstract fun createGameDAO(): DAOGame
     abstract fun createDAOTag(): DAOTag
+    abstract fun createDAOGenre(): DAOGenre
+    abstract fun createDAOCountry(): DAOCountry
+    abstract fun createDAODev(): DAODev
+    abstract fun createDAOGameEngine(): DAOGameEngine
+    abstract fun createDAOLanguage(): DAOLanguage
+    abstract fun createDAOWalkthrough(): DAOWalkthrough
+    abstract fun createDAOWalkthroughImage(): DAOWalkthroughImage
+
     abstract fun createJOINGameWithCheatDAO(): JOINGameWithCheatDAO
     abstract fun createJOINGameWithTagsDAO(): JOINGameWithTagsDAO
 

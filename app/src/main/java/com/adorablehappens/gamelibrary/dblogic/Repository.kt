@@ -41,18 +41,18 @@ object Repository {
     private lateinit var db: DB
     private lateinit var coroutineScope: CoroutineScope
 
-    private lateinit var authorDAORepo: DAOAuthor
-    val authorBEHRepo: BEHAuthor = BEHAuthor
-    private lateinit var cheatDAORepo: DAOCheat
-    val cheatBEHRepo: DBDaoBehaviour<CheatEntity> = BEHCheat
-    private lateinit var gameDAORepo: DAOGame
-    val gameBEHRepo: BEHGame = BEHGame
-    private lateinit var tagDAORepo: DAOTag
-    val tagBEHRepo: BEHTag = BEHTag
+    private lateinit var daoAuthorRepo: DAOAuthor
+    val behAuthorRepo: BEHAuthor = BEHAuthor
+    private lateinit var daoCheatRepo: DAOCheat
+    val behCheatRepo: DBDaoBehaviour<CheatEntity> = BEHCheat
+    private lateinit var daoGameRepo: DAOGame
+    val behGameRepo: BEHGame = BEHGame
+    private lateinit var daoTagRepo: DAOTag
+    val behTagRepo: BEHTag = BEHTag
     private lateinit var joinGameWithTagsDAORepo: JOINGameWithTagsDAO
-    val joinGameWithTagsBehaviourRepo: JOINGameWithTagsBEH = JOINGameWithTagsBEH
+    val joinGameWithTagsBEHRepo: JOINGameWithTagsBEH = JOINGameWithTagsBEH
     private lateinit var joinGameWithCheatDAORepo: JOINGameWithCheatDAO
-    val joinGameWithCheatBehaviourRepo: JOINGameWithCheatBEH = JOINGameWithCheatBEH
+    val joinGameWithCheatBEHRepo: JOINGameWithCheatBEH = JOINGameWithCheatBEH
 //    private lateinit var oneGameFullInfoDAORepo: DBDaoOneFullInfo
 //    val oneGameFullInfoBehaviourRepo: OneGameFullInfoBehaviour = OneGameFullInfoBehaviour
 
@@ -89,19 +89,23 @@ object Repository {
         db = DB.getInstance(context)
         coroutineScope = scope
 
-        authorDAORepo = db.createAuthorDAO()
-        authorBEHRepo.setDAO(authorDAORepo)
-        cheatDAORepo = db.createCheatDAO()
-        cheatBEHRepo.setDAO(cheatDAORepo)
-        gameDAORepo = db.createGameDAO()
-        gameBEHRepo.setDAO(gameDAORepo)
-        tagDAORepo = db.createDAOTag()
-        tagBEHRepo.setDAO(tagDAORepo)
+        daoAuthorRepo = db.createAuthorDAO()
+        behAuthorRepo.setDAO(daoAuthorRepo)
+
+        daoCheatRepo = db.createCheatDAO()
+        behCheatRepo.setDAO(daoCheatRepo)
+
+        daoGameRepo = db.createGameDAO()
+        behGameRepo.setDAO(daoGameRepo)
+
+        daoTagRepo = db.createDAOTag()
+        behTagRepo.setDAO(daoTagRepo)
+
         joinGameWithTagsDAORepo = db.createJOINGameWithTagsDAO()
-        joinGameWithTagsBehaviourRepo.obj.setDAO(joinGameWithTagsDAORepo)
+        joinGameWithTagsBEHRepo.obj.setDAO(joinGameWithTagsDAORepo)
 
         joinGameWithCheatDAORepo = db.createJOINGameWithCheatDAO()
-        joinGameWithCheatBehaviourRepo.obj.setDAO(joinGameWithCheatDAORepo)
+        joinGameWithCheatBEHRepo.obj.setDAO(joinGameWithCheatDAORepo)
 //        oneGameFullInfoDAORepo = db.createOneGameFullInfoDAO()
 //        oneGameFullInfoBehaviourRepo.setDAO(oneGameFullInfoDAORepo)
 
@@ -111,36 +115,44 @@ object Repository {
     fun getCheatBehaviour(): DBDaoBehaviour<CheatEntity> {
         Repository.Constants.AuthorConstants.AuthorQueries.Quer.q.query
 
-        return cheatBEHRepo
+        return behCheatRepo
     }
 
+    /**
+     * Принимает функцию и выполняет её в фоновом потоке корутины
+     */
     fun execCoroutine( func: suspend ()-> Unit){
         coroutineScope.launch {
             func()
         }
     }
 
-    fun onFinish(coroutineMsg: String = ""){
-        coroutineScope.cancel(coroutineMsg)
+    /**
+     * Здесь выполняются необходимые действия при завершении работы приложения
+     */
+    fun onFinish(coroutineCloseMsg: String = ""){
+        coroutineScope.cancel(coroutineCloseMsg)
     }
 
     class Data(){
         fun getAllGames(id: Long? = null){
             try {
-                if (id != null){
-                    gameEntityCurrent = gameBEHRepo.getOne(id)
-                }
-                else{
-                    gameEntities = gameBEHRepo.getAll()
+                when(id){
+                    null -> gameEntities = behGameRepo.getAll()
+                    else -> gameEntityCurrent = behGameRepo.getOne(id)
                 }
             }
             catch (e: Exception){
                 print(e)
             }
         }
-        fun getAllGenres(){
+        fun getAllGenres(id: Long? = null){
             try {
-                genreEntitiesAll
+                when(id){
+                    null -> genreEntitiesAll
+                    else -> genreEntitiesCurrent
+                }
+
             }
             catch (e: Exception){
                 print(e)
@@ -148,13 +160,13 @@ object Repository {
         }
         fun getAllCheats(id: Long){
             try {
-                cheatEntitiesCurrent = joinGameWithCheatBehaviourRepo.obj.getOneLinkedEntity(id)
+                cheatEntitiesCurrent = joinGameWithCheatBEHRepo.obj.getOneLinkedEntity(id)
             }
             catch (e: Exception){
                 print(e)
             }
         }
-        fun getAllAuthors(){
+        fun getAllAuthors(id: Long? = null){
             try {
                 authorEntitiesAll = BEHAuthor.getAll()
             }
@@ -162,20 +174,47 @@ object Repository {
                 print(e)
             }
         }
-        fun getAllCountries(){
+        fun getAllCountries(id: Long? = null){
+            try {
+                when(id){
+                    null -> genreEntitiesAll
+                    else -> genreEntitiesCurrent
+                }
 
+            }
+            catch (e: Exception){
+                print(e)
+            }
         }
-        fun getAllDevs(){
-            devEntitiesCurrent
-        }
-        fun getAllLanguages(){
+        fun getAllDevs(id: Long? = null){
+            try {
+                when(id){
+                    null -> devEntitiesCurrent
+                    else -> devEntitiesCurrent
+                }
 
+            }
+            catch (e: Exception){
+                print(e)
+            }
+        }
+        fun getAllLanguages(id: Long? = null){
+            try {
+                when(id){
+                    null -> devEntitiesCurrent
+                    else -> devEntitiesCurrent
+                }
+
+            }
+            catch (e: Exception){
+                print(e)
+            }
         }
         fun getAllTags(id: Long? = null){
             try {
                 when(id){
-                    null -> tagEntitiesAll = tagBEHRepo.getAll()
-                    else -> tagEntitiesCurrent = joinGameWithTagsBehaviourRepo.obj.getOneLinkedEntity(id)
+                    null -> tagEntitiesAll = behTagRepo.getAll()
+                    else -> tagEntitiesCurrent = joinGameWithTagsBEHRepo.obj.getOneLinkedEntity(id)
                 }
 
             }
