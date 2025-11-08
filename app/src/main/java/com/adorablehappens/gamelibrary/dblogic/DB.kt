@@ -15,7 +15,7 @@ import com.adorablehappens.gamelibrary.dblogic.dao.DAOLanguage
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOTag
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOWalkthrough
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOWalkthroughImage
-import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatsDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithTagsDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
@@ -26,7 +26,7 @@ import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GenreEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.LanguageEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.TagEntity
-import com.adorablehappens.gamelibrary.dblogic.entities.UAuthorCheatEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.UCheatAuthorEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameCheatEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameDevsEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameEngineEntity
@@ -50,7 +50,7 @@ import com.adorablehappens.gamelibrary.dblogic.entities.WalkthroughImageEntity
         GenreEntity::class,
         LanguageEntity::class,
         TagEntity::class,
-        UAuthorCheatEntity::class,
+        UCheatAuthorEntity::class,
         UGameCheatEntity::class,
         UGameDevsEntity::class,
         UGameEngineEntity::class,
@@ -77,7 +77,7 @@ abstract class DB: RoomDatabase() {
     abstract fun createDAOWalkthrough(): DAOWalkthrough
     abstract fun createDAOWalkthroughImage(): DAOWalkthroughImage
 
-    abstract fun createJOINGameWithCheatDAO(): JOINGameWithCheatDAO
+    abstract fun createJOINGameWithCheatDAO(): JOINGameWithCheatsDAO
     abstract fun createJOINGameWithTagsDAO(): JOINGameWithTagsDAO
 
     //abstract fun createOneGameFullInfoDAO(): DBDaoOneFullInfo

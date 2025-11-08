@@ -6,7 +6,7 @@ import androidx.room.Relation
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
-import com.adorablehappens.gamelibrary.dblogic.entities.UAuthorCheatEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.UCheatAuthorEntity
 
 data class POJOCheatWithAuthors(
     @Embedded
@@ -15,7 +15,7 @@ data class POJOCheatWithAuthors(
         parentColumn = "id",
         entityColumn = "id",
         associateBy = Junction(
-            value = UAuthorCheatEntity::class,
+            value = UCheatAuthorEntity::class,
             parentColumn = JOINEntity.Companion.PARENTIDNAME,
             entityColumn = JOINEntity.Companion.CHILDIDNAME
         )

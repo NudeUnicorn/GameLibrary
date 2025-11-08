@@ -6,14 +6,14 @@ import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHAuthor
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHCheat
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHGame
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHTag
-import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithCheatBEH
+import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithCheatsBEH
 import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithTagsBEH
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOAuthor
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOCheat
 import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoBehaviour
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOGame
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOTag
-import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatsDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithTagsDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
@@ -51,8 +51,8 @@ object Repository {
     val behTagRepo: BEHTag = BEHTag
     private lateinit var joinGameWithTagsDAORepo: JOINGameWithTagsDAO
     val joinGameWithTagsBEHRepo: JOINGameWithTagsBEH = JOINGameWithTagsBEH
-    private lateinit var joinGameWithCheatDAORepo: JOINGameWithCheatDAO
-    val joinGameWithCheatBEHRepo: JOINGameWithCheatBEH = JOINGameWithCheatBEH
+    private lateinit var joinGameWithCheatDAORepo: JOINGameWithCheatsDAO
+    val joinGameWithCheatBEHRepo: JOINGameWithCheatsBEH = JOINGameWithCheatsBEH
 //    private lateinit var oneGameFullInfoDAORepo: DBDaoOneFullInfo
 //    val oneGameFullInfoBehaviourRepo: OneGameFullInfoBehaviour = OneGameFullInfoBehaviour
 

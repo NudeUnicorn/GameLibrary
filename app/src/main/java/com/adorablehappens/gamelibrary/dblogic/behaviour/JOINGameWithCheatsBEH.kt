@@ -1,16 +1,14 @@
 package com.adorablehappens.gamelibrary.dblogic.behaviour
 
 import androidx.lifecycle.LiveData
-import com.adorablehappens.gamelibrary.dblogic.Repository
 import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoJoin
 import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoJoinBehaviour
-import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameCheatEntity
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithCheats
 
-object JOINGameWithCheatBEH{
+object JOINGameWithCheatsBEH{
 
     val obj = object : DBDaoJoinBehaviour<GameEntity, CheatEntity, UGameCheatEntity, POJOGameWithCheats>(){
         override fun setDAO(dao: DBDaoJoin<GameEntity, CheatEntity, UGameCheatEntity, POJOGameWithCheats>) {

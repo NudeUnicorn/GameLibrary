@@ -1,7 +1,7 @@
 package com.adorablehappens.gamelibrary.dblogic.behaviour
 
 import androidx.lifecycle.LiveData
-import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatsDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.UGameCheatEntity
@@ -10,7 +10,7 @@ import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithCheats
 interface DBDaoJoinBase {
 
 
-    fun setDAO(dao: JOINGameWithCheatDAO)
+    fun setDAO(dao: JOINGameWithCheatsDAO)
 
     fun insertT(entity: GameEntity)
 

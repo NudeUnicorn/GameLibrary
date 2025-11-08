@@ -33,7 +33,7 @@ import com.adorablehappens.gamelibrary.dblogic.dao.JOINEntity
         Index(JOINEntity.Companion.CHILDIDNAME),
     ]
     )
-data class UAuthorCheatEntity(
+data class UCheatAuthorEntity(
     val parentEntityID: Long,
     val childEntityID: Long
 )

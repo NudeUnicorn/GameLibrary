@@ -2,8 +2,6 @@ package com.adorablehappens.gamelibrary.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.adorablehappens.gamelibrary.dblogic.Repository
-import com.adorablehappens.gamelibrary.dblogic.behaviour.DBDaoJoinBase
-import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithCheatBEH
 
 class LibraryViewModel(): ViewModel(){
 

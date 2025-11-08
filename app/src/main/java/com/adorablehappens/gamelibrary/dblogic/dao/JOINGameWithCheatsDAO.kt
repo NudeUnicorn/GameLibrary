@@ -10,7 +10,7 @@ import com.adorablehappens.gamelibrary.dblogic.entities.UGameCheatEntity
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithCheats
 
 @Dao
-interface JOINGameWithCheatDAO: DBDaoJoin<GameEntity, CheatEntity, UGameCheatEntity, POJOGameWithCheats> {
+interface JOINGameWithCheatsDAO: DBDaoJoin<GameEntity, CheatEntity, UGameCheatEntity, POJOGameWithCheats> {
 
     @Transaction
     @Query("SELECT * FROM games")
