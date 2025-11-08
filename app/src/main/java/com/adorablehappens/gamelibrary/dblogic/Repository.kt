@@ -68,11 +68,15 @@ object Repository {
     private lateinit var db: DB
     private lateinit var coroutineScope: CoroutineScope
 
-    private lateinit var daoAuthorRepo: DAOAuthor
-    val behAuthorRepo: BEHAuthor = BEHAuthor
+//    private lateinit var daoAuthorRepo: DAOAuthor
+//    val behAuthorRepo: BEHAuthor = BEHAuthor
+    private val daoAuthorRepo: DAOAuthor by lazy { db.createAuthorDAO() }
+    val behAuthorRepo: BEHAuthor by lazy { BEHAuthor.apply { setDAO(daoAuthorRepo) } }
 
-    private lateinit var daoCheatRepo: DAOCheat
-    val behCheatRepo: DBDaoBehaviour<CheatEntity> = BEHCheat
+//    private lateinit var daoCheatRepo: DAOCheat
+//    val behCheatRepo: DBDaoBehaviour<CheatEntity> = BEHCheat
+    private val daoCheatRepo: DAOCheat by lazy { db.createCheatDAO() }
+    val behCheatRepo: BEHCheat by lazy { BEHCheat.apply { setDAO(daoCheatRepo) } }
 
     private val daoCountryRepo: DAOCountry by lazy { db.createDAOCountry() }
     val behCountryRepo: BEHCountry by lazy { BEHCountry.apply { setDAO(daoCountryRepo) } }
@@ -95,8 +99,11 @@ object Repository {
     private val daoLanguageRepo: DAOLanguage by lazy { db.createDAOLanguage() }
     val behLanguageRepo: BEHLanguage by lazy { BEHLanguage.apply { setDAO(daoLanguageRepo) } }
 
-    private lateinit var daoTagRepo: DAOTag
-    val behTagRepo: BEHTag = BEHTag
+//    private lateinit var daoTagRepo: DAOTag
+//    val behTagRepo: BEHTag = BEHTag
+    private val daoTagRepo: DAOTag by lazy { db.createDAOTag() }
+    val behTagRepo: BEHTag by lazy { BEHTag.apply { setDAO(daoTagRepo) } }
+
 
     private val daoWalkthroughRepo: DAOWalkthrough by lazy { db.createDAOWalkthrough() }
     val behWalkthroughRepo: BEHWalkthrough by lazy { BEHWalkthrough.apply { setDAO(daoWalkthroughRepo) } }
@@ -108,8 +115,10 @@ object Repository {
     private val daoJOINCheatWithAuthorsRepo: JOINCheatWithAuthorsDAO by lazy { db.createJOINCheatWithAuthorsDAO() }
     val behJOINCheatWithAuthorsRepo: JOINCheatWithAuthorsBEH by lazy { JOINCheatWithAuthorsBEH.apply { this.obj.setDAO(daoJOINCheatWithAuthorsRepo) } }
 
-    private lateinit var daoJOINGameWithCheatRepo: JOINGameWithCheatsDAO
-    val behJOINGameWithCheatRepo: JOINGameWithCheatsBEH = JOINGameWithCheatsBEH
+//    private lateinit var daoJOINGameWithCheatRepo: JOINGameWithCheatsDAO
+//    val behJOINGameWithCheatRepo: JOINGameWithCheatsBEH = JOINGameWithCheatsBEH
+    private val daoJOINGameWithCheatRepo: JOINGameWithCheatsDAO by lazy { db.createJOINGameWithCheatsDAO() }
+    val behJOINGameWithCheatRepo: JOINGameWithCheatsBEH by lazy { JOINGameWithCheatsBEH.apply { this.obj.setDAO(daoJOINGameWithCheatRepo) } }
 
     private val daoJOINGameWithDevsRepo: JOINGameWithDevsDAO by lazy { db.createJOINGameWithDevsDAO() }
     val behJOINGameWithDevsRepo: JOINGameWithDevsBEH by lazy { JOINGameWithDevsBEH.apply { this.obj.setDAO(daoJOINGameWithDevsRepo) } }
@@ -120,8 +129,10 @@ object Repository {
     private val daoJOINGameWithGenresRepo: JOINGameWithGenresDAO by lazy { db.createJOINGameWithGenresDAO() }
     val behJOINGameWithGenresRepo: JOINGameWithGenresBEH by lazy { JOINGameWithGenresBEH.apply { this.obj.setDAO(daoJOINGameWithGenresRepo) } }
 
-    private lateinit var daoJOINGameWithTagsRepo: JOINGameWithTagsDAO
-    val behJOINGameWithTagsRepo: JOINGameWithTagsBEH = JOINGameWithTagsBEH
+//    private lateinit var daoJOINGameWithTagsRepo: JOINGameWithTagsDAO
+//    val behJOINGameWithTagsRepo: JOINGameWithTagsBEH = JOINGameWithTagsBEH
+    private val daoJOINGameWithTagsRepo: JOINGameWithTagsDAO by lazy { db.createJOINGameWithTagsDAO() }
+    val behJOINGameWithTagsRepo: JOINGameWithTagsBEH by lazy { JOINGameWithTagsBEH.apply { this.obj.setDAO(daoJOINGameWithTagsRepo) } }
 
     private val daoJOINGameWithWalkthroughRepo: JOINGameWithWalkthroughDAO by lazy { db.createJOINGameWithWalkthroughDAO() }
     val behJOINGameWithWalkthroughesRepo: JOINGameWithWalkthroughesBEH by lazy { JOINGameWithWalkthroughesBEH.apply { this.obj.setDAO(daoJOINGameWithWalkthroughRepo) } }
@@ -133,7 +144,13 @@ object Repository {
 //    private lateinit var oneGameFullInfoDAORepo: DBDaoOneFullInfo
 //    val oneGameFullInfoBehaviourRepo: OneGameFullInfoBehaviour = OneGameFullInfoBehaviour
 
-    lateinit var gameEntities: LiveData<List<GameEntity>>
+    var gameEntities: LiveData<List<GameEntity>>
+        get() = behGameRepo.getAll()
+        set(value) {value}
+    val gameEntitiesFunc: ()->LiveData<List<GameEntity>> = {
+        behGameRepo.getAll()
+    }
+    val gameEntitiesLazy: LiveData<List<GameEntity>> by lazy { behGameRepo.getAll() }
     lateinit var gameEntityCurrent: LiveData<GameEntity>
     var gameEntityCurrentID: Long = 0
     lateinit var cheatEntitiesCurrent: LiveData<POJOGameWithCheats>
@@ -166,23 +183,23 @@ object Repository {
         db = DB.getInstance(context)
         coroutineScope = scope
 
-        daoAuthorRepo = db.createAuthorDAO()
-        behAuthorRepo.setDAO(daoAuthorRepo)
-
-        daoCheatRepo = db.createCheatDAO()
-        behCheatRepo.setDAO(daoCheatRepo)
+//        daoAuthorRepo = db.createAuthorDAO()
+//        behAuthorRepo.setDAO(daoAuthorRepo)
+//
+//        daoCheatRepo = db.createCheatDAO()
+//        behCheatRepo.setDAO(daoCheatRepo)
 
 //        daoGameRepo = db.createDAOGame()
 //        behGameRepo.setDAO(daoGameRepo)
 
-        daoTagRepo = db.createDAOTag()
-        behTagRepo.setDAO(daoTagRepo)
+//        daoTagRepo = db.createDAOTag()
+//        behTagRepo.setDAO(daoTagRepo)
 
-        daoJOINGameWithTagsRepo = db.createJOINGameWithTagsDAO()
-        behJOINGameWithTagsRepo.obj.setDAO(daoJOINGameWithTagsRepo)
-
-        daoJOINGameWithCheatRepo = db.createJOINGameWithCheatsDAO()
-        behJOINGameWithCheatRepo.obj.setDAO(daoJOINGameWithCheatRepo)
+//        daoJOINGameWithTagsRepo = db.createJOINGameWithTagsDAO()
+//        behJOINGameWithTagsRepo.obj.setDAO(daoJOINGameWithTagsRepo)
+//
+//        daoJOINGameWithCheatRepo = db.createJOINGameWithCheatsDAO()
+//        behJOINGameWithCheatRepo.obj.setDAO(daoJOINGameWithCheatRepo)
 //        oneGameFullInfoDAORepo = db.createOneGameFullInfoDAO()
 //        oneGameFullInfoBehaviourRepo.setDAO(oneGameFullInfoDAORepo)
 
