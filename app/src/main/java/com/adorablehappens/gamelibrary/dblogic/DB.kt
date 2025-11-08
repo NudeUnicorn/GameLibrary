@@ -15,8 +15,14 @@ import com.adorablehappens.gamelibrary.dblogic.dao.DAOLanguage
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOTag
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOWalkthrough
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOWalkthroughImage
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINCheatWithAuthorsDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatsDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithDevsDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithEnginesDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithGenresDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithTagsDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithWalkthroughDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINWalkthroughWithImagesDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CountryEntity
@@ -67,18 +73,24 @@ abstract class DB: RoomDatabase() {
 
     abstract fun createAuthorDAO(): DAOAuthor
     abstract fun createCheatDAO(): DAOCheat
-    abstract fun createGameDAO(): DAOGame
-    abstract fun createDAOTag(): DAOTag
-    abstract fun createDAOGenre(): DAOGenre
     abstract fun createDAOCountry(): DAOCountry
     abstract fun createDAODev(): DAODev
+    abstract fun createDAOGame(): DAOGame
     abstract fun createDAOGameEngine(): DAOGameEngine
+    abstract fun createDAOGenre(): DAOGenre
     abstract fun createDAOLanguage(): DAOLanguage
+    abstract fun createDAOTag(): DAOTag
     abstract fun createDAOWalkthrough(): DAOWalkthrough
     abstract fun createDAOWalkthroughImage(): DAOWalkthroughImage
 
-    abstract fun createJOINGameWithCheatDAO(): JOINGameWithCheatsDAO
+    abstract fun createJOINCheatWithAuthorsDAO(): JOINCheatWithAuthorsDAO
+    abstract fun createJOINGameWithCheatsDAO(): JOINGameWithCheatsDAO
+    abstract fun createJOINGameWithDevsDAO(): JOINGameWithDevsDAO
+    abstract fun createJOINGameWithEnginesDAO(): JOINGameWithEnginesDAO
+    abstract fun createJOINGameWithGenresDAO(): JOINGameWithGenresDAO
     abstract fun createJOINGameWithTagsDAO(): JOINGameWithTagsDAO
+    abstract fun createJOINGameWithWalkthroughDAO(): JOINGameWithWalkthroughDAO
+    abstract fun createJOINWalkthroughWithImagesDAO(): JOINWalkthroughWithImagesDAO
 
     //abstract fun createOneGameFullInfoDAO(): DBDaoOneFullInfo
 

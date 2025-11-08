@@ -4,17 +4,43 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHAuthor
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHCheat
+import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHCountry
+import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHDev
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHGame
+import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHGameEngine
+import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHGenre
+import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHLanguage
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHTag
+import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHWalkthrough
+import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHWalkthroughImage
+import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINCheatWithAuthorsBEH
 import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithCheatsBEH
+import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithDevsBEH
+import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithEnginesBEH
+import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithGenresBEH
 import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithTagsBEH
+import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINGameWithWalkthroughesBEH
+import com.adorablehappens.gamelibrary.dblogic.behaviour.JOINWalkthroughWithImagesBEH
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOAuthor
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOCheat
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOCountry
+import com.adorablehappens.gamelibrary.dblogic.dao.DAODev
 import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoBehaviour
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOGame
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOGameEngine
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOGenre
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOLanguage
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOTag
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOWalkthrough
+import com.adorablehappens.gamelibrary.dblogic.dao.DAOWalkthroughImage
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINCheatWithAuthorsDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatsDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithDevsDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithEnginesDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithGenresDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithTagsDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithWalkthroughDAO
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINWalkthroughWithImagesDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEngineEntity
@@ -32,6 +58,7 @@ import com.adorablehappens.gamelibrary.dblogic.pojo.POJOWalkthroughWithImages
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlin.lazy
 
 /**
  * Хранит и управляет всеми данными на уровне приложения
@@ -43,16 +70,66 @@ object Repository {
 
     private lateinit var daoAuthorRepo: DAOAuthor
     val behAuthorRepo: BEHAuthor = BEHAuthor
+
     private lateinit var daoCheatRepo: DAOCheat
     val behCheatRepo: DBDaoBehaviour<CheatEntity> = BEHCheat
-    private lateinit var daoGameRepo: DAOGame
-    val behGameRepo: BEHGame = BEHGame
+
+    private val daoCountryRepo: DAOCountry by lazy { db.createDAOCountry() }
+    val behCountryRepo: BEHCountry by lazy { BEHCountry.apply { setDAO(daoCountryRepo) } }
+
+    private val daoDevRepo: DAODev by lazy { db.createDAODev() }
+    val behDevRepo: BEHDev by lazy { BEHDev.apply { setDAO(daoDevRepo) } }
+
+//    private lateinit var daoGameRepo: DAOGame
+//    val behGameRepo: BEHGame = BEHGame
+
+    private val daoGameRepo: DAOGame by lazy { db.createDAOGame() }
+    val behGameRepo: BEHGame by lazy { BEHGame.apply { setDAO(daoGameRepo) } }
+
+    private val daoGameEngineRepo: DAOGameEngine by lazy { db.createDAOGameEngine() }
+    val behGameEngineRepo: BEHGameEngine by lazy { BEHGameEngine.apply { setDAO(daoGameEngineRepo) } }
+
+    private val daoGenreRepo: DAOGenre by lazy { db.createDAOGenre() }
+    val behGenreRepo: BEHGenre by lazy { BEHGenre.apply { setDAO(daoGenreRepo) } }
+
+    private val daoLanguageRepo: DAOLanguage by lazy { db.createDAOLanguage() }
+    val behLanguageRepo: BEHLanguage by lazy { BEHLanguage.apply { setDAO(daoLanguageRepo) } }
+
     private lateinit var daoTagRepo: DAOTag
     val behTagRepo: BEHTag = BEHTag
-    private lateinit var joinGameWithTagsDAORepo: JOINGameWithTagsDAO
-    val joinGameWithTagsBEHRepo: JOINGameWithTagsBEH = JOINGameWithTagsBEH
-    private lateinit var joinGameWithCheatDAORepo: JOINGameWithCheatsDAO
-    val joinGameWithCheatBEHRepo: JOINGameWithCheatsBEH = JOINGameWithCheatsBEH
+
+    private val daoWalkthroughRepo: DAOWalkthrough by lazy { db.createDAOWalkthrough() }
+    val behWalkthroughRepo: BEHWalkthrough by lazy { BEHWalkthrough.apply { setDAO(daoWalkthroughRepo) } }
+
+    private val daoWalkthroughImageRepo: DAOWalkthroughImage by lazy { db.createDAOWalkthroughImage() }
+    val behWalkthroughImageRepo: BEHWalkthroughImage by lazy { BEHWalkthroughImage.apply { setDAO(daoWalkthroughImageRepo) } }
+
+
+    private val daoJOINCheatWithAuthorsRepo: JOINCheatWithAuthorsDAO by lazy { db.createJOINCheatWithAuthorsDAO() }
+    val behJOINCheatWithAuthorsRepo: JOINCheatWithAuthorsBEH by lazy { JOINCheatWithAuthorsBEH.apply { this.obj.setDAO(daoJOINCheatWithAuthorsRepo) } }
+
+    private lateinit var daoJOINGameWithCheatRepo: JOINGameWithCheatsDAO
+    val behJOINGameWithCheatRepo: JOINGameWithCheatsBEH = JOINGameWithCheatsBEH
+
+    private val daoJOINGameWithDevsRepo: JOINGameWithDevsDAO by lazy { db.createJOINGameWithDevsDAO() }
+    val behJOINGameWithDevsRepo: JOINGameWithDevsBEH by lazy { JOINGameWithDevsBEH.apply { this.obj.setDAO(daoJOINGameWithDevsRepo) } }
+
+    private val daoJOINGameWithEnginesRepo: JOINGameWithEnginesDAO by lazy { db.createJOINGameWithEnginesDAO() }
+    val behJOINGameWithEnginesRepo: JOINGameWithEnginesBEH by lazy { JOINGameWithEnginesBEH.apply { this.obj.setDAO(daoJOINGameWithEnginesRepo) } }
+
+    private val daoJOINGameWithGenresRepo: JOINGameWithGenresDAO by lazy { db.createJOINGameWithGenresDAO() }
+    val behJOINGameWithGenresRepo: JOINGameWithGenresBEH by lazy { JOINGameWithGenresBEH.apply { this.obj.setDAO(daoJOINGameWithGenresRepo) } }
+
+    private lateinit var daoJOINGameWithTagsRepo: JOINGameWithTagsDAO
+    val behJOINGameWithTagsRepo: JOINGameWithTagsBEH = JOINGameWithTagsBEH
+
+    private val daoJOINGameWithWalkthroughRepo: JOINGameWithWalkthroughDAO by lazy { db.createJOINGameWithWalkthroughDAO() }
+    val behJOINGameWithWalkthroughesRepo: JOINGameWithWalkthroughesBEH by lazy { JOINGameWithWalkthroughesBEH.apply { this.obj.setDAO(daoJOINGameWithWalkthroughRepo) } }
+
+    private val daoJOINWalkthroughWithImagesRepo: JOINWalkthroughWithImagesDAO by lazy { db.createJOINWalkthroughWithImagesDAO() }
+    val behJOINWalkthroughWithImagesRepo: JOINWalkthroughWithImagesBEH by lazy { JOINWalkthroughWithImagesBEH.apply { this.obj.setDAO(daoJOINWalkthroughWithImagesRepo) } }
+
+
 //    private lateinit var oneGameFullInfoDAORepo: DBDaoOneFullInfo
 //    val oneGameFullInfoBehaviourRepo: OneGameFullInfoBehaviour = OneGameFullInfoBehaviour
 
@@ -95,17 +172,17 @@ object Repository {
         daoCheatRepo = db.createCheatDAO()
         behCheatRepo.setDAO(daoCheatRepo)
 
-        daoGameRepo = db.createGameDAO()
-        behGameRepo.setDAO(daoGameRepo)
+//        daoGameRepo = db.createDAOGame()
+//        behGameRepo.setDAO(daoGameRepo)
 
         daoTagRepo = db.createDAOTag()
         behTagRepo.setDAO(daoTagRepo)
 
-        joinGameWithTagsDAORepo = db.createJOINGameWithTagsDAO()
-        joinGameWithTagsBEHRepo.obj.setDAO(joinGameWithTagsDAORepo)
+        daoJOINGameWithTagsRepo = db.createJOINGameWithTagsDAO()
+        behJOINGameWithTagsRepo.obj.setDAO(daoJOINGameWithTagsRepo)
 
-        joinGameWithCheatDAORepo = db.createJOINGameWithCheatDAO()
-        joinGameWithCheatBEHRepo.obj.setDAO(joinGameWithCheatDAORepo)
+        daoJOINGameWithCheatRepo = db.createJOINGameWithCheatsDAO()
+        behJOINGameWithCheatRepo.obj.setDAO(daoJOINGameWithCheatRepo)
 //        oneGameFullInfoDAORepo = db.createOneGameFullInfoDAO()
 //        oneGameFullInfoBehaviourRepo.setDAO(oneGameFullInfoDAORepo)
 
@@ -160,7 +237,7 @@ object Repository {
         }
         fun getAllCheats(id: Long){
             try {
-                cheatEntitiesCurrent = joinGameWithCheatBEHRepo.obj.getOneLinkedEntity(id)
+                cheatEntitiesCurrent = behJOINGameWithCheatRepo.obj.getOneLinkedEntity(id)
             }
             catch (e: Exception){
                 print(e)
@@ -214,7 +291,7 @@ object Repository {
             try {
                 when(id){
                     null -> tagEntitiesAll = behTagRepo.getAll()
-                    else -> tagEntitiesCurrent = joinGameWithTagsBEHRepo.obj.getOneLinkedEntity(id)
+                    else -> tagEntitiesCurrent = behJOINGameWithTagsRepo.obj.getOneLinkedEntity(id)
                 }
 
             }
