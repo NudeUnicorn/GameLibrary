@@ -206,12 +206,6 @@ object Repository {
 
     }
 
-    fun getCheatBehaviour(): DBDaoBehaviour<CheatEntity> {
-        Repository.Constants.AuthorConstants.AuthorQueries.Quer.q.query
-
-        return behCheatRepo
-    }
-
     /**
      * Принимает функцию и выполняет её в фоновом потоке корутины
      */
