@@ -6,11 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -45,21 +50,25 @@ class MainActivity : ComponentActivity() {
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
-                    Column () {
-                        Box (Modifier.weight(1f)) {
+                    Column() {
+                        Column(
+                            Modifier
+                                .verticalScroll(
+                                    state = rememberScrollState()
+                                )
+                                .weight(1f)
+                        ) {
+                            FrameRounded(Modifier.height(200.dp)) { Text("Hello!") }
 
-                            Column() {
-
-                                FrameRounded(Modifier.height(200.dp)){Text("Hello!")}
-
-                                FrameRounded(){
-                                    GameNewFields()
-
-                                }
+                            FrameRounded(Modifier) {
+                                GameNewFields()
                             }
                         }
-
-                        FrameRounded(Modifier.height(80.dp)){Text("Hello!")}
+                        FrameRounded(
+                            Modifier
+                                .padding(0.dp, 0.dp, 0.dp, 20.dp)
+                                .height(80.dp)
+                        ) { Text("Hello!") }
                     }
                 }
             }
@@ -82,29 +91,26 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun GreetingPreview() {
     GameLibraryTheme {
         Greeting("Android")
-//        Column () {
-//            FrameRounded(Modifier.height(200.dp)){Text("Hello!")}
-//            FrameRounded(Modifier.weight(1f)){
-//                GameNewFields()
-//            }
-//            FrameRounded(Modifier.height(80.dp)){Text("Hello!")}
-//        }
 
-        Column () {
-            Box (Modifier.weight(1f)) {
+        Column() {
+            Column(
+                Modifier
+                    .verticalScroll(
+                        state = rememberScrollState()
+                    )
+                    .weight(1f)
+            ) {
+                FrameRounded(Modifier.height(200.dp)) { Text("Hello!") }
 
-                Column {
-
-                    FrameRounded(Modifier.height(200.dp)){Text("Hello!")}
-
-                    FrameRounded(){
-                        GameNewFields()
-
-                    }
+                FrameRounded(Modifier) {
+                    GameNewFields()
                 }
             }
-
-            FrameRounded(Modifier.height(80.dp)){Text("Hello!")}
+            FrameRounded(
+                Modifier
+                    .padding(0.dp, 0.dp, 0.dp, 20.dp)
+                    .height(80.dp)
+            ) { Text("Hello!") }
         }
 
 
@@ -114,11 +120,12 @@ fun GreetingPreview() {
 @Composable
 fun FrameRounded(modifier: Modifier = Modifier, content: @Composable (() -> Unit) = {}) {
     val mod: Modifier = modifier.then(
-        Modifier.fillMaxWidth()
-            .padding(20.dp,20.dp,20.dp)
+        Modifier
+            .fillMaxWidth()
+            .padding(20.dp, 20.dp, 20.dp)
             //.height(200.dp)
             .clip(shape = RoundedCornerShape(20.dp))
-            .border(2.dp,Color.Black, shape = RoundedCornerShape(20.dp))
+            .border(2.dp, Color.Black, shape = RoundedCornerShape(20.dp))
             .background(Color.LightGray)
     )
     Box(modifier = mod){
@@ -129,7 +136,8 @@ fun FrameRounded(modifier: Modifier = Modifier, content: @Composable (() -> Unit
 @Composable
 fun FrameRect(modifier: Modifier = Modifier, content: @Composable (() -> Unit) = {}) {
     val mod: Modifier = modifier.then(
-        Modifier.fillMaxWidth()
+        Modifier
+            .fillMaxWidth()
             .padding(20.dp, 20.dp, 20.dp, 20.dp)
 
             //.clip(shape = RoundedCornerShape(20.dp))
@@ -145,15 +153,16 @@ fun FrameRect(modifier: Modifier = Modifier, content: @Composable (() -> Unit) =
 @Composable
 fun GameNewFields(modifier: Modifier = Modifier) {
     val mod: Modifier = modifier.then(
-        Modifier.fillMaxWidth()
+        Modifier
+            .fillMaxWidth()
             .padding(10.dp)
     )
     val textFieldColors: TextFieldColors = TextFieldDefaults.colors(
         unfocusedContainerColor = Color.Transparent,
         focusedContainerColor = Color.Transparent
     )
-    LazyColumn(mod) {
-        item {
+    Column(mod) {
+
             TextField(
                 state = rememberTextFieldState(),
                 modifier = Modifier.fillMaxWidth(),
@@ -165,8 +174,8 @@ fun GameNewFields(modifier: Modifier = Modifier) {
             Spacer(
                 modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
             )
-        }
-        item {
+
+
             TextField(
                 state = rememberTextFieldState(),
                 modifier = Modifier.fillMaxWidth(),
@@ -176,8 +185,8 @@ fun GameNewFields(modifier: Modifier = Modifier) {
             Spacer(
                 modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
             )
-        }
-        item {
+
+
             TextField(
                 state = rememberTextFieldState(),
                 modifier = Modifier.fillMaxWidth(),
@@ -187,8 +196,8 @@ fun GameNewFields(modifier: Modifier = Modifier) {
             Spacer(
                 modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
             )
-        }
-        item {
+
+
             TextField(
                 state = rememberTextFieldState(),
                 modifier = Modifier.fillMaxWidth(),
@@ -198,8 +207,8 @@ fun GameNewFields(modifier: Modifier = Modifier) {
             Spacer(
                 modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
             )
-        }
-        item {
+
+
             TextField(
                 state = rememberTextFieldState(),
                 modifier = Modifier.fillMaxWidth(),
@@ -209,6 +218,65 @@ fun GameNewFields(modifier: Modifier = Modifier) {
             Spacer(
                 modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
             )
-        }
+
     }
+//    LazyColumn(mod) {
+//        item {
+//            TextField(
+//                state = rememberTextFieldState(),
+//                modifier = Modifier.fillMaxWidth(),
+//                label = {Text("🎮 Game title")},
+//                placeholder = {Text("What is the title of a game?")},
+//                //supportingText = {Text("Supporting text")}
+//                colors = textFieldColors
+//            )
+//            Spacer(
+//                modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
+//            )
+//        }
+//        item {
+//            TextField(
+//                state = rememberTextFieldState(),
+//                modifier = Modifier.fillMaxWidth(),
+//                label = {Text("🎮 Game subtitle")},
+//                placeholder = {Text("Maybe game has a subtitle or slogan? Write it!")}
+//            )
+//            Spacer(
+//                modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
+//            )
+//        }
+//        item {
+//            TextField(
+//                state = rememberTextFieldState(),
+//                modifier = Modifier.fillMaxWidth(),
+//                label = {Text("📝 World story short")},
+//                placeholder = {Text("Write a short world game story")}
+//            )
+//            Spacer(
+//                modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
+//            )
+//        }
+//        item {
+//            TextField(
+//                state = rememberTextFieldState(),
+//                modifier = Modifier.fillMaxWidth(),
+//                label = {Text("📝 Description")},
+//                placeholder = {Text("Just a field for short game description")}
+//            )
+//            Spacer(
+//                modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
+//            )
+//        }
+//        item {
+//            TextField(
+//                state = rememberTextFieldState(),
+//                modifier = Modifier.fillMaxWidth(),
+//                label = {Text("🗒️ Comment")},
+//                placeholder = {Text("It would be like a label")}
+//            )
+//            Spacer(
+//                modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
+//            )
+//        }
+//    }
 }
