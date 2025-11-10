@@ -20,13 +20,15 @@ data class GameEntity(
     var image: String = "",
     @ColumnInfo(name = "image_icon")   //изображение-иконка, если не задано используется часть главного
     var imageIcon: String = "",
+    @ColumnInfo(name = "favorite")   //добавляет в избранное
+    var favorite: Boolean = false,
 //    @ColumnInfo(name = "devs")
 //    var devs: String = "",
 //    @ColumnInfo(name = "devs_site")
 //    var devsSite: String = "",
     //стоимость игры
-//    @ColumnInfo(name = "price")
-//    var price: Int = "",
+    @ColumnInfo(name = "price")
+    var price: Int = 0,
     //валюта стоимости игры
 //    @ColumnInfo(name = "price_currency")
 //    var currency: Long = "",
