@@ -4,12 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -30,6 +33,9 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Shuffle
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,6 +43,11 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -169,6 +180,7 @@ fun BottomMenu(
         Modifier
             .fillMaxSize()
     )
+    var dropdownMenuExpanded = remember { mutableStateOf(false) }
 
     Box(mod,
         Alignment.BottomCenter){
@@ -190,7 +202,13 @@ fun BottomMenu(
                     BottomMenuBtn(btnIcon = Icons.Filled.Favorite, btnDescription = "Избранное", btnIconTint = Color.Red)
                     BottomMenuBtn(btnIcon = Icons.Filled.Shuffle, btnDescription = "Случайный список")
                     BottomMenuBtn(btnIcon = Icons.Filled.CurrencyRuble, btnDescription = "Стоимость всего")
-                    BottomMenuBtn(btnIcon = Icons.Filled.Menu, btnDescription = "Меню")
+                    BottomMenuBtn(btnIcon = Icons.Filled.Menu, btnDescription = "Меню",
+                        btnOnClick = {dropdownMenuExpanded.value = true},
+                        ) {BottomDropdownMenu(Modifier, expanded = dropdownMenuExpanded)}
+                }
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomEnd){
+
+
                 }
             }
         }
@@ -219,18 +237,54 @@ fun BottomMenuBtn(
     )
 
     Box(
-        modBox.clickable(onClick = {
-            btnOnClick()
-        }),
+        modBox
+            .clickable(onClick = {
+                btnOnClick()
+            }),
         contentAlignment = Alignment.Center
+
     ) {
         Icon(
             modifier = Modifier.fillMaxSize(0.6f),
             imageVector = btnIcon, contentDescription = btnDescription,
             tint = btnIconTint
         )
+        content()
     }
 
+}
+
+@Composable
+fun BottomDropdownMenu(
+    modifier: Modifier = Modifier,
+    expanded: MutableState<Boolean> = remember { mutableStateOf(false) },
+    content: @Composable (() -> Unit) = {}
+) {
+
+    DropdownMenu(
+        expanded = expanded.value,
+        onDismissRequest = {expanded.value = false}
+    ) {
+        DropdownMenuItem(
+            text = {Text("Первый пункт")},
+            onClick = {
+                expanded.value = false
+            }
+        )
+        DropdownMenuItem(
+            text = {Text("Второй пункт")},
+            onClick = {
+                expanded.value = false
+            }
+        )
+        HorizontalDivider()
+        DropdownMenuItem(
+            text = {Text("Настройки")},
+            onClick = {
+                expanded.value = false
+            }
+        )
+    }
 }
 
 @Composable
@@ -302,6 +356,17 @@ fun GameNewFields(
             modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
         )
 
+        FrameRounded {
+            FlowRow(Modifier.fillMaxWidth(), maxItemsInEachRow = 4){
+                (1..8).forEach { it ->
+                    ToggleableButton(text = it.toString())
+                }
+            }
+        }
+        Spacer(
+            modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
+        )
+
         TextField(
             state = rememberTextFieldState(),
             modifier = Modifier.fillMaxWidth(),
@@ -314,4 +379,40 @@ fun GameNewFields(
         )
 
     }
+}
+
+@Composable
+fun ToggleableButton(
+    modifier: Modifier = Modifier,
+    text: String = "",
+    backgrnd: Color = Color.LightGray,
+    backgrndTggl: Color = Color.DarkGray,
+
+) {
+    var btnState by remember { mutableStateOf(false) }
+    val mod: Modifier = modifier.then(
+        Modifier
+            //.fillMaxWidth()
+            .clip(shape = RoundedCornerShape(20.dp))
+            .border(1.dp, Color.Gray, shape = RoundedCornerShape(20.dp))
+            .background(if (btnState) backgrndTggl else backgrnd)
+            .toggleable(
+                value = false,
+                interactionSource = null,
+                indication = LocalIndication.current,
+                enabled = true,
+                role = null,
+                onValueChange = {value->
+                    btnState = !btnState
+                }
+            )
+            .padding(10.dp)
+
+    )
+
+    Text(text = "tag $text",
+        modifier = mod
+
+    )
+
 }
