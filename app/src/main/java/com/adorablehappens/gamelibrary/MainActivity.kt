@@ -32,9 +32,11 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.adorablehappens.gamelibrary.ui.theme.GameLibraryTheme
@@ -60,15 +62,23 @@ class MainActivity : ComponentActivity() {
                         ) {
                             FrameRounded(Modifier.height(200.dp)) { Text("Hello!") }
 
-                            FrameRounded(Modifier) {
+                            FrameRounded(Modifier
+                                .padding(bottom = 100.dp)) {
                                 GameNewFields()
                             }
                         }
-                        FrameRounded(
-                            Modifier
-                                .padding(0.dp, 0.dp, 0.dp, 20.dp)
-                                .height(80.dp)
-                        ) { Text("Hello!") }
+
+                    }
+                    Box(Modifier.fillMaxSize(),
+                        Alignment.BottomCenter){
+                        Box(Modifier) {
+                            FrameRounded(
+                                Modifier
+                                    .background(Color.Transparent)
+                                    .padding(0.dp, 0.dp, 0.dp, 20.dp)
+                                    .height(80.dp)
+                            ) { Text("Hello!") }
+                        }
                     }
                 }
             }
@@ -106,11 +116,18 @@ fun GreetingPreview() {
                     GameNewFields()
                 }
             }
-            FrameRounded(
-                Modifier
-                    .padding(0.dp, 0.dp, 0.dp, 20.dp)
-                    .height(80.dp)
-            ) { Text("Hello!") }
+
+        }
+        Box(Modifier.fillMaxSize(),
+            Alignment.BottomCenter){
+            Box(Modifier) {
+                FrameRounded(
+                    Modifier
+                        .background(Color.Transparent)
+                        .padding(0.dp, 0.dp, 0.dp, 20.dp)
+                        .height(80.dp)
+                ) { Text("Hello!") }
+            }
         }
 
 
@@ -122,6 +139,7 @@ fun FrameRounded(modifier: Modifier = Modifier, content: @Composable (() -> Unit
     val mod: Modifier = modifier.then(
         Modifier
             .fillMaxWidth()
+
             .padding(20.dp, 20.dp, 20.dp)
             //.height(200.dp)
             .clip(shape = RoundedCornerShape(20.dp))
@@ -164,7 +182,9 @@ fun GameNewFields(modifier: Modifier = Modifier) {
     Column(mod) {
 
             TextField(
-                state = rememberTextFieldState(),
+                state = rememberTextFieldState(
+                    initialText = stringResource(R.string.otw2_title)
+                ),
                 modifier = Modifier.fillMaxWidth(),
                 label = {Text("🎮 Game title")},
                 placeholder = {Text("What is the title of a game?")},
@@ -188,7 +208,7 @@ fun GameNewFields(modifier: Modifier = Modifier) {
 
 
             TextField(
-                state = rememberTextFieldState(),
+                state = rememberTextFieldState(initialText = stringResource(R.string.otw2_worldStory)),
                 modifier = Modifier.fillMaxWidth(),
                 label = {Text("📝 World story short")},
                 placeholder = {Text("Write a short world game story")}
@@ -220,63 +240,4 @@ fun GameNewFields(modifier: Modifier = Modifier) {
             )
 
     }
-//    LazyColumn(mod) {
-//        item {
-//            TextField(
-//                state = rememberTextFieldState(),
-//                modifier = Modifier.fillMaxWidth(),
-//                label = {Text("🎮 Game title")},
-//                placeholder = {Text("What is the title of a game?")},
-//                //supportingText = {Text("Supporting text")}
-//                colors = textFieldColors
-//            )
-//            Spacer(
-//                modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
-//            )
-//        }
-//        item {
-//            TextField(
-//                state = rememberTextFieldState(),
-//                modifier = Modifier.fillMaxWidth(),
-//                label = {Text("🎮 Game subtitle")},
-//                placeholder = {Text("Maybe game has a subtitle or slogan? Write it!")}
-//            )
-//            Spacer(
-//                modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
-//            )
-//        }
-//        item {
-//            TextField(
-//                state = rememberTextFieldState(),
-//                modifier = Modifier.fillMaxWidth(),
-//                label = {Text("📝 World story short")},
-//                placeholder = {Text("Write a short world game story")}
-//            )
-//            Spacer(
-//                modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
-//            )
-//        }
-//        item {
-//            TextField(
-//                state = rememberTextFieldState(),
-//                modifier = Modifier.fillMaxWidth(),
-//                label = {Text("📝 Description")},
-//                placeholder = {Text("Just a field for short game description")}
-//            )
-//            Spacer(
-//                modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
-//            )
-//        }
-//        item {
-//            TextField(
-//                state = rememberTextFieldState(),
-//                modifier = Modifier.fillMaxWidth(),
-//                label = {Text("🗒️ Comment")},
-//                placeholder = {Text("It would be like a label")}
-//            )
-//            Spacer(
-//                modifier = Modifier.padding(PaddingValues(0.dp,10.dp))
-//            )
-//        }
-//    }
 }
