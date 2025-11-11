@@ -2,6 +2,7 @@ package com.adorablehappens.gamelibrary
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
@@ -21,7 +22,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -42,6 +42,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -57,6 +58,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -66,75 +68,67 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.adorablehappens.gamelibrary.navigation.Routes
 import com.adorablehappens.gamelibrary.ui.theme.GameLibraryTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+//            statusBarStyle = SystemBarStyle.auto(
+//                lightScrim = Color.Black.copy(alpha = 0.1f).toArgb(),
+//                darkScrim = Color.White.copy(alpha = 0.1f).toArgb()
+//            ),
+//            navigationBarStyle = SystemBarStyle.auto(
+//                Color.Transparent.toArgb(),
+//                Color.Transparent.toArgb(),
+//            )
+        )
         setContent {
+            val navController = rememberNavController()
+
             GameLibraryTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize(),
+                    bottomBar = {
+                        NavigationBar(
+                            Modifier
+                                //.background(Color.Blue)
+                                //.padding(20.dp, 0.dp, 20.dp, 0.dp)
+                            ,
+                        ) {
+                            BottomMenu(navController = navController)
+                        }
+                    }
+                    ) { innerPadding ->
+
+
                     Greeting(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
-                    Column(Modifier
-                        .padding(innerPadding)
-                    ) {
-                        Column(
-                            Modifier
-                                .verticalScroll(
-                                    state = rememberScrollState()
-                                )
-                                .weight(1f)
-                                .padding(bottom = 80.dp)
-                        ) {
-                            FrameRounded(Modifier
-                                .height(200.dp)
-                                .padding(20.dp, 20.dp, 20.dp, 0.dp)
-                            ) {
-                                Text("Hello!")
-                                Image(
-                                    imageVector = Icons.Filled.Games,
-                                    contentDescription = "Select game splash image by clicking",
-                                    contentScale = ContentScale.Fit,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .clickable(onClick = {
 
-                                        })
-                                )
-                            }
-
-                            FrameRounded(Modifier
-                                .padding(20.dp, 20.dp, 20.dp, 0.dp),
-                            ) {
-                                GameNewFields()
-                            }
-
-                            Box(Modifier
-                                .padding(20.dp, 20.dp, 20.dp, 0.dp),
-                            ){
-                                Column {
-
-                                    Button(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            //.height(40.dp)
-                                        ,
-                                        onClick = {
-
-                                        }) {
-                                        Text(text = "Save game")
-                                    }
-                                }
-                            }
+                    NavHost(navController, Routes.CreateUpdateGame.route) {
+                        composable(Routes.Home.route) {
                         }
-
+                        composable(Routes.Favorites.route) {
+                        }
+                        composable(Routes.Randomise.route) {
+                        }
+                        composable(Routes.Stats.route) {
+                        }
+                        composable(Routes.Options.route) {
+                        }
+                        composable(Routes.CreateUpdateGame.route) {
+                            GameCreateUpdateSCREEN(innerPadding = innerPadding)
+                        }
                     }
 
-                    BottomMenu()
+
+                    //BottomMenu()
 
                 }
             }
@@ -158,26 +152,85 @@ fun GreetingPreview() {
     GameLibraryTheme {
         Greeting("Android")
 
-        Column() {
-            Column(
-                Modifier
-                    .verticalScroll(
-                        state = rememberScrollState()
-                    )
-                    .weight(1f)
-            ) {
-                FrameRounded(Modifier.height(200.dp)) { Text("Hello!") }
+        GameCreateUpdateSCREEN()
 
-                FrameRounded(Modifier) {
-                    GameNewFields()
-                }
-            }
-
-        }
-        BottomMenu()
+        BottomMenu(navController = rememberNavController())
 
 
     }
+}
+
+@Composable
+fun GameCreateUpdateSCREEN(
+    modifier: Modifier = Modifier,
+    innerPadding: PaddingValues = PaddingValues(0.dp),
+    content: @Composable (() -> Unit) = {}
+) {
+    val mod: Modifier = modifier.then(
+        Modifier
+            .fillMaxSize()
+    )
+    val createOrUpdate = remember { mutableStateOf(false) }
+
+    Column(Modifier
+        .padding(innerPadding)
+    ) {
+        Column(
+            Modifier
+                .verticalScroll(
+                    state = rememberScrollState()
+                )
+                .weight(1f)
+                .padding(bottom = 0.dp)
+        ) {
+            FrameRounded(Modifier
+                .height(200.dp)
+                .padding(20.dp, 20.dp, 20.dp, 0.dp)
+            ) {
+                Text("Hello!")
+                Image(
+                    imageVector = Icons.Filled.Games,
+                    contentDescription = "Select game splash image by clicking",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable(onClick = {
+
+                        })
+                )
+            }
+
+            FrameRounded(Modifier
+                .padding(20.dp, 20.dp, 20.dp, 0.dp),
+            ) {
+                GameNewFields()
+            }
+
+            Box(Modifier
+                .padding(20.dp, 20.dp, 20.dp, 0.dp),
+            ){
+                Column {
+
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                        //.height(40.dp)
+                        ,
+                        onClick = {
+
+                        }) {
+                        Text(text = "Save game")
+                    }
+
+                    SpacerVerticalFill()
+                }
+            }
+
+            content()
+        }
+
+    }
+
 }
 
 @Composable
@@ -220,46 +273,63 @@ fun FrameRect(modifier: Modifier = Modifier, content: @Composable (() -> Unit) =
 @Composable
 fun BottomMenu(
     modifier: Modifier = Modifier,
+    navController: NavController,
     content: @Composable (() -> Unit) = {}
 ) {
     val mod: Modifier = modifier.then(
         Modifier
             .fillMaxSize()
     )
-    var dropdownMenuExpanded = remember { mutableStateOf(false) }
+    val dropdownMenuExpanded = remember { mutableStateOf(false) }
 
-    Box(mod,
-        Alignment.BottomCenter){
-        Box(Modifier) {
-            FrameRounded(
-                Modifier
-                    .padding(20.dp, 20.dp, 20.dp, 20.dp),
-                backgrnd = Color.LightGray
+//    Box(mod,
+//        Alignment.BottomCenter){
+//        Box(Modifier) {
+//        }
+//    }
 
-            ) {
-                Row (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ){
-                    BottomMenuBtn(btnIcon = Icons.Filled.Home, btnDescription = "Главный экран")
-                    BottomMenuBtn(btnIcon = Icons.Filled.Favorite, btnDescription = "Избранное", btnIconTint = Color.Red)
-                    BottomMenuBtn(btnIcon = Icons.Filled.Shuffle, btnDescription = "Случайный список")
-                    BottomMenuBtn(btnIcon = Icons.Filled.CurrencyRuble, btnDescription = "Стоимость всего")
-                    BottomMenuBtn(btnIcon = Icons.Filled.Menu, btnDescription = "Меню",
-                        btnOnClick = {dropdownMenuExpanded.value = true},
-                        ) {BottomDropdownMenu(Modifier, expanded = dropdownMenuExpanded)}
-                }
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomEnd){
-
-
-                }
-            }
-        }
+//    FrameRounded(
+//        Modifier.padding(20.dp, 0.dp, 20.dp, 0.dp),
+//        backgrnd = Color.Transparent
+//
+//    ) {
+//    }
+    Row (
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp)
+            .padding(20.dp, 0.dp, 20.dp, 0.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ){
+        BottomMenuBtn(btnIcon = Icons.Filled.Home, btnDescription = "Главный экран",
+            btnOnClick = {
+                navController.navigate(Routes.Home.route)
+            })
+        BottomMenuBtn(btnIcon = Icons.Filled.Favorite, btnDescription = "Избранное",
+            btnIconTint = Color.Red,
+            btnOnClick = {
+                navController.navigate(Routes.Favorites.route)
+            })
+        BottomMenuBtn(btnIcon = Icons.Filled.Shuffle, btnDescription = "Случайный список",
+            btnOnClick = {
+                navController.navigate(Routes.Randomise.route)
+            })
+        BottomMenuBtn(btnIcon = Icons.Filled.CurrencyRuble, btnDescription = "Стоимость всего",
+            btnOnClick = {
+                navController.navigate(Routes.Stats.route)
+            })
+        BottomMenuBtn(btnIcon = Icons.Filled.Menu, btnDescription = "Меню",
+            btnOnClick = {
+                dropdownMenuExpanded.value = true
+                navController.navigate(Routes.CreateUpdateGame.route)
+                         },
+        ) {BottomDropdownMenu(Modifier, expanded = dropdownMenuExpanded)}
     }
+    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomEnd){
 
+
+    }
 }
 
 @Composable
@@ -349,7 +419,7 @@ fun GameNewFields(
     Column(mod) {
         H1Text(text = "About the game")
 
-        SpacerVertical1()
+        SpacerVerticalFill()
 
         TextField(
             state = rememberTextFieldState(
@@ -361,7 +431,7 @@ fun GameNewFields(
             //supportingText = {Text("Supporting text")}
             colors = textFieldColors
         )
-        SpacerVertical1()
+        SpacerVerticalFill()
 
         TextField(
             state = rememberTextFieldState(),
@@ -369,7 +439,7 @@ fun GameNewFields(
             label = { Text("🎮 Game subtitle") },
             placeholder = { Text("Maybe game has a subtitle or slogan? Write it!") }
         )
-        SpacerVertical1()
+        SpacerVerticalFill()
 
         TextField(
             state = rememberTextFieldState(initialText = stringResource(R.string.otw2_worldStory)),
@@ -377,7 +447,7 @@ fun GameNewFields(
             label = { Text("📝 World story short") },
             placeholder = { Text("Write a short world game story") }
         )
-        SpacerVertical1()
+        SpacerVerticalFill()
 
         TextField(
             state = rememberTextFieldState(),
@@ -385,7 +455,7 @@ fun GameNewFields(
             label = { Text("📝 Description") },
             placeholder = { Text("Just a field for short game description") }
         )
-        SpacerVertical1()
+        SpacerVerticalFill()
 
         TextField(
             state = rememberTextFieldState(),
@@ -393,7 +463,7 @@ fun GameNewFields(
             label = { Text("🗒️ Comment") },
             placeholder = { Text("It would be like a label") }
         )
-        SpacerVertical1()
+        SpacerVerticalFill()
 
         FrameRounded(Modifier.padding(0.dp)) {
             Column(Modifier.padding(10.dp)) {
@@ -405,13 +475,15 @@ fun GameNewFields(
 
                 FlowRow(Modifier.fillMaxWidth()){
                     (1..8).forEach { it ->
-                        ToggleableButton(text = "genre $it")
-                        SpacerHorizontal1()
+                        ToggleableButton(
+                            modifier = Modifier.padding(0.dp,0.dp,5.dp,5.dp),
+                            text = "genre $it"
+                        )
                     }
                 }
             }
         }
-        SpacerVertical1()
+        SpacerVerticalFill()
 
         FrameRounded(Modifier.padding(0.dp)) {
             Column(Modifier.padding(10.dp)) {
@@ -423,13 +495,15 @@ fun GameNewFields(
 
                 FlowRow(Modifier.fillMaxWidth()){
                     (1..8).forEach { it ->
-                        ToggleableButton(text = "tag $it")
-                        SpacerHorizontal1()
+                        ToggleableButton(
+                            modifier = Modifier.padding(0.dp,0.dp,5.dp,5.dp),
+                            text = "tag $it"
+                        )
                     }
                 }
             }
         }
-        SpacerVertical1()
+        SpacerVerticalFill()
 
         FrameRounded(Modifier.padding(0.dp)) {
             Column(Modifier.padding(10.dp)) {
@@ -441,13 +515,14 @@ fun GameNewFields(
 
                 FlowRow(Modifier.fillMaxWidth()){
                     (1..8).forEach { it ->
-                        ToggleableButton(text = "dev $it")
-                        SpacerHorizontal1()
+                        ToggleableButton(
+                            modifier = Modifier.padding(0.dp,0.dp,5.dp,5.dp),
+                            text = "dev $it")
                     }
                 }
             }
         }
-        SpacerVertical1()
+        SpacerVerticalFill()
 
         TextField(
             state = rememberTextFieldState(),
@@ -456,7 +531,7 @@ fun GameNewFields(
             placeholder = { Text("How much game cost?") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
-        SpacerVertical1()
+        SpacerVerticalFill()
 
     }
 }
@@ -473,8 +548,10 @@ fun ToggleableButton(
     val mod: Modifier = modifier.then(
         Modifier
             .clip(shape = RoundedCornerShape(20.dp))
-            .border(1.dp, Color.Gray, shape = RoundedCornerShape(20.dp))
-            .background(if (btnState) backgrndTggl else backgrnd)
+            .border(2.dp,
+                if (btnState) Color.Blue else Color.Gray,
+                shape = RoundedCornerShape(20.dp))
+            .background(backgrnd)
             .toggleable(
                 value = false,
                 interactionSource = null,
@@ -558,7 +635,7 @@ fun H3Text(
 }
 
 @Composable
-fun SpacerVertical1(
+fun SpacerVerticalFill(
     modifier: Modifier = Modifier,
     height: Int = 20
 ) {
@@ -572,7 +649,7 @@ fun SpacerVertical1(
 
 }
 @Composable
-fun SpacerHorizontal1(
+fun SpacerHorizontalFill(
     modifier: Modifier = Modifier,
     width: Int = 5
 ) {
