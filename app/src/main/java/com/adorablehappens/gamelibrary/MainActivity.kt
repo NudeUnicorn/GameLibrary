@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,7 +21,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,9 +33,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CurrencyRuble
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Games
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Shuffle
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -53,9 +58,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.adorablehappens.gamelibrary.ui.theme.GameLibraryTheme
 
@@ -70,19 +79,56 @@ class MainActivity : ComponentActivity() {
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
-                    Column(Modifier.padding(innerPadding)) {
+                    Column(Modifier
+                        .padding(innerPadding)
+                    ) {
                         Column(
                             Modifier
                                 .verticalScroll(
                                     state = rememberScrollState()
                                 )
                                 .weight(1f)
+                                .padding(bottom = 80.dp)
                         ) {
-                            FrameRounded(Modifier.height(200.dp)) { Text("Hello!") }
+                            FrameRounded(Modifier
+                                .height(200.dp)
+                                .padding(20.dp, 20.dp, 20.dp, 0.dp)
+                            ) {
+                                Text("Hello!")
+                                Image(
+                                    imageVector = Icons.Filled.Games,
+                                    contentDescription = "Select game splash image by clicking",
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clickable(onClick = {
+
+                                        })
+                                )
+                            }
 
                             FrameRounded(Modifier
-                                .padding(bottom = 100.dp)) {
+                                .padding(20.dp, 20.dp, 20.dp, 0.dp),
+                            ) {
                                 GameNewFields()
+                            }
+
+                            Box(Modifier
+                                .padding(20.dp, 20.dp, 20.dp, 0.dp),
+                            ){
+                                Column {
+
+                                    Button(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            //.height(40.dp)
+                                        ,
+                                        onClick = {
+
+                                        }) {
+                                        Text(text = "Save game")
+                                    }
+                                }
                             }
                         }
 
@@ -143,7 +189,7 @@ fun FrameRounded(
     val mod: Modifier = modifier.then(
         Modifier
             .fillMaxWidth()
-            .padding(20.dp, 20.dp, 20.dp)
+            //.padding(20.dp, 20.dp, 20.dp)
             //.height(200.dp)
             .clip(shape = RoundedCornerShape(20.dp))
             .border(1.dp, Color.Gray, shape = RoundedCornerShape(20.dp))
@@ -159,7 +205,7 @@ fun FrameRect(modifier: Modifier = Modifier, content: @Composable (() -> Unit) =
     val mod: Modifier = modifier.then(
         Modifier
             .fillMaxWidth()
-            .padding(20.dp, 20.dp, 20.dp, 20.dp)
+            //.padding(20.dp, 20.dp, 20.dp, 20.dp)
 
             //.clip(shape = RoundedCornerShape(20.dp))
             //.border(2.dp,Color.Black, shape = RoundedCornerShape(20.dp))
@@ -187,7 +233,7 @@ fun BottomMenu(
         Box(Modifier) {
             FrameRounded(
                 Modifier
-                    .padding(0.dp, 0.dp, 0.dp, 20.dp),
+                    .padding(20.dp, 20.dp, 20.dp, 20.dp),
                 backgrnd = Color.LightGray
 
             ) {
@@ -301,6 +347,9 @@ fun GameNewFields(
         focusedContainerColor = Color.Transparent
     )
     Column(mod) {
+        H1Text(text = "About the game")
+
+        SpacerVertical1()
 
         TextField(
             state = rememberTextFieldState(
@@ -312,9 +361,7 @@ fun GameNewFields(
             //supportingText = {Text("Supporting text")}
             colors = textFieldColors
         )
-        Spacer(
-            modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
-        )
+        SpacerVertical1()
 
         TextField(
             state = rememberTextFieldState(),
@@ -322,9 +369,7 @@ fun GameNewFields(
             label = { Text("🎮 Game subtitle") },
             placeholder = { Text("Maybe game has a subtitle or slogan? Write it!") }
         )
-        Spacer(
-            modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
-        )
+        SpacerVertical1()
 
         TextField(
             state = rememberTextFieldState(initialText = stringResource(R.string.otw2_worldStory)),
@@ -332,9 +377,7 @@ fun GameNewFields(
             label = { Text("📝 World story short") },
             placeholder = { Text("Write a short world game story") }
         )
-        Spacer(
-            modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
-        )
+        SpacerVertical1()
 
         TextField(
             state = rememberTextFieldState(),
@@ -342,9 +385,7 @@ fun GameNewFields(
             label = { Text("📝 Description") },
             placeholder = { Text("Just a field for short game description") }
         )
-        Spacer(
-            modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
-        )
+        SpacerVertical1()
 
         TextField(
             state = rememberTextFieldState(),
@@ -352,20 +393,61 @@ fun GameNewFields(
             label = { Text("🗒️ Comment") },
             placeholder = { Text("It would be like a label") }
         )
-        Spacer(
-            modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
-        )
+        SpacerVertical1()
 
-        FrameRounded {
-            FlowRow(Modifier.fillMaxWidth(), maxItemsInEachRow = 4){
-                (1..8).forEach { it ->
-                    ToggleableButton(text = it.toString())
+        FrameRounded(Modifier.padding(0.dp)) {
+            Column(Modifier.padding(10.dp)) {
+                H2Text(text = "Genres")
+
+                Spacer(
+                    modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
+                )
+
+                FlowRow(Modifier.fillMaxWidth()){
+                    (1..8).forEach { it ->
+                        ToggleableButton(text = "genre $it")
+                        SpacerHorizontal1()
+                    }
                 }
             }
         }
-        Spacer(
-            modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
-        )
+        SpacerVertical1()
+
+        FrameRounded(Modifier.padding(0.dp)) {
+            Column(Modifier.padding(10.dp)) {
+                H2Text(text = "Tags")
+
+                Spacer(
+                    modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
+                )
+
+                FlowRow(Modifier.fillMaxWidth()){
+                    (1..8).forEach { it ->
+                        ToggleableButton(text = "tag $it")
+                        SpacerHorizontal1()
+                    }
+                }
+            }
+        }
+        SpacerVertical1()
+
+        FrameRounded(Modifier.padding(0.dp)) {
+            Column(Modifier.padding(10.dp)) {
+                H2Text(text = "Devs")
+
+                Spacer(
+                    modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
+                )
+
+                FlowRow(Modifier.fillMaxWidth()){
+                    (1..8).forEach { it ->
+                        ToggleableButton(text = "dev $it")
+                        SpacerHorizontal1()
+                    }
+                }
+            }
+        }
+        SpacerVertical1()
 
         TextField(
             state = rememberTextFieldState(),
@@ -374,9 +456,7 @@ fun GameNewFields(
             placeholder = { Text("How much game cost?") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
-        Spacer(
-            modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
-        )
+        SpacerVertical1()
 
     }
 }
@@ -392,7 +472,6 @@ fun ToggleableButton(
     var btnState by remember { mutableStateOf(false) }
     val mod: Modifier = modifier.then(
         Modifier
-            //.fillMaxWidth()
             .clip(shape = RoundedCornerShape(20.dp))
             .border(1.dp, Color.Gray, shape = RoundedCornerShape(20.dp))
             .background(if (btnState) backgrndTggl else backgrnd)
@@ -406,13 +485,103 @@ fun ToggleableButton(
                     btnState = !btnState
                 }
             )
-            .padding(10.dp)
+            .padding(10.dp,5.dp)
 
     )
 
-    Text(text = "tag $text",
+    Text(text = text,
         modifier = mod
 
     )
+
+}
+
+@Composable
+fun H1Text(
+    modifier: Modifier = Modifier,
+    text: String = "",
+    fontSize: TextUnit = TextUnit(32f, TextUnitType.Sp),
+    fontWeight: FontWeight = FontWeight.W900,
+
+    ) {
+    val mod: Modifier = modifier.then(
+        Modifier
+            .fillMaxWidth()
+    )
+
+    Text(
+        text = text,
+        fontSize = fontSize,
+        fontWeight = fontWeight
+    )
+
+}
+
+@Composable
+fun H2Text(
+    modifier: Modifier = Modifier,
+    text: String = "",
+    fontSize: TextUnit = TextUnit(26f, TextUnitType.Sp),
+    fontWeight: FontWeight = FontWeight.W700,
+    ) {
+    val mod: Modifier = modifier.then(
+        Modifier
+            .fillMaxWidth()
+    )
+
+    Text(
+        text = text,
+        fontSize = fontSize,
+        fontWeight = fontWeight
+    )
+
+}
+
+@Composable
+fun H3Text(
+    modifier: Modifier = Modifier,
+    text: String = "",
+    fontSize: TextUnit = TextUnit(22f, TextUnitType.Sp),
+    fontWeight: FontWeight = FontWeight.W500,
+) {
+    val mod: Modifier = modifier.then(
+        Modifier
+            .fillMaxWidth()
+    )
+
+    Text(
+        text = text,
+        fontSize = fontSize,
+        fontWeight = fontWeight
+    )
+
+}
+
+@Composable
+fun SpacerVertical1(
+    modifier: Modifier = Modifier,
+    height: Int = 20
+) {
+    val mod: Modifier = modifier.then(
+        Modifier
+            .fillMaxWidth()
+            .height(height.dp)
+    )
+
+    Spacer(mod)
+
+}
+@Composable
+fun SpacerHorizontal1(
+    modifier: Modifier = Modifier,
+    width: Int = 5
+) {
+    val mod: Modifier = modifier.then(
+        Modifier
+            .fillMaxHeight()
+            .width(width.dp)
+    )
+
+    Spacer(mod)
 
 }
