@@ -6,7 +6,7 @@ object SCREENRandomise  : RoutesScreens(
     route = "Randomise",
 ) {
     @Composable
-    override fun Content() {
+    fun Content() {
         TODO("Not yet implemented")
     }
 

@@ -6,7 +6,7 @@ object SCREENFavorites  : RoutesScreens(
     route = "Favorites",
 ) {
     @Composable
-    override fun Content() {
+    fun Content() {
         TODO("Not yet implemented")
     }
 

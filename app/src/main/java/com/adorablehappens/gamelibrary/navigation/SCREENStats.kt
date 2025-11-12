@@ -6,7 +6,7 @@ object SCREENStats  : RoutesScreens(
     route = "Stats",
 ) {
     @Composable
-    override fun Content() {
+    fun Content() {
         TODO("Not yet implemented")
     }
 
