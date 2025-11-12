@@ -113,6 +113,7 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(navController, Routes.CreateUpdateGame.route) {
                         composable(Routes.Home.route) {
+                            Routes.Home.destination()
                         }
                         composable(Routes.Favorites.route) {
                         }
@@ -123,6 +124,7 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.Options.route) {
                         }
                         composable(Routes.CreateUpdateGame.route) {
+                            //Routes.CreateUpdateGame.destination()
                             GameCreateUpdateSCREEN(innerPadding = innerPadding)
                         }
                     }
