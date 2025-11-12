@@ -7,7 +7,6 @@ object SCREENHome  : RoutesScreens(
 ) {
     @Composable
     fun Content() {
-        TODO("Not yet implemented")
     }
 
 }

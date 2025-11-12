@@ -67,7 +67,7 @@ open class RoutesScreensFundamentals() {
 
     }
 
-    companion object {
+    object UI{
         @Composable
         fun FrameRounded(
             modifier: Modifier = Modifier,
@@ -243,139 +243,6 @@ open class RoutesScreensFundamentals() {
             }
         }
 
-        @Composable
-        fun GameNewFields(
-            modifier: Modifier = Modifier
-        ) {
-            val mod: Modifier = modifier.then(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-            )
-            val textFieldColors: TextFieldColors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent
-            )
-            Column(mod) {
-                H1Text(text = "About the game")
-
-                SpacerVerticalFill()
-
-                TextField(
-                    state = rememberTextFieldState(
-                        initialText = stringResource(R.string.otw2_title)
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("🎮 Game title") },
-                    placeholder = { Text("What is the title of a game?") },
-                    //supportingText = {Text("Supporting text")}
-                    colors = textFieldColors
-                )
-                SpacerVerticalFill()
-
-                TextField(
-                    state = rememberTextFieldState(),
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("🎮 Game subtitle") },
-                    placeholder = { Text("Maybe game has a subtitle or slogan? Write it!") }
-                )
-                SpacerVerticalFill()
-
-                TextField(
-                    state = rememberTextFieldState(initialText = stringResource(R.string.otw2_worldStory)),
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("📝 World story short") },
-                    placeholder = { Text("Write a short world game story") }
-                )
-                SpacerVerticalFill()
-
-                TextField(
-                    state = rememberTextFieldState(),
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("📝 Description") },
-                    placeholder = { Text("Just a field for short game description") }
-                )
-                SpacerVerticalFill()
-
-                TextField(
-                    state = rememberTextFieldState(),
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("🗒️ Comment") },
-                    placeholder = { Text("It would be like a label") }
-                )
-                SpacerVerticalFill()
-
-                FrameRounded(Modifier.padding(0.dp)) {
-                    Column(Modifier.padding(10.dp)) {
-                        H2Text(text = "Genres")
-
-                        Spacer(
-                            modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
-                        )
-
-                        FlowRow(Modifier.fillMaxWidth()) {
-                            (1..8).forEach { it ->
-                                ToggleableButton(
-                                    modifier = Modifier.padding(0.dp, 0.dp, 5.dp, 5.dp),
-                                    text = "genre $it"
-                                )
-                            }
-                        }
-                    }
-                }
-                SpacerVerticalFill()
-
-                FrameRounded(Modifier.padding(0.dp)) {
-                    Column(Modifier.padding(10.dp)) {
-                        H2Text(text = "Tags")
-
-                        Spacer(
-                            modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
-                        )
-
-                        FlowRow(Modifier.fillMaxWidth()) {
-                            (1..8).forEach { it ->
-                                ToggleableButton(
-                                    modifier = Modifier.padding(0.dp, 0.dp, 5.dp, 5.dp),
-                                    text = "tag $it"
-                                )
-                            }
-                        }
-                    }
-                }
-                SpacerVerticalFill()
-
-                FrameRounded(Modifier.padding(0.dp)) {
-                    Column(Modifier.padding(10.dp)) {
-                        H2Text(text = "Devs")
-
-                        Spacer(
-                            modifier = Modifier.padding(PaddingValues(0.dp, 10.dp))
-                        )
-
-                        FlowRow(Modifier.fillMaxWidth()) {
-                            (1..8).forEach { it ->
-                                ToggleableButton(
-                                    modifier = Modifier.padding(0.dp, 0.dp, 5.dp, 5.dp),
-                                    text = "dev $it"
-                                )
-                            }
-                        }
-                    }
-                }
-                SpacerVerticalFill()
-
-                TextField(
-                    state = rememberTextFieldState(),
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("️💵 Price") },
-                    placeholder = { Text("How much game cost?") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                )
-                SpacerVerticalFill()
-
-            }
-        }
 
         @Composable
         fun ToggleableButton(
@@ -507,6 +374,10 @@ open class RoutesScreensFundamentals() {
             Spacer(mod)
 
         }
+    }
+
+    companion object {
+
     }
 
 }

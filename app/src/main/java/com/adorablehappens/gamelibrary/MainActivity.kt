@@ -16,7 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.adorablehappens.gamelibrary.navigation.Routes
-import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.Companion.BottomMenu
+import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.BottomMenu
 import com.adorablehappens.gamelibrary.ui.theme.GameLibraryTheme
 
 class MainActivity : ComponentActivity() {
@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(navController, Routes.createUpdateGame.route) {
                         composable(Routes.home.route) {
-                            Routes.home
+                            Routes.home.Content()
                         }
                         composable(Routes.favorites.route) {
                         }
@@ -68,7 +68,9 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.options.route) {
                         }
                         composable(Routes.createUpdateGame.route) {
-                            Routes.createUpdateGame.Content()
+                            Routes.createUpdateGame.Content(
+                                innerPadding = innerPadding
+                            )
                         }
                     }
 
