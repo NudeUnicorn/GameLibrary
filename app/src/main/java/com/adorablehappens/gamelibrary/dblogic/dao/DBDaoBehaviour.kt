@@ -2,6 +2,7 @@ package com.adorablehappens.gamelibrary.dblogic.dao
 
 import androidx.lifecycle.LiveData
 import com.adorablehappens.gamelibrary.dblogic.Repository
+import kotlinx.coroutines.Dispatchers
 
 abstract class DBDaoBehaviour <T>: DBDao<T>{
     protected lateinit var entityDAO : DBDao<T> //здесь тип DAO-класса(например, ProjDAO), сгенерированный объектом базы данных
@@ -29,19 +30,19 @@ abstract class DBDaoBehaviour <T>: DBDao<T>{
     }
 
     override fun addNew(entity: T) {
-        Repository.execCoroutine {
+        Repository.execCoroutine(Dispatchers.IO) {
             entityDAO.addNew(entity)
         }
     }
 
     override fun update(entity: T) {
-        Repository.execCoroutine {
+        Repository.execCoroutine(Dispatchers.IO)  {
             entityDAO.update(entity)
         }
     }
 
     override fun deleteOne(entity: T) {
-        Repository.execCoroutine {
+        Repository.execCoroutine(Dispatchers.IO)  {
             entityDAO.deleteOne(entity)
         }
     }

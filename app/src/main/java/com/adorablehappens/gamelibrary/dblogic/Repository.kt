@@ -1,7 +1,11 @@
 package com.adorablehappens.gamelibrary.dblogic
 
 import android.content.Context
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.asFlow
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHAuthor
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHCheat
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHCountry
@@ -43,6 +47,7 @@ import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithWalkthroughDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINWalkthroughWithImagesDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.DevEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEngineEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GenreEntity
@@ -55,7 +60,9 @@ import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithGenres
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithTags
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithWalkthroughes
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOWalkthroughWithImages
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlin.lazy
@@ -151,6 +158,8 @@ object Repository {
         behGameRepo.getAll()
     }
     val gameEntitiesLazy: LiveData<List<GameEntity>> by lazy { behGameRepo.getAll() }
+
+    //Данные для одной выбранной сущности игры
     lateinit var gameEntityCurrent: LiveData<GameEntity>
     var gameEntityCurrentID: Long = 0
     lateinit var cheatEntitiesCurrent: LiveData<POJOGameWithCheats>
@@ -164,8 +173,10 @@ object Repository {
     lateinit var walkthroughEntitiesCurrent: LiveData<POJOGameWithWalkthroughes>
     lateinit var walkthroughImageEntitiesCurrent: LiveData<POJOWalkthroughWithImages>
 
+    //Все сущности опреденного типа
     lateinit var genreEntitiesAll: LiveData<List<GenreEntity>>
     lateinit var tagEntitiesAll: LiveData<List<TagEntity>>
+    lateinit var devEntitiesAll: LiveData<List<DevEntity>>
     lateinit var authorEntitiesAll: LiveData<List<AuthorEntity>>
     lateinit var gameEngineEntitiesAll: LiveData<List<GameEngineEntity>>
 //  lateinit var countryEntitiesAll: LiveData<List<CountryEntity>>
@@ -209,8 +220,8 @@ object Repository {
     /**
      * Принимает функцию и выполняет её в фоновом потоке корутины
      */
-    fun execCoroutine( func: suspend ()-> Unit){
-        coroutineScope.launch {
+    fun execCoroutine( coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main, func: suspend ()-> Unit){
+        coroutineScope.launch(coroutineDispatcher) {
             func()
         }
     }
@@ -222,7 +233,7 @@ object Repository {
         coroutineScope.cancel(coroutineCloseMsg)
     }
 
-    class Data(){
+    object Data{
         fun getAllGames(id: Long? = null){
             try {
                 when(id){
@@ -237,8 +248,8 @@ object Repository {
         fun getAllGenres(id: Long? = null){
             try {
                 when(id){
-                    null -> genreEntitiesAll
-                    else -> genreEntitiesCurrent
+                    null -> genreEntitiesAll = behGenreRepo.getAll()
+                    else -> genreEntitiesCurrent = behJOINGameWithGenresRepo.obj.getOneLinkedEntity(id)
                 }
 
             }
@@ -246,7 +257,7 @@ object Repository {
                 print(e)
             }
         }
-        fun getAllCheats(id: Long){
+        fun getAllCurrentCheats(id: Long){
             try {
                 cheatEntitiesCurrent = behJOINGameWithCheatRepo.obj.getOneLinkedEntity(id)
             }
@@ -254,9 +265,37 @@ object Repository {
                 print(e)
             }
         }
+
+        /**
+         * Возвращает все прохождения для конкретной игры
+         */
+        fun getAllCurrentWalkthroughes(id: Long){
+            try {
+                walkthroughEntitiesCurrent = behJOINGameWithWalkthroughesRepo.obj.getOneLinkedEntity(id)
+            }
+            catch (e: Exception){
+                print(e)
+            }
+        }
+
+        /**
+         * Возвращает все изображения для конкретного прохождения
+         */
+        fun getAllCurrentWalkthroughWithImages(id: Long){
+            try {
+                walkthroughImageEntitiesCurrent = behJOINWalkthroughWithImagesRepo.obj.getOneLinkedEntity(id)
+            }
+            catch (e: Exception){
+                print(e)
+            }
+        }
         fun getAllAuthors(id: Long? = null){
             try {
-                authorEntitiesAll = BEHAuthor.getAll()
+
+                when(id){
+                    null -> authorEntitiesAll = BEHAuthor.getAll()
+                    else -> authorEntitiesCurrent = behJOINCheatWithAuthorsRepo.obj.getOneLinkedEntity(id)
+                }
             }
             catch (e: Exception){
                 print(e)
@@ -277,8 +316,8 @@ object Repository {
         fun getAllDevs(id: Long? = null){
             try {
                 when(id){
-                    null -> devEntitiesCurrent
-                    else -> devEntitiesCurrent
+                    null -> devEntitiesAll = BEHDev.getAll()
+                    else -> devEntitiesCurrent = behJOINGameWithDevsRepo.obj.getOneLinkedEntity(id)
                 }
 
             }
@@ -298,6 +337,18 @@ object Repository {
                 print(e)
             }
         }
+        fun getAllGameEngines(id: Long? = null){
+            try {
+                when(id){
+                    null -> gameEngineEntitiesAll = BEHGameEngine.getAll()
+                    else -> gameEngineEntitiesCurrent = behJOINGameWithEnginesRepo.obj.getOneLinkedEntity(id)
+                }
+
+            }
+            catch (e: Exception){
+                print(e)
+            }
+        }
         fun getAllTags(id: Long? = null){
             try {
                 when(id){
@@ -309,6 +360,44 @@ object Repository {
             catch (e: Exception){
                 print(e)
             }
+        }
+
+        /**
+         * Получает все данные об одной сущности игры
+         */
+        fun getAllCurrentGameData(id: Long, lifecycleOwner: LifecycleOwner) {
+
+            gameEntityCurrentID = id
+
+            getAllGames(id)
+            getAllCurrentCheats(id)
+            getAllGameEngines(id)
+            getAllGenres(id)
+            getAllDevs(id)
+            getAllTags(id)
+            getAllCurrentWalkthroughes(id)
+
+
+            val allGamesState = gameEntities.toMutableStateList(lifecycleOwner)
+            val currentGameState = gameEntityCurrent.toMutableState(lifecycleOwner)
+            val currentCheatsState = cheatEntitiesCurrent.toMutableState(lifecycleOwner)
+            val currentTagsState = tagEntitiesCurrent.toMutableState(lifecycleOwner)
+            val currentDevsState = devEntitiesCurrent.toMutableState(lifecycleOwner)
+            val currentGenresState = genreEntitiesCurrent.toMutableState(lifecycleOwner)
+            val currentWalkthroughesState = walkthroughEntitiesCurrent.toMutableState(lifecycleOwner)
+
+        }
+
+        /**
+         * Получает все общие сущности
+         */
+        fun getAllData(){
+            getAllGames()
+            getAllGameEngines()
+            getAllGenres()
+            getAllDevs()
+            getAllTags()
+
         }
     }
 
@@ -331,6 +420,54 @@ object Repository {
     data class Query(
         val query: String
     )
+
+    /**
+     * Проверяет вхождение каждого элемента коллекции в общую коллекцию и возвращает карту элементов общей коллекции с булевой отметкой
+     */
+    fun <T>compareAllAndCurrent(all: List<T>?, current:List<T>?): MutableMap<T, Boolean>? {
+        var comparedMap: MutableMap<T, Boolean>? = mutableMapOf<T, Boolean>()
+
+        if (all != null && current != null){
+            if (all.isEmpty()){
+                comparedMap = null
+                return comparedMap
+            }
+            else{
+                all.forEach { it ->
+                    if (current.contains(it)){
+                        comparedMap?.put(it, true)
+                    }
+                }
+            }
+        }
+
+        return comparedMap
+    }
+
+    /**
+     * Приводит LiveData к MutableState
+     */
+    fun <T> LiveData<List<T>>.toMutableStateList(lifecycleOwner: LifecycleOwner): MutableState<List<T>> {
+        var stateData: MutableState<List<T>> = mutableStateOf(emptyList())
+        this.observe(lifecycleOwner){data->
+            if (data != null){
+                stateData = mutableStateOf(data)
+            }
+        }
+        return stateData
+    }
+    /**
+     * Приводит LiveData к MutableState
+     */
+    fun <T> LiveData<T>.toMutableState(lifecycleOwner: LifecycleOwner): MutableState<T> {
+        var stateData: MutableState<T>? = null
+        this.observe(lifecycleOwner){data->
+            if (data != null){
+                stateData = mutableStateOf(data)
+            }
+        }
+        return stateData!!
+    }
 
 
 }
