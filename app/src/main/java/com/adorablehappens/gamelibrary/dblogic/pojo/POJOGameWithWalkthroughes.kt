@@ -20,5 +20,5 @@ data class POJOGameWithWalkthroughes(
             entityColumn = JOINEntity.Companion.CHILDIDNAME
         )
     )
-    val cheats: List<WalkthroughEntity>
+    val walkthroughes: List<WalkthroughEntity>
 )

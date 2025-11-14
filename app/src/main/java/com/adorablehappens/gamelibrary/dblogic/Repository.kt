@@ -172,7 +172,13 @@ object Repository {
     lateinit var currentTagsState: MutableState<POJOGameWithTags>
     lateinit var currentDevsState: MutableState<POJOGameWithDevs>
     lateinit var currentGenresState: MutableState<POJOGameWithGenres>
+    lateinit var currentGameEngineState: MutableState<POJOGameWithEngines>
     lateinit var currentWalkthroughesState: MutableState<POJOGameWithWalkthroughes>
+
+    lateinit var currentTagsComparedState: MutableState<Map<TagEntity, Boolean>>
+    lateinit var currentDevsComparedState: MutableState<Map<DevEntity, Boolean>>
+    lateinit var currentGenresComparedState: MutableState<Map<GenreEntity, Boolean>>
+    lateinit var currentGameEngineComparedState: MutableState<Map<GameEngineEntity, Boolean>>
 
 
     //Все сущности опреденного типа
@@ -304,7 +310,7 @@ object Repository {
             try {
 
                 when(id){
-                    null -> allAuthorEntities = BEHAuthor.getAll()
+                    null -> allAuthorEntities = behAuthorRepo.getAll()
                     else -> authorEntitiesCurrent = behJOINCheatWithAuthorsRepo.obj.getOneLinkedEntity(id)
                 }
             }
@@ -327,7 +333,7 @@ object Repository {
         fun getAllDevs(id: Long? = null){
             try {
                 when(id){
-                    null -> allDevEntities = BEHDev.getAll()
+                    null -> allDevEntities = behDevRepo.getAll()
                     else -> devEntitiesCurrent = behJOINGameWithDevsRepo.obj.getOneLinkedEntity(id)
                 }
 
@@ -351,7 +357,7 @@ object Repository {
         fun getAllGameEngines(id: Long? = null){
             try {
                 when(id){
-                    null -> allGameEngineEntities = BEHGameEngine.getAll()
+                    null -> allGameEngineEntities = behGameEngineRepo.getAll()
                     else -> gameEngineEntitiesCurrent = behJOINGameWithEnginesRepo.obj.getOneLinkedEntity(id)
                 }
 
@@ -376,7 +382,7 @@ object Repository {
         /**
          * Получает все данные об одной сущности игры
          */
-        fun getAllCurrentGameData(id: Long, lifecycleOwner: LifecycleOwner) {
+        fun getAllCurrentGameData(id: Long, lifecycleOwner: LifecycleOwner, showOrUpdate: ActionType = ActionType.Show): AllGameCurrentData {
 
             gameEntityCurrentID = id
 
@@ -391,17 +397,35 @@ object Repository {
             currentGameState = gameEntityCurrent.toMutableState(lifecycleOwner)
             currentCheatsState = cheatEntitiesCurrent.toMutableState(lifecycleOwner)
             currentTagsState = tagEntitiesCurrent.toMutableState(lifecycleOwner)
-            val currentTagsComparedState = compareAllAndCurrent(allTagsState,mutableStateOf(currentTagsState.value.cheats))
             currentDevsState = devEntitiesCurrent.toMutableState(lifecycleOwner)
             currentGenresState = genreEntitiesCurrent.toMutableState(lifecycleOwner)
+            currentGameEngineState = gameEngineEntitiesCurrent.toMutableState(lifecycleOwner)
             currentWalkthroughesState = walkthroughEntitiesCurrent.toMutableState(lifecycleOwner)
+
+            when (showOrUpdate){
+                ActionType.Show -> {
+
+                }
+                ActionType.Create -> {
+
+                }
+                ActionType.Update -> {
+
+                    currentTagsComparedState = compareAllAndCurrent(allTagsState,mutableStateOf(currentTagsState.value.tags))
+                    currentDevsComparedState = compareAllAndCurrent(allDevsState,mutableStateOf(currentDevsState.value.devs))
+                    currentGenresComparedState = compareAllAndCurrent(allGenresState,mutableStateOf(currentGenresState.value.genres))
+                    currentGameEngineComparedState = compareAllAndCurrent(allGameEnginesState,mutableStateOf(currentGameEngineState.value.gameEngines))
+                }
+            }
+
+            return AllGameCurrentData
 
         }
 
         /**
          * Получает все общие сущности
          */
-        fun getAllData(lifecycleOwner: LifecycleOwner){
+        fun getAllData(lifecycleOwner: LifecycleOwner): AllGamesData {
             getAllGames()
             getAllGameEngines()
             getAllGenres()
@@ -415,7 +439,41 @@ object Repository {
             allAuthorsState = allAuthorEntities.toMutableStateList(lifecycleOwner)
             allGameEnginesState = allGameEngineEntities.toMutableStateList(lifecycleOwner)
 
+            return AllGamesData
         }
+    }
+
+    enum class ActionType(){
+        Show(),
+        Create,
+        Update()
+    }
+
+    /**
+     * Объект-обёртка для удобства получения всех ссылок с данными связанных сущностей
+     */
+    object AllGameCurrentData{
+        val gameEntityCurrentIDObj: Long = gameEntityCurrentID
+        val currentGameStateObj: MutableState<GameEntity> = currentGameState
+        val currentCheatsStateObj: MutableState<POJOGameWithCheats> = currentCheatsState
+        val currentTagsStateObj: MutableState<POJOGameWithTags> = currentTagsState
+        val currentDevsStateObj: MutableState<POJOGameWithDevs> = currentDevsState
+        val currentGenresStateObj: MutableState<POJOGameWithGenres> = currentGenresState
+        val currentGameEngineStateObj: MutableState<POJOGameWithEngines> = currentGameEngineState
+        val currentWalkthroughesStateObj: MutableState<POJOGameWithWalkthroughes> = currentWalkthroughesState
+
+    }
+
+    /**
+     * Объект-обёртка для удобства получения всех ссылок с данными несвязанных сущностей
+     */
+    object AllGamesData{
+        val allGamesStateObj: MutableState<List<GameEntity>> = allGamesState
+        val allGenresStateObj: MutableState<List<GenreEntity>> = allGenresState
+        val allTagsStateObj: MutableState<List<TagEntity>> = allTagsState
+        val allDevsStateObj: MutableState<List<DevEntity>> = allDevsState
+        val allAuthorsStateObj: MutableState<List<AuthorEntity>> = allAuthorsState
+        val allGameEnginesStateObj: MutableState<List<GameEngineEntity>> = allGameEnginesState
     }
 
     class Constants private constructor(){
@@ -443,18 +501,17 @@ object Repository {
      *
      * @return null - если какая либо из коллекций null, или общая(all) коллекция пустая
      */
-    fun <T>compareAllAndCurrent(all: List<T>?, current:List<T>?): MutableMap<T, Boolean>? {
-        var comparedMap: MutableMap<T, Boolean>? = mutableMapOf<T, Boolean>()
+    fun <T>compareAllAndCurrent(all: List<T>?, current:List<T>?): MutableMap<T, Boolean> {
+        val comparedMap: MutableMap<T, Boolean> = mutableMapOf<T, Boolean>()
 
         if (all != null && current != null){
             if (all.isEmpty()){
-                comparedMap = null
                 return comparedMap
             }
             else{
                 all.forEach { it ->
                     if (current.contains(it)){
-                        comparedMap?.put(it, true)
+                        comparedMap.put(it, true)
                     }
                 }
             }
@@ -467,13 +524,13 @@ object Repository {
      *
      * @return null - если какая либо из коллекций null, или общая(all) коллекция пустая
      */
-    fun <T>compareAllAndCurrent(all: MutableState<List<T>>?, current: MutableState<List<T>>?): MutableState<Map<T, Boolean>>? {
+    fun <T>compareAllAndCurrent(all: MutableState<List<T>>?, current: MutableState<List<T>>?): MutableState<Map<T, Boolean>> {
         val comparedMap: MutableMap<T, Boolean> = mutableMapOf<T, Boolean>()
-        var completedMap: MutableState<Map<T, Boolean>>? = mutableStateOf(mapOf<T, Boolean>())
+        val completedMap: MutableState<Map<T, Boolean>> = mutableStateOf(mapOf<T, Boolean>())
 
         if (all != null && current != null){
             if (all.value.isEmpty()){
-                completedMap = null
+                return completedMap
             }
             else{
                 all.value.forEach { it ->
@@ -484,7 +541,7 @@ object Repository {
                         comparedMap.put(it, false)
                     }
                 }
-                completedMap?.value = comparedMap
+                completedMap.value = comparedMap
             }
         }
 

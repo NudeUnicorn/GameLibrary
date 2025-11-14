@@ -20,5 +20,5 @@ data class POJOGameWithTags(
             entityColumn = JOINEntity.Companion.CHILDIDNAME
         )
     )
-    val cheats: List<TagEntity>
+    val tags: List<TagEntity>
 )

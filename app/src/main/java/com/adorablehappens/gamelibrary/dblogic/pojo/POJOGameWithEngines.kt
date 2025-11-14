@@ -20,5 +20,5 @@ data class POJOGameWithEngines(
             entityColumn = JOINEntity.Companion.CHILDIDNAME
         )
     )
-    val cheats: List<GameEngineEntity>
+    val gameEngines: List<GameEngineEntity>
 )

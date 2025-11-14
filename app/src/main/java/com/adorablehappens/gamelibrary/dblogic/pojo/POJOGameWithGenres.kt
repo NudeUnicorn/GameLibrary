@@ -20,5 +20,5 @@ data class POJOGameWithGenres(
             entityColumn = JOINEntity.Companion.CHILDIDNAME
         )
     )
-    val cheats: List<GenreEntity>
+    val genres: List<GenreEntity>
 )
