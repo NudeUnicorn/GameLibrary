@@ -5,7 +5,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.asFlow
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHAuthor
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHCheat
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHCountry
@@ -29,7 +28,6 @@ import com.adorablehappens.gamelibrary.dblogic.dao.DAOAuthor
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOCheat
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOCountry
 import com.adorablehappens.gamelibrary.dblogic.dao.DAODev
-import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoBehaviour
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOGame
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOGameEngine
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOGenre
@@ -46,7 +44,6 @@ import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithTagsDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithWalkthroughDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINWalkthroughWithImagesDAO
 import com.adorablehappens.gamelibrary.dblogic.entities.AuthorEntity
-import com.adorablehappens.gamelibrary.dblogic.entities.CheatEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.DevEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEngineEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
@@ -151,36 +148,50 @@ object Repository {
 //    private lateinit var oneGameFullInfoDAORepo: DBDaoOneFullInfo
 //    val oneGameFullInfoBehaviourRepo: OneGameFullInfoBehaviour = OneGameFullInfoBehaviour
 
-    var gameEntities: LiveData<List<GameEntity>>
-        get() = behGameRepo.getAll()
-        set(value) {value}
-    val gameEntitiesFunc: ()->LiveData<List<GameEntity>> = {
+    private val gameEntitiesFunc: ()->LiveData<List<GameEntity>> = {
         behGameRepo.getAll()
     }
-    val gameEntitiesLazy: LiveData<List<GameEntity>> by lazy { behGameRepo.getAll() }
+    private val gameEntitiesLazy: LiveData<List<GameEntity>> by lazy { behGameRepo.getAll() }
 
     //Данные для одной выбранной сущности игры
-    lateinit var gameEntityCurrent: LiveData<GameEntity>
+    private lateinit var gameEntityCurrent: LiveData<GameEntity>
     var gameEntityCurrentID: Long = 0
-    lateinit var cheatEntitiesCurrent: LiveData<POJOGameWithCheats>
-    lateinit var genreEntitiesCurrent: LiveData<POJOGameWithGenres>
-    lateinit var tagEntitiesCurrent: LiveData<POJOGameWithTags>
-    lateinit var authorEntitiesCurrent: LiveData<POJOCheatWithAuthors>
-    lateinit var devEntitiesCurrent: LiveData<POJOGameWithDevs>
+    private lateinit var cheatEntitiesCurrent: LiveData<POJOGameWithCheats>
+    private lateinit var genreEntitiesCurrent: LiveData<POJOGameWithGenres>
+    private lateinit var tagEntitiesCurrent: LiveData<POJOGameWithTags>
+    private lateinit var authorEntitiesCurrent: LiveData<POJOCheatWithAuthors>
+    private lateinit var devEntitiesCurrent: LiveData<POJOGameWithDevs>
 //    lateinit var countryEntitiesCurrent: LiveData<List<CountryEntity>>
 //    lateinit var languageEntitiesCurrent: LiveData<List<LanguageEntity>>
-    lateinit var gameEngineEntitiesCurrent: LiveData<POJOGameWithEngines>
-    lateinit var walkthroughEntitiesCurrent: LiveData<POJOGameWithWalkthroughes>
-    lateinit var walkthroughImageEntitiesCurrent: LiveData<POJOWalkthroughWithImages>
+    private lateinit var gameEngineEntitiesCurrent: LiveData<POJOGameWithEngines>
+    private lateinit var walkthroughEntitiesCurrent: LiveData<POJOGameWithWalkthroughes>
+    private lateinit var walkthroughImageEntitiesCurrent: LiveData<POJOWalkthroughWithImages>
+
+    lateinit var currentGameState: MutableState<GameEntity>
+    lateinit var currentCheatsState: MutableState<POJOGameWithCheats>
+    lateinit var currentTagsState: MutableState<POJOGameWithTags>
+    lateinit var currentDevsState: MutableState<POJOGameWithDevs>
+    lateinit var currentGenresState: MutableState<POJOGameWithGenres>
+    lateinit var currentWalkthroughesState: MutableState<POJOGameWithWalkthroughes>
+
 
     //Все сущности опреденного типа
-    lateinit var genreEntitiesAll: LiveData<List<GenreEntity>>
-    lateinit var tagEntitiesAll: LiveData<List<TagEntity>>
-    lateinit var devEntitiesAll: LiveData<List<DevEntity>>
-    lateinit var authorEntitiesAll: LiveData<List<AuthorEntity>>
-    lateinit var gameEngineEntitiesAll: LiveData<List<GameEngineEntity>>
-//  lateinit var countryEntitiesAll: LiveData<List<CountryEntity>>
-//  lateinit var languageEntitiesAll: LiveData<List<LanguageEntity>>
+    private lateinit var allGameEntities: LiveData<List<GameEntity>>
+    private lateinit var allGenreEntities: LiveData<List<GenreEntity>>
+    private lateinit var allTagEntities: LiveData<List<TagEntity>>
+    private lateinit var allDevEntities: LiveData<List<DevEntity>>
+    private lateinit var allAuthorEntities: LiveData<List<AuthorEntity>>
+    private lateinit var allGameEngineEntities: LiveData<List<GameEngineEntity>>
+//  private lateinit var allCountryEntities: LiveData<List<CountryEntity>>
+//  private lateinit var allLanguageEntities: LiveData<List<LanguageEntity>>
+
+
+    lateinit var allGamesState: MutableState<List<GameEntity>>
+    lateinit var allGenresState: MutableState<List<GenreEntity>>
+    lateinit var allTagsState: MutableState<List<TagEntity>>
+    lateinit var allDevsState: MutableState<List<DevEntity>>
+    lateinit var allAuthorsState: MutableState<List<AuthorEntity>>
+    lateinit var allGameEnginesState: MutableState<List<GameEngineEntity>>
 
 
     init {
@@ -237,7 +248,7 @@ object Repository {
         fun getAllGames(id: Long? = null){
             try {
                 when(id){
-                    null -> gameEntities = behGameRepo.getAll()
+                    null -> allGameEntities = behGameRepo.getAll()
                     else -> gameEntityCurrent = behGameRepo.getOne(id)
                 }
             }
@@ -248,7 +259,7 @@ object Repository {
         fun getAllGenres(id: Long? = null){
             try {
                 when(id){
-                    null -> genreEntitiesAll = behGenreRepo.getAll()
+                    null -> allGenreEntities = behGenreRepo.getAll()
                     else -> genreEntitiesCurrent = behJOINGameWithGenresRepo.obj.getOneLinkedEntity(id)
                 }
 
@@ -293,7 +304,7 @@ object Repository {
             try {
 
                 when(id){
-                    null -> authorEntitiesAll = BEHAuthor.getAll()
+                    null -> allAuthorEntities = BEHAuthor.getAll()
                     else -> authorEntitiesCurrent = behJOINCheatWithAuthorsRepo.obj.getOneLinkedEntity(id)
                 }
             }
@@ -304,7 +315,7 @@ object Repository {
         fun getAllCountries(id: Long? = null){
             try {
                 when(id){
-                    null -> genreEntitiesAll
+                    null -> allGenreEntities
                     else -> genreEntitiesCurrent
                 }
 
@@ -316,7 +327,7 @@ object Repository {
         fun getAllDevs(id: Long? = null){
             try {
                 when(id){
-                    null -> devEntitiesAll = BEHDev.getAll()
+                    null -> allDevEntities = BEHDev.getAll()
                     else -> devEntitiesCurrent = behJOINGameWithDevsRepo.obj.getOneLinkedEntity(id)
                 }
 
@@ -340,7 +351,7 @@ object Repository {
         fun getAllGameEngines(id: Long? = null){
             try {
                 when(id){
-                    null -> gameEngineEntitiesAll = BEHGameEngine.getAll()
+                    null -> allGameEngineEntities = BEHGameEngine.getAll()
                     else -> gameEngineEntitiesCurrent = behJOINGameWithEnginesRepo.obj.getOneLinkedEntity(id)
                 }
 
@@ -352,7 +363,7 @@ object Repository {
         fun getAllTags(id: Long? = null){
             try {
                 when(id){
-                    null -> tagEntitiesAll = behTagRepo.getAll()
+                    null -> allTagEntities = behTagRepo.getAll()
                     else -> tagEntitiesCurrent = behJOINGameWithTagsRepo.obj.getOneLinkedEntity(id)
                 }
 
@@ -377,26 +388,32 @@ object Repository {
             getAllTags(id)
             getAllCurrentWalkthroughes(id)
 
-
-            val allGamesState = gameEntities.toMutableStateList(lifecycleOwner)
-            val currentGameState = gameEntityCurrent.toMutableState(lifecycleOwner)
-            val currentCheatsState = cheatEntitiesCurrent.toMutableState(lifecycleOwner)
-            val currentTagsState = tagEntitiesCurrent.toMutableState(lifecycleOwner)
-            val currentDevsState = devEntitiesCurrent.toMutableState(lifecycleOwner)
-            val currentGenresState = genreEntitiesCurrent.toMutableState(lifecycleOwner)
-            val currentWalkthroughesState = walkthroughEntitiesCurrent.toMutableState(lifecycleOwner)
+            currentGameState = gameEntityCurrent.toMutableState(lifecycleOwner)
+            currentCheatsState = cheatEntitiesCurrent.toMutableState(lifecycleOwner)
+            currentTagsState = tagEntitiesCurrent.toMutableState(lifecycleOwner)
+            val currentTagsComparedState = compareAllAndCurrent(allTagsState,mutableStateOf(currentTagsState.value.cheats))
+            currentDevsState = devEntitiesCurrent.toMutableState(lifecycleOwner)
+            currentGenresState = genreEntitiesCurrent.toMutableState(lifecycleOwner)
+            currentWalkthroughesState = walkthroughEntitiesCurrent.toMutableState(lifecycleOwner)
 
         }
 
         /**
          * Получает все общие сущности
          */
-        fun getAllData(){
+        fun getAllData(lifecycleOwner: LifecycleOwner){
             getAllGames()
             getAllGameEngines()
             getAllGenres()
             getAllDevs()
             getAllTags()
+
+            allGamesState = allGameEntities.toMutableStateList(lifecycleOwner)
+            allGenresState = allGenreEntities.toMutableStateList(lifecycleOwner)
+            allTagsState = allTagEntities.toMutableStateList(lifecycleOwner)
+            allDevsState = allDevEntities.toMutableStateList(lifecycleOwner)
+            allAuthorsState = allAuthorEntities.toMutableStateList(lifecycleOwner)
+            allGameEnginesState = allGameEngineEntities.toMutableStateList(lifecycleOwner)
 
         }
     }
@@ -423,6 +440,8 @@ object Repository {
 
     /**
      * Проверяет вхождение каждого элемента коллекции в общую коллекцию и возвращает карту элементов общей коллекции с булевой отметкой
+     *
+     * @return null - если какая либо из коллекций null, или общая(all) коллекция пустая
      */
     fun <T>compareAllAndCurrent(all: List<T>?, current:List<T>?): MutableMap<T, Boolean>? {
         var comparedMap: MutableMap<T, Boolean>? = mutableMapOf<T, Boolean>()
@@ -443,12 +462,52 @@ object Repository {
 
         return comparedMap
     }
+    /**
+     * Проверяет вхождение каждого элемента коллекции в общую коллекцию и возвращает карту элементов общей коллекции с булевой отметкой
+     *
+     * @return null - если какая либо из коллекций null, или общая(all) коллекция пустая
+     */
+    fun <T>compareAllAndCurrent(all: MutableState<List<T>>?, current: MutableState<List<T>>?): MutableState<Map<T, Boolean>>? {
+        val comparedMap: MutableMap<T, Boolean> = mutableMapOf<T, Boolean>()
+        var completedMap: MutableState<Map<T, Boolean>>? = mutableStateOf(mapOf<T, Boolean>())
+
+        if (all != null && current != null){
+            if (all.value.isEmpty()){
+                completedMap = null
+            }
+            else{
+                all.value.forEach { it ->
+                    if (current.value.contains(it)){
+                        comparedMap.put(it, true)
+                    }
+                    else{
+                        comparedMap.put(it, false)
+                    }
+                }
+                completedMap?.value = comparedMap
+            }
+        }
+
+        return completedMap
+    }
 
     /**
      * Приводит LiveData к MutableState
      */
     fun <T> LiveData<List<T>>.toMutableStateList(lifecycleOwner: LifecycleOwner): MutableState<List<T>> {
         var stateData: MutableState<List<T>> = mutableStateOf(emptyList())
+        this.observe(lifecycleOwner){data->
+            if (data != null){
+                stateData = mutableStateOf(data)
+            }
+        }
+        return stateData
+    }
+    /**
+     * Приводит LiveData к MutableState
+     */
+    fun <T,Y> LiveData<Map<T,Y>>.toMutableStateMap(lifecycleOwner: LifecycleOwner): MutableState<Map<T,Y>> {
+        var stateData: MutableState<Map<T,Y>> = mutableStateOf(emptyMap())
         this.observe(lifecycleOwner){data->
             if (data != null){
                 stateData = mutableStateOf(data)

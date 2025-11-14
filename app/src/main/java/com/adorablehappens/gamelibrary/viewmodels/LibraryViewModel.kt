@@ -7,7 +7,7 @@ class LibraryViewModel(): ViewModel(){
 
     //private val gwc: JOINGameWithCheatBEH = Repository.joinGameWithCheatBehaviourRepo
     val vmRepo = Repository
-    val vmGameEntitiesAllLive = Repository.gameEntitiesLazy
+    val vmAllGamesState = Repository.allGamesState
 
 //    val vmGameEntitiesAll by lazy {
 //        mutableStateOf(loadGameEntitiesAll())
