@@ -153,7 +153,9 @@ open class RoutesScreensFundamentals() {
                         dropdownMenuExpanded.value = true
                         navController.navigate(Routes.createUpdateGame.route)
                     },
-                ) { BottomDropdownMenu(Modifier, expanded = dropdownMenuExpanded) }
+                ) { BottomDropdownMenu(Modifier,
+                    navController = navController,
+                    expanded = dropdownMenuExpanded) }
             }
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomEnd) {
 
@@ -202,6 +204,7 @@ open class RoutesScreensFundamentals() {
         @Composable
         fun BottomDropdownMenu(
             modifier: Modifier = Modifier,
+            navController: NavController,
             expanded: MutableState<Boolean> = remember { mutableStateOf(false) },
             content: @Composable (() -> Unit) = {}
         ) {
@@ -211,9 +214,10 @@ open class RoutesScreensFundamentals() {
                 onDismissRequest = { expanded.value = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text("Первый пункт") },
+                    text = { Text("Создать/Изменить") },
                     onClick = {
                         expanded.value = false
+                        navController.navigate(Routes.createUpdateEX.route)
                     }
                 )
                 DropdownMenuItem(

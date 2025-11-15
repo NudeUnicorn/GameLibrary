@@ -10,6 +10,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
@@ -18,8 +19,16 @@ import androidx.navigation.compose.rememberNavController
 import com.adorablehappens.gamelibrary.navigation.Routes
 import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.BottomMenu
 import com.adorablehappens.gamelibrary.ui.theme.GameLibraryTheme
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+
+    private val coroutineMainActivity = MainScope()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
@@ -33,6 +42,7 @@ class MainActivity : ComponentActivity() {
 //            )
         )
         setContent {
+            val coroutineScope = rememberCoroutineScope()
             val navController = rememberNavController()
 
             GameLibraryTheme {
@@ -72,6 +82,11 @@ class MainActivity : ComponentActivity() {
                                 innerPadding = innerPadding
                             )
                         }
+                        composable(Routes.createUpdateEX.route) {
+                            Routes.createUpdateEX.Content(
+                                innerPadding = innerPadding
+                            )
+                        }
                     }
 
 
@@ -80,6 +95,18 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    fun execCoroutine(
+        dispatcher: CoroutineDispatcher = Dispatchers.Main,
+        coroutine: suspend ()-> Unit
+    ){
+        coroutineMainActivity.launch { coroutine() }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineMainActivity.cancel()
     }
 }
 

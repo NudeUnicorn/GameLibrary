@@ -14,5 +14,6 @@ sealed class Routes(
         val stats = SCREENStats
         val options = SCREENOptions
         val createUpdateGame = SCREENCreateUpdateGame
+        val createUpdateEX = SCREENCreateUpdateEX
     }
 }
