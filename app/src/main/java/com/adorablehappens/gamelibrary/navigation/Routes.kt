@@ -1,7 +1,5 @@
 package com.adorablehappens.gamelibrary.navigation
 
-import androidx.compose.runtime.Composable
-
 /**
  * Маршруты для navigation
  */
@@ -16,4 +14,16 @@ sealed class Routes(
         val createUpdateGame = SCREENCreateUpdateGame
         val createUpdateEX = SCREENCreateUpdateEX
     }
+}
+
+enum class Route(
+    route: RoutesScreens
+){
+    home(SCREENHome),
+    favorites(SCREENFavorites),
+    randomise(SCREENRandomise),
+    stats(SCREENStats),
+    options(SCREENOptions),
+    createUpdateGame(SCREENCreateUpdateGame),
+    createUpdateEX(SCREENCreateUpdateEX),
 }

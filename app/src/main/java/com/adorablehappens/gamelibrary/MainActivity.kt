@@ -49,13 +49,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        NavigationBar(
-                            Modifier,
-                            //.background(Color.Blue)
-                            //.padding(20.dp, 0.dp, 20.dp, 0.dp)
-                        ) {
-                            BottomMenu(navController = navController)
-                        }
+                        BottomMenu(navController = navController)
                     }
                 ) { innerPadding ->
 
@@ -65,7 +59,10 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     )
 
-                    NavHost(navController, Routes.createUpdateGame.route) {
+                    NavHost(navController,
+                        Routes.createUpdateGame.route,
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
                         composable(Routes.home.route) {
                             Routes.home.Content()
                         }
@@ -79,12 +76,12 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(Routes.createUpdateGame.route) {
                             Routes.createUpdateGame.Content(
-                                innerPadding = innerPadding
+
                             )
                         }
                         composable(Routes.createUpdateEX.route) {
                             Routes.createUpdateEX.Content(
-                                innerPadding = innerPadding
+
                             )
                         }
                     }

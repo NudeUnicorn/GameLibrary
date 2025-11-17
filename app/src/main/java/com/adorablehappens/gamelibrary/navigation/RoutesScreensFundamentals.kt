@@ -27,6 +27,8 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -40,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -105,61 +108,57 @@ open class RoutesScreensFundamentals() {
                     .fillMaxSize()
             )
             val dropdownMenuExpanded = remember { mutableStateOf(false) }
+            val barItemSelected by remember { mutableStateOf(true) }
+            NavigationBar(
+                Modifier,
 
-//    Box(mod,
-//        Alignment.BottomCenter){
-//        Box(Modifier) {
-//        }
-//    }
-
-//    FrameRounded(
-//        Modifier.padding(20.dp, 0.dp, 20.dp, 0.dp),
-//        backgrnd = Color.Transparent
-//
-//    ) {
-//    }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .padding(20.dp, 0.dp, 20.dp, 0.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                BottomMenuBtn(
-                    btnIcon = Icons.Filled.Home, btnDescription = "Главный экран",
-                    btnOnClick = {
+                NavigationBarItem(
+                    selected = barItemSelected,
+                    icon = {Icon(Icons.Filled.Home, "Главный экран")},
+                    label = {
+                        if (barItemSelected)
+                            Text(text = "Главный",
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis)
+                        else {}
+                            },
+                    onClick = {
                         navController.navigate(Routes.home.route)
-                    })
-                BottomMenuBtn(
-                    btnIcon = Icons.Filled.Favorite, btnDescription = "Избранное",
-                    btnIconTint = Color.Red,
-                    btnOnClick = {
-                        navController.navigate(Routes.favorites.route)
-                    })
-                BottomMenuBtn(
-                    btnIcon = Icons.Filled.Shuffle, btnDescription = "Случайный список",
-                    btnOnClick = {
-                        navController.navigate(Routes.randomise.route)
-                    })
-                BottomMenuBtn(
-                    btnIcon = Icons.Filled.CurrencyRuble, btnDescription = "Стоимость всего",
-                    btnOnClick = {
-                        navController.navigate(Routes.stats.route)
-                    })
-                BottomMenuBtn(
-                    btnIcon = Icons.Filled.Menu, btnDescription = "Меню",
-                    btnOnClick = {
-                        dropdownMenuExpanded.value = true
-                        navController.navigate(Routes.createUpdateGame.route)
                     },
-                ) { BottomDropdownMenu(Modifier,
-                    navController = navController,
-                    expanded = dropdownMenuExpanded) }
-            }
-            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomEnd) {
-
-
+                )
+                NavigationBarItem(
+                    selected = false,
+                    icon = {Icon(Icons.Filled.Favorite, "Избранное")},
+                    label = {Text(text = "Избранное")},
+                    onClick = {
+                        navController.navigate(Routes.favorites.route)
+                    },
+                )
+                NavigationBarItem(
+                    selected = false,
+                    icon = {Icon(Icons.Filled.Shuffle, "Случайный список")},
+                    label = {Text(text = "Случайный")},
+                    onClick = {
+                        navController.navigate(Routes.randomise.route)
+                    },
+                )
+                NavigationBarItem(
+                    selected = false,
+                    icon = {Icon(Icons.Filled.CurrencyRuble, "Стоимость всего")},
+                    label = {Text(text = "Стоимость")},
+                    onClick = {
+                        navController.navigate(Routes.stats.route)
+                    },
+                )
+                NavigationBarItem(
+                    selected = false,
+                    icon = {Icon(Icons.Filled.Menu, "Меню")},
+                    label = {Text(text = "Меню")},
+                    onClick = {
+                        navController.navigate(Routes.createUpdateEX.route)
+                    },
+                )
             }
         }
 
