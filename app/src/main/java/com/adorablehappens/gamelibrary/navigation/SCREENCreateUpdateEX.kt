@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +26,9 @@ import kotlinx.coroutines.launch
 
 object SCREENCreateUpdateEX : RoutesScreens(
     route = "CreateUpdateEX",
+    icon = Icons.Filled.Home,
+    label = "Дополнительно",
+    contentDescription = "",
 ) {
 
     @Composable

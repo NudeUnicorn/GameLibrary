@@ -4,9 +4,7 @@ import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,11 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CurrencyRuble
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -42,7 +36,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -108,57 +101,68 @@ open class RoutesScreensFundamentals() {
                     .fillMaxSize()
             )
             val dropdownMenuExpanded = remember { mutableStateOf(false) }
-            val barItemSelected by remember { mutableStateOf(true) }
+            var barItemSelected by remember { mutableStateOf(RoutesMain.home) }
             NavigationBar(
                 Modifier,
 
             ) {
-                NavigationBarItem(
-                    selected = barItemSelected,
-                    icon = {Icon(Icons.Filled.Home, "Главный экран")},
-                    label = {
-                        if (barItemSelected)
-                            Text(text = "Главный",
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis)
-                        else {}
-                            },
-                    onClick = {
-                        navController.navigate(Routes.home.route)
-                    },
-                )
-                NavigationBarItem(
-                    selected = false,
-                    icon = {Icon(Icons.Filled.Favorite, "Избранное")},
-                    label = {Text(text = "Избранное")},
-                    onClick = {
-                        navController.navigate(Routes.favorites.route)
-                    },
-                )
-                NavigationBarItem(
-                    selected = false,
-                    icon = {Icon(Icons.Filled.Shuffle, "Случайный список")},
-                    label = {Text(text = "Случайный")},
-                    onClick = {
-                        navController.navigate(Routes.randomise.route)
-                    },
-                )
-                NavigationBarItem(
-                    selected = false,
-                    icon = {Icon(Icons.Filled.CurrencyRuble, "Стоимость всего")},
-                    label = {Text(text = "Стоимость")},
-                    onClick = {
-                        navController.navigate(Routes.stats.route)
-                    },
-                )
-                NavigationBarItem(
-                    selected = false,
-                    icon = {Icon(Icons.Filled.Menu, "Меню")},
-                    label = {Text(text = "Меню")},
-                    onClick = {
-                        navController.navigate(Routes.createUpdateEX.route)
-                    },
-                )
+                RoutesMain.entries.forEachIndexed { index, entry ->
+                    NavigationBarItem(
+                        selected = entry == barItemSelected,
+                        icon = {Icon(entry.route.icon, contentDescription = entry.route.contentDescription)},
+                        label = {Text(text = entry.route.label)},
+                        onClick = {
+                            navController.navigate(entry.route.route)
+                            barItemSelected = entry
+                        },
+                    )
+                }
+//                NavigationBarItem(
+//                    selected = barItemSelected,
+//                    icon = {Icon(RoutesMain.home.route.icon, "Главный экран")},
+//                    label = {
+//                        if (barItemSelected)
+//                            Text(text = "Главный",
+//                                maxLines = 2,
+//                                overflow = TextOverflow.Ellipsis)
+//                        else {}
+//                            },
+//                    onClick = {
+//                        navController.navigate(RoutesMain.home.route.route)
+//                    },
+//                )
+//                NavigationBarItem(
+//                    selected = false,
+//                    icon = {Icon(RoutesMain.favorites.route.icon, "Список избранного")},
+//                    label = {Text(text = "Избранное")},
+//                    onClick = {
+//                        navController.navigate(RoutesMain.favorites.route.route)
+//                    },
+//                )
+//                NavigationBarItem(
+//                    selected = false,
+//                    icon = {Icon(RoutesMain.randomise.route.icon, "Случайный список")},
+//                    label = {Text(text = "Случайное")},
+//                    onClick = {
+//                        navController.navigate(RoutesMain.randomise.route.route)
+//                    },
+//                )
+//                NavigationBarItem(
+//                    selected = false,
+//                    icon = {Icon(RoutesMain.stats.route.icon, "Стоимость всего")},
+//                    label = {Text(text = "Стоимость")},
+//                    onClick = {
+//                        navController.navigate(RoutesMain.stats.route.route)
+//                    },
+//                )
+//                NavigationBarItem(
+//                    selected = false,
+//                    icon = {Icon(RoutesMain.options.route.icon, "Меню")},
+//                    label = {Text(text = "Меню")},
+//                    onClick = {
+//                        navController.navigate(RoutesService.createUpdateGame.route.route)
+//                    },
+//                )
             }
         }
 
@@ -216,7 +220,7 @@ open class RoutesScreensFundamentals() {
                     text = { Text("Создать/Изменить") },
                     onClick = {
                         expanded.value = false
-                        navController.navigate(Routes.createUpdateEX.route)
+                        navController.navigate(RoutesService.createUpdateEX.route.route)
                     }
                 )
                 DropdownMenuItem(

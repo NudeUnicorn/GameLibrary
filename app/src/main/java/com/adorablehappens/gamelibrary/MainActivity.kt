@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,8 +15,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.adorablehappens.gamelibrary.navigation.Routes
+import com.adorablehappens.gamelibrary.navigation.RoutesMain
 import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.BottomMenu
+import com.adorablehappens.gamelibrary.navigation.RoutesService
 import com.adorablehappens.gamelibrary.ui.theme.GameLibraryTheme
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
             GameLibraryTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
+                    topBar = {},
                     bottomBar = {
                         BottomMenu(navController = navController)
                     }
@@ -60,29 +61,26 @@ class MainActivity : ComponentActivity() {
                     )
 
                     NavHost(navController,
-                        Routes.createUpdateGame.route,
+                        RoutesService.createUpdateGame.route.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable(Routes.home.route) {
-                            Routes.home.Content()
+                        composable(RoutesMain.home.route.route) {
+                            RoutesMain.home.route.Content()
                         }
-                        composable(Routes.favorites.route) {
+                        composable(RoutesMain.favorites.route.route) {
                         }
-                        composable(Routes.randomise.route) {
+                        composable(RoutesMain.randomise.route.route) {
                         }
-                        composable(Routes.stats.route) {
+                        composable(RoutesMain.stats.route.route) {
                         }
-                        composable(Routes.options.route) {
+                        composable(RoutesMain.options.route.route) {
+                            RoutesMain.options.route.Content()
                         }
-                        composable(Routes.createUpdateGame.route) {
-                            Routes.createUpdateGame.Content(
-
-                            )
+                        composable(RoutesService.createUpdateGame.route.route) {
+                            RoutesService.createUpdateGame.route.Content()
                         }
-                        composable(Routes.createUpdateEX.route) {
-                            Routes.createUpdateEX.Content(
-
-                            )
+                        composable(RoutesService.createUpdateEX.route.route) {
+                            RoutesService.createUpdateEX.route.Content()
                         }
                     }
 
@@ -122,7 +120,7 @@ fun GreetingPreview() {
     GameLibraryTheme {
         Greeting("Android")
 
-        Routes.createUpdateGame.Content { }
+        //Routes.createUpdateGame.Content()
         BottomMenu(navController = rememberNavController())
 
 
