@@ -15,6 +15,7 @@ import com.adorablehappens.gamelibrary.dblogic.dao.DAOLanguage
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOTag
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOWalkthrough
 import com.adorablehappens.gamelibrary.dblogic.dao.DAOWalkthroughImage
+import com.adorablehappens.gamelibrary.dblogic.dao.DBDaoOneFullInfo1
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINCheatWithAuthorsDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithCheatsDAO
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINGameWithDevsDAO
@@ -93,6 +94,9 @@ abstract class DB: RoomDatabase() {
     abstract fun createJOINWalkthroughWithImagesDAO(): JOINWalkthroughWithImagesDAO
 
     //abstract fun createOneGameFullInfoDAO(): DBDaoOneFullInfo
+
+    //abstract fun createOneGameFullInfoDAO(): DBDaoOneFullInfo1
+
 
     companion object{
         private var dbInstance: DB? = null

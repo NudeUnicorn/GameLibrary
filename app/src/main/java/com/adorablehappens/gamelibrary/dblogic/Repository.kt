@@ -62,7 +62,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlin.lazy
 
 /**
  * Хранит и управляет всеми данными на уровне приложения
@@ -147,25 +146,22 @@ object Repository {
 
 //    private lateinit var oneGameFullInfoDAORepo: DBDaoOneFullInfo
 //    val oneGameFullInfoBehaviourRepo: OneGameFullInfoBehaviour = OneGameFullInfoBehaviour
+    //private val daoOneFullInfo1Repo: DBDaoOneFullInfo1 by lazy { db.createOneGameFullInfoDAO() }
 
-    private val gameEntitiesFunc: ()->LiveData<List<GameEntity>> = {
-        behGameRepo.getAll()
-    }
-    private val gameEntitiesLazy: LiveData<List<GameEntity>> by lazy { behGameRepo.getAll() }
 
     //Данные для одной выбранной сущности игры
-    private lateinit var gameEntityCurrent: LiveData<GameEntity>
-    var gameEntityCurrentID: Long = 0
-    private lateinit var cheatEntitiesCurrent: LiveData<POJOGameWithCheats>
-    private lateinit var genreEntitiesCurrent: LiveData<POJOGameWithGenres>
-    private lateinit var tagEntitiesCurrent: LiveData<POJOGameWithTags>
-    private lateinit var authorEntitiesCurrent: LiveData<POJOCheatWithAuthors>
-    private lateinit var devEntitiesCurrent: LiveData<POJOGameWithDevs>
-//    lateinit var countryEntitiesCurrent: LiveData<List<CountryEntity>>
-//    lateinit var languageEntitiesCurrent: LiveData<List<LanguageEntity>>
-    private lateinit var gameEngineEntitiesCurrent: LiveData<POJOGameWithEngines>
-    private lateinit var walkthroughEntitiesCurrent: LiveData<POJOGameWithWalkthroughes>
-    private lateinit var walkthroughImageEntitiesCurrent: LiveData<POJOWalkthroughWithImages>
+    private lateinit var currentGameEntity: LiveData<GameEntity>
+    var currentGameEntityID: Long = 0
+    private lateinit var currentCheatEntities: LiveData<POJOGameWithCheats>
+    private lateinit var currentGenreEntities: LiveData<POJOGameWithGenres>
+    private lateinit var currentTagEntities: LiveData<POJOGameWithTags>
+    private lateinit var currentAuthorEntities: LiveData<POJOCheatWithAuthors>
+    private lateinit var currentDevEntities: LiveData<POJOGameWithDevs>
+//    lateinit var currentCountryEntities: LiveData<List<CountryEntity>>
+//    lateinit var currentLanguageEntities: LiveData<List<LanguageEntity>>
+    private lateinit var currentGameEngineEntities: LiveData<POJOGameWithEngines>
+    private lateinit var currentWalkthroughEntities: LiveData<POJOGameWithWalkthroughes>
+    private lateinit var currentWalkthroughImageEntities: LiveData<POJOWalkthroughWithImages>
 
     private lateinit var currentGameState: MutableState<GameEntity>
     private lateinit var currentCheatsState: MutableState<POJOGameWithCheats>
@@ -255,7 +251,7 @@ object Repository {
             try {
                 when(id){
                     null -> {}//allGameEntities = behGameRepo.getAll()
-                    else -> gameEntityCurrent = behGameRepo.getOne(id)
+                    else -> currentGameEntity = behGameRepo.getOne(id)
                 }
             }
             catch (e: Exception){
@@ -266,7 +262,7 @@ object Repository {
             try {
                 when(id){
                     null -> {}//allGenreEntities = behGenreRepo.getAll()
-                    else -> genreEntitiesCurrent = behJOINGameWithGenresRepo.obj.getOneLinkedEntity(id)
+                    else -> currentGenreEntities = behJOINGameWithGenresRepo.obj.getOneLinkedEntity(id)
                 }
 
             }
@@ -276,7 +272,7 @@ object Repository {
         }
         fun getAllCurrentCheats(id: Long){
             try {
-                cheatEntitiesCurrent = behJOINGameWithCheatRepo.obj.getOneLinkedEntity(id)
+                currentCheatEntities = behJOINGameWithCheatRepo.obj.getOneLinkedEntity(id)
             }
             catch (e: Exception){
                 print(e)
@@ -288,7 +284,7 @@ object Repository {
          */
         fun getAllCurrentWalkthroughes(id: Long){
             try {
-                walkthroughEntitiesCurrent = behJOINGameWithWalkthroughesRepo.obj.getOneLinkedEntity(id)
+                currentWalkthroughEntities = behJOINGameWithWalkthroughesRepo.obj.getOneLinkedEntity(id)
             }
             catch (e: Exception){
                 print(e)
@@ -300,7 +296,7 @@ object Repository {
          */
         fun getAllCurrentWalkthroughWithImages(id: Long){
             try {
-                walkthroughImageEntitiesCurrent = behJOINWalkthroughWithImagesRepo.obj.getOneLinkedEntity(id)
+                currentWalkthroughImageEntities = behJOINWalkthroughWithImagesRepo.obj.getOneLinkedEntity(id)
             }
             catch (e: Exception){
                 print(e)
@@ -311,7 +307,7 @@ object Repository {
 
                 when(id){
                     null -> {}//allAuthorEntities = behAuthorRepo.getAll()
-                    else -> authorEntitiesCurrent = behJOINCheatWithAuthorsRepo.obj.getOneLinkedEntity(id)
+                    else -> currentAuthorEntities = behJOINCheatWithAuthorsRepo.obj.getOneLinkedEntity(id)
                 }
             }
             catch (e: Exception){
@@ -322,7 +318,7 @@ object Repository {
             try {
                 when(id){
                     null -> allGenreEntities
-                    else -> genreEntitiesCurrent
+                    else -> currentGenreEntities
                 }
 
             }
@@ -334,7 +330,7 @@ object Repository {
             try {
                 when(id){
                     null -> {}//allDevEntities = behDevRepo.getAll()
-                    else -> devEntitiesCurrent = behJOINGameWithDevsRepo.obj.getOneLinkedEntity(id)
+                    else -> currentDevEntities = behJOINGameWithDevsRepo.obj.getOneLinkedEntity(id)
                 }
 
             }
@@ -345,8 +341,8 @@ object Repository {
         fun getAllLanguages(id: Long? = null){
             try {
                 when(id){
-                    null -> devEntitiesCurrent
-                    else -> devEntitiesCurrent
+                    null -> currentDevEntities
+                    else -> currentDevEntities
                 }
 
             }
@@ -358,7 +354,7 @@ object Repository {
             try {
                 when(id){
                     null -> {}//allGameEngineEntities = behGameEngineRepo.getAll()
-                    else -> gameEngineEntitiesCurrent = behJOINGameWithEnginesRepo.obj.getOneLinkedEntity(id)
+                    else -> currentGameEngineEntities = behJOINGameWithEnginesRepo.obj.getOneLinkedEntity(id)
                 }
 
             }
@@ -370,7 +366,7 @@ object Repository {
             try {
                 when(id){
                     null -> {}//allTagEntities = behTagRepo.getAll()
-                    else -> tagEntitiesCurrent = behJOINGameWithTagsRepo.obj.getOneLinkedEntity(id)
+                    else -> currentTagEntities = behJOINGameWithTagsRepo.obj.getOneLinkedEntity(id)
                 }
 
             }
@@ -382,9 +378,9 @@ object Repository {
         /**
          * Получает все данные об одной сущности игры
          */
-        fun getAllCurrentGameData(id: Long, lifecycleOwner: LifecycleOwner, showOrUpdate: ActionType = ActionType.Show): AllGameCurrentData {
+        fun getAllCurrentGameData(id: Long): AllGameCurrentLiveData {
 
-            gameEntityCurrentID = id
+            currentGameEntityID = id
 
             getAllGames(id)
             getAllCurrentCheats(id)
@@ -395,54 +391,10 @@ object Repository {
             getAllCurrentWalkthroughes(id)
             getAllAuthors(id)
 
-            currentGameState = gameEntityCurrent.toMutableState(lifecycleOwner)
-            currentCheatsState = cheatEntitiesCurrent.toMutableState(lifecycleOwner)
-            currentTagsState = tagEntitiesCurrent.toMutableState(lifecycleOwner)
-            currentDevsState = devEntitiesCurrent.toMutableState(lifecycleOwner)
-            currentGenresState = genreEntitiesCurrent.toMutableState(lifecycleOwner)
-            currentGameEngineState = gameEngineEntitiesCurrent.toMutableState(lifecycleOwner)
-            currentWalkthroughesState = walkthroughEntitiesCurrent.toMutableState(lifecycleOwner)
-
-            when (showOrUpdate){
-                ActionType.Show -> {
-
-                }
-                ActionType.Create -> {
-
-                }
-                ActionType.Update -> {
-
-                    currentTagsComparedState = compareAllAndCurrent(allTagsState,mutableStateOf(currentTagsState.value.tags))
-                    currentDevsComparedState = compareAllAndCurrent(allDevsState,mutableStateOf(currentDevsState.value.devs))
-                    currentGenresComparedState = compareAllAndCurrent(allGenresState,mutableStateOf(currentGenresState.value.genres))
-                    currentGameEngineComparedState = compareAllAndCurrent(allGameEnginesState,mutableStateOf(currentGameEngineState.value.gameEngines))
-                }
-            }
-
-            return AllGameCurrentData
+            return AllGameCurrentLiveData
 
         }
 
-        /**
-         * Получает все общие сущности
-         */
-        fun getAllData(lifecycleOwner: LifecycleOwner): AllGamesData {
-            getAllGames()
-            getAllGameEngines()
-            getAllGenres()
-            getAllDevs()
-            getAllTags()
-            getAllAuthors()
-
-            allGamesState = allGameEntities.toMutableStateList(lifecycleOwner)
-            allGenresState = allGenreEntities.toMutableStateList(lifecycleOwner)
-            allTagsState = allTagEntities.toMutableStateList(lifecycleOwner)
-            allDevsState = allDevEntities.toMutableStateList(lifecycleOwner)
-            allAuthorsState = allAuthorEntities.toMutableStateList(lifecycleOwner)
-            allGameEnginesState = allGameEngineEntities.toMutableStateList(lifecycleOwner)
-
-            return AllGamesData
-        }
     }
 
     enum class ActionType(){
@@ -454,15 +406,15 @@ object Repository {
     /**
      * Объект-обёртка для удобства получения всех ссылок с данными связанных сущностей
      */
-    object AllGameCurrentData{
-        val gameEntityCurrentIDObj: Long = gameEntityCurrentID
-        val currentGameStateObj: MutableState<GameEntity> = currentGameState
-        val currentCheatsStateObj: MutableState<POJOGameWithCheats> = currentCheatsState
-        val currentTagsStateObj: MutableState<POJOGameWithTags> = currentTagsState
-        val currentDevsStateObj: MutableState<POJOGameWithDevs> = currentDevsState
-        val currentGenresStateObj: MutableState<POJOGameWithGenres> = currentGenresState
-        val currentGameEngineStateObj: MutableState<POJOGameWithEngines> = currentGameEngineState
-        val currentWalkthroughesStateObj: MutableState<POJOGameWithWalkthroughes> = currentWalkthroughesState
+    object AllGameCurrentLiveData{
+        val gameEntityCurrentIDObj: Long = currentGameEntityID
+        val currentGameObj = currentGameEntity
+        val currentCheatsObj = currentCheatEntities
+        val currentTagsObj = currentTagEntities
+        val currentDevsObj = currentDevEntities
+        val currentGenresObj = currentGenreEntities
+        val currentGameEngineObj = currentGameEngineEntities
+        val currentWalkthroughesObj = currentWalkthroughEntities
 
     }
 
