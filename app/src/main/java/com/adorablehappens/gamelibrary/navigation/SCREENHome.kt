@@ -1,55 +1,56 @@
 package com.adorablehappens.gamelibrary.navigation
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.TextAutoSize
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.ExposurePlus1
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.adorablehappens.gamelibrary.dblogic.Repository
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
+import com.adorablehappens.gamelibrary.dblogic.entities.GenreEntity
 import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
 
 object SCREENHome : RoutesScreens(
@@ -69,11 +70,12 @@ object SCREENHome : RoutesScreens(
         val titlesPrimary = listOf("Коллекция", "Обзор", "Дополнительно")
         val titlesSecondary =
             listOf("Игра", "Жанры", "Тэги", "Разработчики", "Авторы", "Игровые движки")
-        val pagerState =
-            rememberPagerState(0, pageCount = { titlesPrimary.size + titlesSecondary.size })
-        //val selectedDerived by remember { derivedStateOf { pagerState.currentPage*1 } }
+        var showCreateUpdateDialog by remember { mutableStateOf(false) }
+        var contentCreateUpdateDialog by remember { mutableStateOf(@Composable {GenreCreateUpdate()}) }
 
         val games by vm.vmAllGamesLiveData.allGameEntitiesObj.observeAsState()
+        val allCurrentGameLiveData by Repository.AllGamesLiveData.allGenreEntitiesObj.observeAsState()
+
 
         val tabs = listOf<TabInfo>(
             TabInfo(
@@ -99,7 +101,40 @@ object SCREENHome : RoutesScreens(
                     TabInfo(
                         label = "Жанры",
                         secondary = null,
-                        content = {ListGenres(vm = vm)}
+                        content = {ListGenres(
+                            vm = vm,
+                            addBtnOnClick = {
+                                contentCreateUpdateDialog = {GenreCreateUpdate(
+                                    onDismissRequest = {showCreateUpdateDialog = false}
+                                )}
+                                showCreateUpdateDialog = true
+                            },
+                            modBtnOnClick = {id ->
+                                contentCreateUpdateDialog = {
+                                    GenreCreateUpdate(
+                                        onDismissRequest = { showCreateUpdateDialog = false },
+                                        entity = allCurrentGameLiveData?.let { it ->
+                                            it.filter { it.id == id }[0]
+                                        }
+                                    )
+                                }
+                                showCreateUpdateDialog = true
+                            },
+                            delBtnOnClick = {
+                                contentCreateUpdateDialog = {
+                                    DeleteConfirmation(
+                                        onDismissRequest = {showCreateUpdateDialog = false},
+                                        onConfirmation = {
+
+
+                                            showCreateUpdateDialog = false
+                                        }
+                                    )
+                                }
+
+                            },
+                            allCurrentGameLiveData = allCurrentGameLiveData
+                        )}
                     ),
                     TabInfo(
                         label = "Тэги",
@@ -166,14 +201,14 @@ object SCREENHome : RoutesScreens(
                 }
             }
 
-            Column (modifier = Modifier
-                .fillMaxSize()
-                ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
 
                 if (tabs[selectedPrimary].secondary == null) {
                     tabs[selectedPrimary].content()
-                }
-                else{
+                } else {
 
                     tabs[selectedPrimary].secondary?.get(selectedSecondary)!!.content()
                 }
@@ -185,6 +220,12 @@ object SCREENHome : RoutesScreens(
 //                Text(text = "Modal yeahhh!")
 //            }
 
+            if (showCreateUpdateDialog){
+                DialogCreateUpdate(
+                    onDismissRequest = {showCreateUpdateDialog = false},
+                    content = {contentCreateUpdateDialog()}
+                )
+            }
         }
     }
 
@@ -200,6 +241,9 @@ object SCREENHome : RoutesScreens(
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3)
             ) {
+                item {
+                    CardAddGame(vm = vm)
+                }
                 items(games.size) { it ->
                         CardGame(game = games[it], vm = vm)
                 }
@@ -274,21 +318,68 @@ object SCREENHome : RoutesScreens(
 
     }
     @Composable
+    fun CardAddGame(
+        modifier: Modifier = Modifier,
+        vm: LibraryViewModel? = null
+    ) {
+        Card (
+            onClick = {
+
+            },
+            modifier = Modifier
+                .aspectRatio(0.8f)
+                .padding(start = 16.dp, top = 16.dp),
+        ) {
+            ElevatedCard (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+
+            ) {
+
+                Image(
+                    Icons.Filled.Add,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .fillMaxSize()
+
+                )
+            }
+            Text(
+                text = "Add game",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.3f)
+                    .padding(horizontal = 10.dp)
+                ,
+                overflow = TextOverflow.Ellipsis,
+                autoSize = TextAutoSize.StepBased()
+            )
+        }
+
+    }
+    @Composable
     fun ListGenres(
         modifier: Modifier = Modifier,
-        vm: LibraryViewModel
+        vm: LibraryViewModel,
+        allCurrentGameLiveData: List<GenreEntity>?,
+        addBtnOnClick: ()->Unit = {},
+        modBtnOnClick: (entityID: Long)->Unit = {},
+        delBtnOnClick: (entityID: Long)->Unit = {},
     ) {
-        val allCurrentGameLiveData by Repository.AllGamesLiveData.allGenreEntitiesObj.observeAsState()
 
+        Column {  }
         LazyColumn (
             modifier = Modifier.fillMaxSize()
         ) {
             item{
                 Button(
                     onClick = {
-
+                        addBtnOnClick()
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 ) {
                     Text(text = "+ Add genre")
                 }
@@ -297,20 +388,35 @@ object SCREENHome : RoutesScreens(
                 items(it.size){
                     ListItem(
                         headlineContent = {
-                            Text(text = allCurrentGameLiveData!![it].name)
+                            Text(text = allCurrentGameLiveData[it].name)
+                        },
+                        overlineContent = {
+                            Text(text = "ID " + allCurrentGameLiveData[it].id.toString())
                         },
                         supportingContent = {
-                            Text(text = allCurrentGameLiveData!![it].id.toString())
+                            Text(text = allCurrentGameLiveData[it].description)
+                        },
+                        trailingContent = {
+                            Row {
+
+                                IconButton(
+                                    onClick = {
+                                        modBtnOnClick(allCurrentGameLiveData[it].id)
+                                    }
+                                ) {
+                                    Icon(Icons.Filled.AddCircle,"")
+                                }
+                                IconButton(
+                                    onClick = {
+                                        delBtnOnClick(allCurrentGameLiveData[it].id)
+                                    }
+                                ) {
+                                    Icon(Icons.Filled.RemoveCircle,"")
+                                }
+                            }
                         }
                     )
                 }
-            }
-            item {
-                FloatingActionButton(
-                    onClick = {
-
-                    }
-                ) { Icon(Icons.Filled.Add, contentDescription = "Add new game to library") }
             }
         }
 
@@ -318,8 +424,140 @@ object SCREENHome : RoutesScreens(
 
     }
 
+    @Composable
+    fun DialogCreateUpdate(
+        onDismissRequest: () -> Unit = {},
+        onConfirmation: () -> Unit = {},
+        content: @Composable () -> Unit = {}
+    ) {
 
-    data class TabInfo(
+        Dialog(onDismissRequest = { onDismissRequest() }) {
+            // Draw a rectangle shape with rounded corners inside the dialog
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(375.dp)
+                    .padding(16.dp),
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    content()
+                }
+            }
+        }
+    }
+    @Composable
+    fun GenreCreateUpdate(
+        entity: GenreEntity? = null,
+        onDismissRequest: () -> Unit = {},
+    ) {
+        val name = rememberTextFieldState("")
+        val description = rememberTextFieldState("")
+        val comment = rememberTextFieldState("")
+
+        if (entity != null){
+            name.setTextAndPlaceCursorAtEnd(entity.name)
+            description.setTextAndPlaceCursorAtEnd(entity.description)
+            comment.setTextAndPlaceCursorAtEnd(entity.comment)
+        }
+        Text(
+            text = "Create or update existing genre",
+            modifier = Modifier.padding(16.dp),
+        )
+        TextField(
+            state = name,
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("📝 Genre title") },
+            placeholder = { Text("How genre named?") }
+        )
+        TextField(
+            state = description,
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("📝 Description") },
+            placeholder = { Text("Describe genre") }
+        )
+        TextField(
+            state = comment,
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("📝 Comment") },
+            placeholder = { Text("Write a comment") }
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                },
+                modifier = Modifier.padding(8.dp),
+            ) {
+                Text("Cancel")
+            }
+            TextButton(
+                onClick = {
+                    Repository.behGenreRepo.addNew(
+                        GenreEntity(
+                            id = 0,
+                            name = name.text.toString(),
+                            description = description.text.toString(),
+                            comment = comment.text.toString()
+                        )
+                    )
+                },
+                modifier = Modifier.padding(8.dp),
+            ) {
+                Text("Save")
+            }
+        }
+    }
+    @Composable
+    fun DeleteConfirmation(
+        onConfirmation: () -> Unit = {},
+        onDismissRequest: () -> Unit = {},
+    ) {
+
+        Text(
+            text = "Are you sure?",
+            modifier = Modifier.padding(16.dp),
+        )
+        Text(
+            text = "You really want to delete?",
+            modifier = Modifier.padding(16.dp),
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                },
+                modifier = Modifier.padding(8.dp),
+            ) {
+                Text("Cancel")
+            }
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                },
+                modifier = Modifier.padding(8.dp),
+            ) {
+                Text("Delete")
+            }
+        }
+    }
+
+
+        data class TabInfo(
         val label: String = "Tab",
         val secondary: List<TabInfo>? = null,
         val content: @Composable () -> Unit = {}
