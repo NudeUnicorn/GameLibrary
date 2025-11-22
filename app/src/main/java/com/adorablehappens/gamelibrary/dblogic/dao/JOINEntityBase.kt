@@ -2,8 +2,8 @@ package com.adorablehappens.gamelibrary.dblogic.dao
 
 interface JOINEntityBase {
 
-    val parentEntityID: String
-    val childEntityID: String
+    val parentEntityID: Long
+    val childEntityID: Long
 
 }
 

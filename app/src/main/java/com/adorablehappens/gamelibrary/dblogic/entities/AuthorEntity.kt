@@ -9,14 +9,14 @@ import com.adorablehappens.gamelibrary.dblogic.dao.EntityBase
 data class AuthorEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val id: Long,
+    override val id: Long,
 
     @ColumnInfo(name = "name")
-    var name: String = "",
+    override var name: String = "",
 
     @ColumnInfo(name = "description")
-    var description: String = "",
+    override var description: String = "",
 
     @ColumnInfo(name = "comment")
-    var comment: String = "",
-)
+    override var comment: String = "",
+): EntityBase

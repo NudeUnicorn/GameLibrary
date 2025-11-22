@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import com.adorablehappens.gamelibrary.dblogic.dao.JOINEntity
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINEntityBase
 
 /**
  * Класс-таблица(join-таблица) для связи GameEntity и CheatEntity по id
@@ -34,6 +35,6 @@ import com.adorablehappens.gamelibrary.dblogic.dao.JOINEntity
     ]
     )
 data class UCheatAuthorEntity(
-    val parentEntityID: Long,
-    val childEntityID: Long
-)
+    override val parentEntityID: Long,
+    override val childEntityID: Long
+): JOINEntityBase
