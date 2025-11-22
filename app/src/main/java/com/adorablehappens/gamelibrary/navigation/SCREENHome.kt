@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.foundation.text.input.TextFieldBuffer
+import androidx.compose.foundation.text.input.delete
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
@@ -71,7 +74,7 @@ object SCREENHome : RoutesScreens(
         val titlesSecondary =
             listOf("Игра", "Жанры", "Тэги", "Разработчики", "Авторы", "Игровые движки")
         var showCreateUpdateDialog by remember { mutableStateOf(false) }
-        var contentCreateUpdateDialog by remember { mutableStateOf(@Composable {GenreCreateUpdate()}) }
+        var contentCreateUpdateDialog by remember { mutableStateOf(@Composable {}) }
 
         val games by vm.vmAllGamesLiveData.allGameEntitiesObj.observeAsState()
         val allCurrentGameLiveData by Repository.AllGamesLiveData.allGenreEntitiesObj.observeAsState()
@@ -105,7 +108,17 @@ object SCREENHome : RoutesScreens(
                             vm = vm,
                             addBtnOnClick = {
                                 contentCreateUpdateDialog = {GenreCreateUpdate(
-                                    onDismissRequest = {showCreateUpdateDialog = false}
+                                    onDismissRequest = {showCreateUpdateDialog = false},
+                                    onConfirmation = { name, description, comment, entity ->
+                                        Repository.behGenreRepo.addNew(
+                                            GenreEntity(
+                                                id = 0,
+                                                name = name,
+                                                description = description,
+                                                comment = comment
+                                            )
+                                        )
+                                    }
                                 )}
                                 showCreateUpdateDialog = true
                             },
@@ -113,6 +126,18 @@ object SCREENHome : RoutesScreens(
                                 contentCreateUpdateDialog = {
                                     GenreCreateUpdate(
                                         onDismissRequest = { showCreateUpdateDialog = false },
+                                        onConfirmation = {name, description, comment, entity ->
+                                            if (entity != null){
+                                                Repository.behGenreRepo.update(
+                                                    GenreEntity(
+                                                        id = entity.id,
+                                                        name = name,
+                                                        description = description,
+                                                        comment = comment
+                                                    )
+                                                )
+                                            }
+                                        },
                                         entity = allCurrentGameLiveData?.let { it ->
                                             it.filter { it.id == id }[0]
                                         }
@@ -120,7 +145,7 @@ object SCREENHome : RoutesScreens(
                                 }
                                 showCreateUpdateDialog = true
                             },
-                            delBtnOnClick = {
+                            delBtnOnClick = {id ->
                                 contentCreateUpdateDialog = {
                                     DeleteConfirmation(
                                         onDismissRequest = {showCreateUpdateDialog = false},
@@ -131,7 +156,7 @@ object SCREENHome : RoutesScreens(
                                         }
                                     )
                                 }
-
+                                showCreateUpdateDialog = true
                             },
                             allCurrentGameLiveData = allCurrentGameLiveData
                         )}
@@ -223,6 +248,7 @@ object SCREENHome : RoutesScreens(
             if (showCreateUpdateDialog){
                 DialogCreateUpdate(
                     onDismissRequest = {showCreateUpdateDialog = false},
+                    onConfirmation = {showCreateUpdateDialog = false},
                     content = {contentCreateUpdateDialog()}
                 )
             }
@@ -433,87 +459,91 @@ object SCREENHome : RoutesScreens(
 
         Dialog(onDismissRequest = { onDismissRequest() }) {
             // Draw a rectangle shape with rounded corners inside the dialog
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(375.dp)
-                    .padding(16.dp),
-                shape = RoundedCornerShape(16.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    content()
-                }
-            }
+
+            content()
         }
+
     }
     @Composable
     fun GenreCreateUpdate(
         entity: GenreEntity? = null,
         onDismissRequest: () -> Unit = {},
+        onConfirmation: (
+                name: String,
+                description: String,
+                comment: String,
+                entity: GenreEntity?
+                ) -> Unit,
     ) {
-        val name = rememberTextFieldState("")
-        val description = rememberTextFieldState("")
-        val comment = rememberTextFieldState("")
+        val name = rememberTextFieldState(entity?.name ?: "")
+        val description = rememberTextFieldState(entity?.description ?: "")
+        val comment = rememberTextFieldState(entity?.comment ?: "")
 
-        if (entity != null){
-            name.setTextAndPlaceCursorAtEnd(entity.name)
-            description.setTextAndPlaceCursorAtEnd(entity.description)
-            comment.setTextAndPlaceCursorAtEnd(entity.comment)
-        }
-        Text(
-            text = "Create or update existing genre",
-            modifier = Modifier.padding(16.dp),
-        )
-        TextField(
-            state = name,
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("📝 Genre title") },
-            placeholder = { Text("How genre named?") }
-        )
-        TextField(
-            state = description,
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("📝 Description") },
-            placeholder = { Text("Describe genre") }
-        )
-        TextField(
-            state = comment,
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("📝 Comment") },
-            placeholder = { Text("Write a comment") }
-        )
-        Row(
+
+        Card(
             modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
+                .fillMaxWidth()
+                .height(375.dp)
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
         ) {
-            TextButton(
-                onClick = {
-                    onDismissRequest()
-                },
-                modifier = Modifier.padding(8.dp),
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text("Cancel")
-            }
-            TextButton(
-                onClick = {
-                    Repository.behGenreRepo.addNew(
-                        GenreEntity(
-                            id = 0,
-                            name = name.text.toString(),
-                            description = description.text.toString(),
-                            comment = comment.text.toString()
-                        )
-                    )
-                },
-                modifier = Modifier.padding(8.dp),
-            ) {
-                Text("Save")
+
+                Text(
+                    text = "Create or update existing genre",
+                    modifier = Modifier.padding(16.dp),
+                )
+                TextField(
+                    state = name,
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("📝 Genre title") },
+                    placeholder = { Text("How genre named?") },
+
+                )
+                TextField(
+                    state = description,
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("📝 Description") },
+                    placeholder = { Text("Describe genre") }
+                )
+                TextField(
+                    state = comment,
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("📝 Comment") },
+                    placeholder = { Text("Write a comment") }
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    TextButton(
+                        onClick = {
+                            onDismissRequest()
+                        },
+                        modifier = Modifier.padding(8.dp),
+                    ) {
+                        Text("Cancel")
+                    }
+                    TextButton(
+                        onClick = {
+                            onConfirmation(
+                                name.text.toString(),
+                                description.text.toString(),
+                                comment.text.toString(),
+                                entity
+                            )
+                        },
+                        modifier = Modifier.padding(8.dp),
+                    ) {
+                        Text("Save")
+                    }
+                }
             }
         }
     }
@@ -523,37 +553,54 @@ object SCREENHome : RoutesScreens(
         onDismissRequest: () -> Unit = {},
     ) {
 
-        Text(
-            text = "Are you sure?",
-            modifier = Modifier.padding(16.dp),
-        )
-        Text(
-            text = "You really want to delete?",
-            modifier = Modifier.padding(16.dp),
-        )
-
-        Row(
+        Card(
             modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
+                .fillMaxWidth()
+                .requiredHeight(200.dp)
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
         ) {
-            TextButton(
-                onClick = {
-                    onDismissRequest()
-                },
-                modifier = Modifier.padding(8.dp),
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text("Cancel")
-            }
-            TextButton(
-                onClick = {
-                    onConfirmation()
-                },
-                modifier = Modifier.padding(8.dp),
-            ) {
-                Text("Delete")
+
+                Text(
+                    text = "Are you sure?",
+                    modifier = Modifier.padding(16.dp),
+                )
+                Text(
+                    text = "You really want to delete?",
+                    modifier = Modifier.padding(16.dp),
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    TextButton(
+                        onClick = {
+                            onDismissRequest()
+                        },
+                        modifier = Modifier.padding(8.dp),
+                    ) {
+                        Text("Cancel")
+                    }
+                    TextButton(
+                        onClick = {
+                            onConfirmation()
+                        },
+                        modifier = Modifier.padding(8.dp),
+                    ) {
+                        Text("Delete")
+                    }
+                }
             }
         }
+
     }
 
 
