@@ -15,14 +15,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.TextAutoSize
-import androidx.compose.foundation.text.input.TextFieldBuffer
-import androidx.compose.foundation.text.input.delete
 import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.ExposurePlus1
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.Button
@@ -52,6 +48,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.adorablehappens.gamelibrary.dblogic.Repository
+import com.adorablehappens.gamelibrary.dblogic.dao.EntityBase
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GenreEntity
 import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
@@ -77,8 +74,70 @@ object SCREENHome : RoutesScreens(
         var contentCreateUpdateDialog by remember { mutableStateOf(@Composable {}) }
 
         val games by vm.vmAllGamesLiveData.allGameEntitiesObj.observeAsState()
-        val allCurrentGameLiveData by Repository.AllGamesLiveData.allGenreEntitiesObj.observeAsState()
+        val allGenreEntities by Repository.AllGamesLiveData.allGenreEntitiesObj.observeAsState()
 
+        val tabGenres = @Composable {
+            ListOfEntities(
+                vm = vm,
+                addBtnOnClick = {
+                    contentCreateUpdateDialog = {GenreCreateUpdate(
+                        onDismissRequest = {showCreateUpdateDialog = false},
+                        onConfirmation = { name, description, comment, entity ->
+                            Repository.behGenreRepo.addNew(
+                                GenreEntity(
+                                    id = 0,
+                                    name = name,
+                                    description = description,
+                                    comment = comment
+                                )
+                            )
+                        }
+                    )}
+                    showCreateUpdateDialog = true
+                },
+                modBtnOnClick = {id ->
+                    contentCreateUpdateDialog = {
+                        GenreCreateUpdate(
+                            onDismissRequest = { showCreateUpdateDialog = false },
+                            onConfirmation = {name, description, comment, entity ->
+                                if (entity != null){
+                                    Repository.behGenreRepo.update(
+                                        GenreEntity(
+                                            id = entity.id,
+                                            name = name,
+                                            description = description,
+                                            comment = comment
+                                        )
+                                    )
+                                }
+                            },
+                            entity = allGenreEntities?.let { it ->
+                                it.filter { it.id == id }[0]
+                            }
+                        )
+                    }
+                    showCreateUpdateDialog = true
+                },
+                delBtnOnClick = {id ->
+                    contentCreateUpdateDialog = {
+                        DeleteConfirmation(
+                            onDismissRequest = {showCreateUpdateDialog = false},
+                            onConfirmation = {
+                                val entity = allGenreEntities?.let { it ->
+                                    it.filter { it.id == id }[0]}
+
+                                entity?.let {
+                                    Repository.behGenreRepo.deleteOne(entity = entity)
+                                }
+                                showCreateUpdateDialog = false
+                            }
+                        )
+                    }
+                    showCreateUpdateDialog = true
+                },
+                allEntitiesData = allGenreEntities
+            )
+        }
 
         val tabs = listOf<TabInfo>(
             TabInfo(
@@ -104,62 +163,7 @@ object SCREENHome : RoutesScreens(
                     TabInfo(
                         label = "Жанры",
                         secondary = null,
-                        content = {ListGenres(
-                            vm = vm,
-                            addBtnOnClick = {
-                                contentCreateUpdateDialog = {GenreCreateUpdate(
-                                    onDismissRequest = {showCreateUpdateDialog = false},
-                                    onConfirmation = { name, description, comment, entity ->
-                                        Repository.behGenreRepo.addNew(
-                                            GenreEntity(
-                                                id = 0,
-                                                name = name,
-                                                description = description,
-                                                comment = comment
-                                            )
-                                        )
-                                    }
-                                )}
-                                showCreateUpdateDialog = true
-                            },
-                            modBtnOnClick = {id ->
-                                contentCreateUpdateDialog = {
-                                    GenreCreateUpdate(
-                                        onDismissRequest = { showCreateUpdateDialog = false },
-                                        onConfirmation = {name, description, comment, entity ->
-                                            if (entity != null){
-                                                Repository.behGenreRepo.update(
-                                                    GenreEntity(
-                                                        id = entity.id,
-                                                        name = name,
-                                                        description = description,
-                                                        comment = comment
-                                                    )
-                                                )
-                                            }
-                                        },
-                                        entity = allCurrentGameLiveData?.let { it ->
-                                            it.filter { it.id == id }[0]
-                                        }
-                                    )
-                                }
-                                showCreateUpdateDialog = true
-                            },
-                            delBtnOnClick = {id ->
-                                contentCreateUpdateDialog = {
-                                    DeleteConfirmation(
-                                        onDismissRequest = {showCreateUpdateDialog = false},
-                                        onConfirmation = {
-
-
-                                            showCreateUpdateDialog = false
-                                        }
-                                    )
-                                }
-                                showCreateUpdateDialog = true
-                            },
-                            allCurrentGameLiveData = allCurrentGameLiveData
-                        )}
+                        content = {tabGenres()}
                     ),
                     TabInfo(
                         label = "Тэги",
@@ -385,10 +389,10 @@ object SCREENHome : RoutesScreens(
 
     }
     @Composable
-    fun ListGenres(
+    fun ListOfEntities(
         modifier: Modifier = Modifier,
         vm: LibraryViewModel,
-        allCurrentGameLiveData: List<GenreEntity>?,
+        allEntitiesData: List<EntityBase>?,
         addBtnOnClick: ()->Unit = {},
         modBtnOnClick: (entityID: Long)->Unit = {},
         delBtnOnClick: (entityID: Long)->Unit = {},
@@ -410,31 +414,31 @@ object SCREENHome : RoutesScreens(
                     Text(text = "+ Add genre")
                 }
             }
-            allCurrentGameLiveData?.let { it ->
+            allEntitiesData?.let { it ->
                 items(it.size){
                     ListItem(
                         headlineContent = {
-                            Text(text = allCurrentGameLiveData[it].name)
+                            Text(text = allEntitiesData[it].name)
                         },
                         overlineContent = {
-                            Text(text = "ID " + allCurrentGameLiveData[it].id.toString())
+                            Text(text = "ID " + allEntitiesData[it].id.toString())
                         },
                         supportingContent = {
-                            Text(text = allCurrentGameLiveData[it].description)
+                            Text(text = allEntitiesData[it].description)
                         },
                         trailingContent = {
                             Row {
 
                                 IconButton(
                                     onClick = {
-                                        modBtnOnClick(allCurrentGameLiveData[it].id)
+                                        modBtnOnClick(allEntitiesData[it].id)
                                     }
                                 ) {
                                     Icon(Icons.Filled.AddCircle,"")
                                 }
                                 IconButton(
                                     onClick = {
-                                        delBtnOnClick(allCurrentGameLiveData[it].id)
+                                        delBtnOnClick(allEntitiesData[it].id)
                                     }
                                 ) {
                                     Icon(Icons.Filled.RemoveCircle,"")

@@ -1,6 +1,12 @@
 package com.adorablehappens.gamelibrary.navigation
 
+import android.app.Activity
+import android.net.Uri
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,11 +47,13 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.adorablehappens.gamelibrary.R
+import com.adorablehappens.gamelibrary.dblogic.Repository
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.H1Text
 import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.H2Text
@@ -67,10 +75,19 @@ object SCREENCreateUpdateGame : RoutesScreens(
             Modifier
                 .fillMaxSize()
         val createOrUpdate = remember { mutableStateOf(false) }
+        var uri: Uri? = null
+        val launcher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+            onResult = { uriResult ->
+                if (uriResult !== null)
+                    uri = uriResult
+            }
+        )
 
         val name = rememberTextFieldState(stringResource(R.string.otw2_title))
         val subname = rememberTextFieldState("")
         val worldStoryShort = rememberTextFieldState(initialText = stringResource(R.string.otw2_worldStory))
+        val imageFilename = rememberTextFieldState("")
         val description = rememberTextFieldState("Here will be a description")
         val comment = rememberTextFieldState("No comment for now")
         val price = rememberTextFieldState("0")
@@ -88,7 +105,10 @@ object SCREENCreateUpdateGame : RoutesScreens(
                     .padding(bottom = 0.dp)
             ) {
                 Card(
-                    onClick = {},
+                    onClick = {
+                        launcher.launch("image/*")
+                        println("URI is - $uri")
+                    },
                     Modifier
                         .height(200.dp)
                         .padding(16.dp, 16.dp, 16.dp, 0.dp)
@@ -102,6 +122,7 @@ object SCREENCreateUpdateGame : RoutesScreens(
                             .fillMaxSize()
                     )
                 }
+
 
                 Card (
                     Modifier

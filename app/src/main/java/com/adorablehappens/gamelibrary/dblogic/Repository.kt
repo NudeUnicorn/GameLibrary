@@ -57,6 +57,7 @@ import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithGenres
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithTags
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithWalkthroughes
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOWalkthroughWithImages
+import com.adorablehappens.gamelibrary.services.ImageFunc
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -195,6 +196,8 @@ object Repository {
     lateinit var allAuthorsState: MutableState<List<AuthorEntity>>
     lateinit var allGameEnginesState: MutableState<List<GameEngineEntity>>
 
+    val imageManager = object : ImageFunc(){}
+
 
     init {
 
@@ -206,6 +209,7 @@ object Repository {
     fun initDB(context: Context, scope: CoroutineScope){
         db = DB.getInstance(context)
         coroutineScope = scope
+        imageManager.setContext(context)
 
 //        daoAuthorRepo = db.createAuthorDAO()
 //        behAuthorRepo.setDAO(daoAuthorRepo)
