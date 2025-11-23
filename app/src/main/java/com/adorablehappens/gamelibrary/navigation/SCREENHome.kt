@@ -1,21 +1,27 @@
 package com.adorablehappens.gamelibrary.navigation
 
+import android.graphics.Bitmap
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
@@ -35,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -42,16 +49,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.core.graphics.createBitmap
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.adorablehappens.gamelibrary.R
 import com.adorablehappens.gamelibrary.dblogic.Repository
 import com.adorablehappens.gamelibrary.dblogic.dao.EntityBase
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GenreEntity
+import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.SpacerVerticalFill
+import com.adorablehappens.gamelibrary.navigation.SCREENCreateUpdateGame.GameNewFields
 import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
+import java.util.Calendar
 
 object SCREENHome : RoutesScreens(
     route = "Home",
@@ -67,83 +85,21 @@ object SCREENHome : RoutesScreens(
         val lifecycleOwner = LocalLifecycleOwner.current
         var selectedPrimary by remember { mutableStateOf(0) }
         var selectedSecondary by remember { mutableStateOf(0) }
-        val titlesPrimary = listOf("Коллекция", "Обзор", "Дополнительно")
-        val titlesSecondary =
-            listOf("Игра", "Жанры", "Тэги", "Разработчики", "Авторы", "Игровые движки")
-        var showCreateUpdateDialog by remember { mutableStateOf(false) }
-        var contentCreateUpdateDialog by remember { mutableStateOf(@Composable {}) }
+
+        val showCreateUpdateDialog = remember { mutableStateOf(false) }
+        val contentCreateUpdateDialog = remember { mutableStateOf(@Composable {}) }
 
         val games by vm.vmAllGamesLiveData.allGameEntitiesObj.observeAsState()
         val allGenreEntities by Repository.AllGamesLiveData.allGenreEntitiesObj.observeAsState()
 
-        val tabGenres = @Composable {
-            ListOfEntities(
-                vm = vm,
-                addBtnOnClick = {
-                    contentCreateUpdateDialog = {GenreCreateUpdate(
-                        onDismissRequest = {showCreateUpdateDialog = false},
-                        onConfirmation = { name, description, comment, entity ->
-                            Repository.behGenreRepo.addNew(
-                                GenreEntity(
-                                    id = 0,
-                                    name = name,
-                                    description = description,
-                                    comment = comment
-                                )
-                            )
-                        }
-                    )}
-                    showCreateUpdateDialog = true
-                },
-                modBtnOnClick = {id ->
-                    contentCreateUpdateDialog = {
-                        GenreCreateUpdate(
-                            onDismissRequest = { showCreateUpdateDialog = false },
-                            onConfirmation = {name, description, comment, entity ->
-                                if (entity != null){
-                                    Repository.behGenreRepo.update(
-                                        GenreEntity(
-                                            id = entity.id,
-                                            name = name,
-                                            description = description,
-                                            comment = comment
-                                        )
-                                    )
-                                }
-                            },
-                            entity = allGenreEntities?.let { it ->
-                                it.filter { it.id == id }[0]
-                            }
-                        )
-                    }
-                    showCreateUpdateDialog = true
-                },
-                delBtnOnClick = {id ->
-                    contentCreateUpdateDialog = {
-                        DeleteConfirmation(
-                            onDismissRequest = {showCreateUpdateDialog = false},
-                            onConfirmation = {
-                                val entity = allGenreEntities?.let { it ->
-                                    it.filter { it.id == id }[0]}
 
-                                entity?.let {
-                                    Repository.behGenreRepo.deleteOne(entity = entity)
-                                }
-                                showCreateUpdateDialog = false
-                            }
-                        )
-                    }
-                    showCreateUpdateDialog = true
-                },
-                allEntitiesData = allGenreEntities
-            )
-        }
+
 
         val tabs = listOf<TabInfo>(
             TabInfo(
                 label = "Коллекция",
                 secondary = null,
-                content = { Test(games) }
+                content = { LibraryGrid(games) }
             ),
             TabInfo(
                 label = "Обзор",
@@ -156,14 +112,24 @@ object SCREENHome : RoutesScreens(
                 label = "Дополнительно",
                 secondary = listOf<TabInfo>(
                     TabInfo(
-                        label = "Игра",
+                        label = "Игры",
                         secondary = null,
-                        content = {RoutesService.createUpdateGame.route.Content()}
+                        content = {TabGames(
+                            vm = vm,
+                            allEntities = games,
+                            showCreateUpdateDialog = showCreateUpdateDialog,
+                            contentCreateUpdateDialog = contentCreateUpdateDialog
+                        )}
                     ),
                     TabInfo(
                         label = "Жанры",
                         secondary = null,
-                        content = {tabGenres()}
+                        content = {TabGenres(
+                            vm = vm,
+                            allGenreEntities = allGenreEntities,
+                            showCreateUpdateDialog = showCreateUpdateDialog,
+                            contentCreateUpdateDialog = contentCreateUpdateDialog
+                        )}
                     ),
                     TabInfo(
                         label = "Тэги",
@@ -249,33 +215,217 @@ object SCREENHome : RoutesScreens(
 //                Text(text = "Modal yeahhh!")
 //            }
 
-            if (showCreateUpdateDialog){
-                DialogCreateUpdate(
-                    onDismissRequest = {showCreateUpdateDialog = false},
-                    onConfirmation = {showCreateUpdateDialog = false},
-                    content = {contentCreateUpdateDialog()}
+            if (showCreateUpdateDialog.value){
+                DialogHolder(
+                    onDismissRequest = {showCreateUpdateDialog.value = false},
+                    onConfirmation = {showCreateUpdateDialog.value = false},
+                    content = {contentCreateUpdateDialog.value()}
                 )
             }
         }
     }
 
+    @Composable
+    fun TabGenres(
+        vm: LibraryViewModel,
+        allGenreEntities: List<GenreEntity>?,
+        showCreateUpdateDialog: MutableState<Boolean>,
+        contentCreateUpdateDialog:  MutableState<@Composable ()-> Unit>,
+    ){
+//        var contentCreateUpdateDialog = contentCreateUpdateDialog1
+//        var showCreateUpdateDialog = showCreateUpdateDialog1
+        ListOfEntities(
+            vm = vm,
+            whatToAddText = "+ Add genre",
+            addBtnOnClick = {
+                contentCreateUpdateDialog.value = {
+                    GenreCreateUpdate(
+                    onDismissRequest = {showCreateUpdateDialog.value = false},
+                    onConfirmation = { name, description, comment, entity ->
+                        Repository.behGenreRepo.addNew(
+                            GenreEntity(
+                                id = 0,
+                                name = name,
+                                description = description,
+                                comment = comment
+                            )
+                        )
+                        showCreateUpdateDialog.value = false
+                    }
+                )}
+                showCreateUpdateDialog.value = true
+            },
+            modBtnOnClick = {id ->
+                contentCreateUpdateDialog.value = {
+                    GenreCreateUpdate(
+                        onDismissRequest = { showCreateUpdateDialog.value = false },
+                        onConfirmation = {name, description, comment, entity ->
+                            if (entity != null){
+                                Repository.behGenreRepo.update(
+                                    GenreEntity(
+                                        id = entity.id,
+                                        name = name,
+                                        description = description,
+                                        comment = comment
+                                    )
+                                )
+                            }
+                            showCreateUpdateDialog.value = false
+                        },
+                        entity = allGenreEntities?.let { it ->
+                            it.filter { it.id == id }[0]
+                        }
+                    )
+                }
+                showCreateUpdateDialog.value = true
+            },
+            delBtnOnClick = {id ->
+                val entity = allGenreEntities?.let { it ->
+                    it.filter { it.id == id }[0]}
+
+                entity?.let{
+
+                    contentCreateUpdateDialog.value = {
+                        DeleteConfirmation(
+                            onDismissRequest = {showCreateUpdateDialog.value = false},
+                            onConfirmation = {
+
+                                Repository.behGenreRepo.deleteOne(entity = entity)
+
+                                showCreateUpdateDialog.value = false
+                            }
+                        )
+                    }
+                    showCreateUpdateDialog.value = true
+                }
+            },
+            allEntitiesData = allGenreEntities
+        )
+    }
+    @Composable
+    fun TabGames(
+        vm: LibraryViewModel,
+        allEntities: List<GameEntity>?,
+        showCreateUpdateDialog: MutableState<Boolean>,
+        contentCreateUpdateDialog:  MutableState<@Composable ()-> Unit>,
+    ){
+
+        ListOfEntities(
+            vm = vm,
+            whatToAddText = "+ Add game",
+            addBtnOnClick = {
+                contentCreateUpdateDialog.value = {
+                    GameCreateUpdate(
+                        onDismissRequest = { showCreateUpdateDialog.value = false },
+                        onConfirmation = {name, subname, worldStoryShort, imageFilename, price, description, comment, entity, uri ->
+                            val imageFilename = vm.vmRepo.imageManager.saveImageToInternalStorage(uri) ?: ""
+                            vm.vmRepo.behGameRepo.addNew(GameEntity(
+                                id = 0,
+                                name = name,
+                                subname = subname,
+                                wordStoryShort = worldStoryShort,
+                                image = imageFilename,
+                                imageIcon = "",
+                                favorite = false,
+                                price = price.toInt(),
+                                startPlaying = 0,
+                                stopPlaying = 0,
+                                overallPlaying = 0,
+                                description = description,
+                                comment = comment,
+                                timestamp = Calendar.getInstance().timeInMillis
+                            ))
+                            showCreateUpdateDialog.value = false
+                        },
+                        vm = vm,
+                    )}
+                showCreateUpdateDialog.value = true
+            },
+            modBtnOnClick = {id ->
+                contentCreateUpdateDialog.value = {
+                    GameCreateUpdate(
+                        onDismissRequest = { showCreateUpdateDialog.value = false },
+                        onConfirmation = {name, subname, worldStoryShort, imageFilename, price, description, comment, entity, uri ->
+                            entity?.let{
+                                var imageFilename1: String = ""
+                                if (entity.image != imageFilename) {
+                                    vm.vmRepo.imageManager.deleteImage(entity.image)
+                                    imageFilename1 =
+                                        vm.vmRepo.imageManager.saveImageToInternalStorage(uri) ?: ""
+                                } else {
+                                    imageFilename1 = imageFilename
+                                }
+                                vm.vmRepo.behGameRepo.update(
+                                    GameEntity(
+                                        id = entity.id,
+                                        name = name,
+                                        subname = subname,
+                                        wordStoryShort = worldStoryShort,
+                                        image = imageFilename1,
+                                        imageIcon = "",
+                                        favorite = false,
+                                        price = price,
+                                        startPlaying = entity.startPlaying,
+                                        stopPlaying = entity.stopPlaying,
+                                        overallPlaying = entity.overallPlaying,
+                                        description = description,
+                                        comment = comment,
+                                        timestamp = entity.timestamp
+                                    )
+                                )
+                            }
+                            showCreateUpdateDialog.value = false
+                        },
+                        entity = allEntities?.let { it ->
+                            it.filter { it.id == id }[0]
+                        },
+                        vm = vm
+                    )
+                }
+                showCreateUpdateDialog.value = true
+            },
+            delBtnOnClick = {id ->
+                val entity = allEntities?.let { it ->
+                    it.filter { it.id == id }[0]}
+
+                entity?.let{
+                    contentCreateUpdateDialog.value = {
+                        DeleteConfirmation(
+                            onDismissRequest = {showCreateUpdateDialog.value = false},
+                            onConfirmation = {
+                                    vm.vmRepo.behGameRepo.deleteOne(entity = entity)
+
+                                showCreateUpdateDialog.value = false
+                            },
+                            description = "ID ${entity.id} - ${entity.name}"
+                        )
+                    }
+                    showCreateUpdateDialog.value = true
+                }
+
+            },
+            allEntitiesData = allEntities
+        )
+    }
+
 
     @Composable
-    fun Test(
+    fun LibraryGrid(
         games: List<GameEntity>?,
         vm: LibraryViewModel = viewModel()
     ) {
 
-        if (games != null){
-
+        games?.let {gameEntities ->
             LazyVerticalGrid(
-                columns = GridCells.Fixed(3)
+                columns = GridCells.Fixed(3),
+                contentPadding = PaddingValues(
+                    start = 0.dp,16.dp,16.dp,16.dp)
             ) {
                 item {
                     CardAddGame(vm = vm)
                 }
                 items(games.size) { it ->
-                        CardGame(game = games[it], vm = vm)
+                    CardGame(entity = games[it], vm = vm)
                 }
             }
 
@@ -308,12 +458,14 @@ object SCREENHome : RoutesScreens(
     @Composable
     fun CardGame(
         modifier: Modifier = Modifier,
-        game: GameEntity,
+        entity: GameEntity,
         vm: LibraryViewModel
     ) {
+        val image: Bitmap? by remember { mutableStateOf(vm.vmRepo.imageCacher.imageGet(entity.id, entity.image)) }
+
         Card (
             onClick = {
-                vm.vmRepo.currentGameEntityID = game.id
+                vm.vmRepo.currentGameEntityID = entity.id
             },
             modifier = Modifier
                 .aspectRatio(0.8f)
@@ -327,23 +479,35 @@ object SCREENHome : RoutesScreens(
             ) {
 
                 Image(
-                    Icons.Filled.Home,
-                    contentDescription = "",
+                    bitmap = image?.asImageBitmap() ?: createBitmap(1,1).asImageBitmap(),
+                    contentDescription = entity.name,
+                    contentScale = ContentScale.FillHeight,
                     modifier = Modifier
                         .fillMaxSize()
 
                 )
             }
-            Text(
-                text = game.name,
-                modifier = Modifier
+            Box (
+                modifier= Modifier
                     .fillMaxWidth()
                     .weight(0.3f)
-                    .padding(horizontal = 10.dp)
                 ,
-                overflow = TextOverflow.Ellipsis,
-                autoSize = TextAutoSize.StepBased()
-            )
+                contentAlignment = Alignment.Center
+            ){
+
+                Text(
+                    text = entity.name,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                    ,
+                    fontSize = TextUnit(10f, TextUnitType.Sp),
+                    textAlign = TextAlign.Center,
+                    lineHeight = TextUnit(10f, TextUnitType.Sp),
+                    overflow = TextOverflow.Ellipsis,
+                    //autoSize = TextAutoSize.StepBased()
+                )
+            }
         }
 
     }
@@ -375,16 +539,24 @@ object SCREENHome : RoutesScreens(
 
                 )
             }
-            Text(
-                text = "Add game",
-                modifier = Modifier
+            Box (
+                modifier= Modifier
                     .fillMaxWidth()
                     .weight(0.3f)
-                    .padding(horizontal = 10.dp)
                 ,
-                overflow = TextOverflow.Ellipsis,
-                autoSize = TextAutoSize.StepBased()
-            )
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Add game",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = TextUnit(10f, TextUnitType.Sp),
+                    textAlign = TextAlign.Center,
+                    lineHeight = TextUnit(10f, TextUnitType.Sp),
+                )
+            }
         }
 
     }
@@ -396,6 +568,7 @@ object SCREENHome : RoutesScreens(
         addBtnOnClick: ()->Unit = {},
         modBtnOnClick: (entityID: Long)->Unit = {},
         delBtnOnClick: (entityID: Long)->Unit = {},
+        whatToAddText: String = "+ Add genre"
     ) {
 
         Column {  }
@@ -411,7 +584,7 @@ object SCREENHome : RoutesScreens(
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
-                    Text(text = "+ Add genre")
+                    Text(text = whatToAddText)
                 }
             }
             allEntitiesData?.let { it ->
@@ -455,7 +628,7 @@ object SCREENHome : RoutesScreens(
     }
 
     @Composable
-    fun DialogCreateUpdate(
+    fun DialogHolder(
         onDismissRequest: () -> Unit = {},
         onConfirmation: () -> Unit = {},
         content: @Composable () -> Unit = {}
@@ -478,7 +651,8 @@ object SCREENHome : RoutesScreens(
                 comment: String,
                 entity: GenreEntity?
                 ) -> Unit,
-    ) {
+    )
+    {
         val name = rememberTextFieldState(entity?.name ?: "")
         val description = rememberTextFieldState(entity?.description ?: "")
         val comment = rememberTextFieldState(entity?.comment ?: "")
@@ -487,13 +661,14 @@ object SCREENHome : RoutesScreens(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(375.dp)
+                //.height(375.dp)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    //.fillMaxSize()
+                ,
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -552,21 +727,166 @@ object SCREENHome : RoutesScreens(
         }
     }
     @Composable
-    fun DeleteConfirmation(
-        onConfirmation: () -> Unit = {},
+    fun GameCreateUpdate(
+        vm: LibraryViewModel,
+        entity: GameEntity? = null,
         onDismissRequest: () -> Unit = {},
-    ) {
+        onConfirmation: (
+            name: String,
+            subname: String,
+            worldStoryShort: String,
+            imageFilename: String,
+            price: Int,
+            description: String,
+            comment: String,
+            entity: GameEntity?,
+            uri: Uri?,
+        ) -> Unit,
+    )
+    {
+        val name = rememberTextFieldState(entity?.name ?: "")
+        val description = rememberTextFieldState(entity?.description ?: "")
+        val comment = rememberTextFieldState(entity?.comment ?: "")
+
+        val mod: Modifier =
+            Modifier
+                .fillMaxSize()
+
+        val subname = rememberTextFieldState(entity?.subname ?: "")
+        val worldStoryShort = rememberTextFieldState(initialText = entity?.wordStoryShort ?: stringResource(R.string.otw2_worldStory))
+        var imageFilename by remember { mutableStateOf(entity?.image ?: "") }
+        var favorite by remember { mutableStateOf(entity?.favorite ?: false) }
+        val price = rememberTextFieldState(entity?.price?.toString() ?: "0")
+
+        val uri = remember { mutableStateOf(Uri.EMPTY) }
+        var image: Bitmap? by remember {
+            mutableStateOf(
+                vm.vmRepo.imageCacher.imageGet(entity?.id ?: 0, imageFilename)
+                    ?:
+                    createBitmap(1, 1)
+            )
+        }
+        val launcher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+            onResult = { uriResult ->
+                if (uriResult !== null){
+                    uri.value = uriResult
+                    image = vm.vmRepo.imageManager.previewImage(uri.value)
+                    imageFilename = vm.vmRepo.imageManager.getNewImageFilename()
+                }
+            }
+        )
+
 
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .requiredHeight(200.dp)
-                .padding(16.dp),
+                //.height(375.dp)
+                //.padding(16.dp)
+            ,
+            //shape = RoundedCornerShape(16.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    //.fillMaxSize()
+                ,
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            )
+            {
+
+                Column(
+                    Modifier
+                        .verticalScroll(
+                            state = rememberScrollState()
+                        )
+                        .weight(1f)
+                        .padding(bottom = 0.dp)
+                ) {
+                    Card(
+                        onClick = {
+                            launcher.launch("image/*")
+                            println("URI is - $uri")
+                        },
+                        Modifier
+                            .height(200.dp)
+                            .padding(16.dp, 16.dp, 16.dp, 0.dp)
+                    ) {
+
+                        Image(
+                            bitmap = image?.asImageBitmap() ?: createBitmap(1,1).asImageBitmap(),
+                            contentDescription = "Select game splash image by clicking",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                        )
+
+                    }
+
+                    GameNewFields(
+                        name = name,
+                        subname = subname,
+                        worldStoryShort = worldStoryShort,
+                        description = description,
+                        comment = comment,
+                        price = price
+                    )
+
+                    Box(
+                        Modifier
+                            .padding(16.dp, 16.dp, 16.dp, 0.dp),
+                    ) {
+                        Column {
+
+                            Button(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                //.height(40.dp)
+                                ,
+                                onClick = {
+                                    onConfirmation(
+                                        name.text.toString(),
+                                        subname.text.toString(),
+                                        worldStoryShort.text.toString(),
+                                        imageFilename,
+                                        price.text.toString().toInt(),
+                                        description.text.toString(),
+                                        comment.text.toString(),
+                                        entity,
+                                        uri.value
+                                    )
+                                }) {
+                                Text(text = "Save game")
+                            }
+
+                            SpacerVerticalFill()
+                        }
+                    }
+
+                }
+
+            }
+        }
+    }
+    @Composable
+    fun DeleteConfirmation(
+        onConfirmation: () -> Unit = {},
+        onDismissRequest: () -> Unit = {},
+        description: String? = null
+    ) {
+        val descr = description ?: ""
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+            ,
             shape = RoundedCornerShape(16.dp),
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    //.fillMaxSize()
+                ,
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -576,8 +896,9 @@ object SCREENHome : RoutesScreens(
                     modifier = Modifier.padding(16.dp),
                 )
                 Text(
-                    text = "You really want to delete?",
+                    text = "You really want to delete? \n $descr",
                     modifier = Modifier.padding(16.dp),
+                    textAlign = TextAlign.Center
                 )
 
                 Row(

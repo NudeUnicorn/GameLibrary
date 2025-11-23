@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.DropdownMenu
@@ -36,9 +37,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 
@@ -109,8 +113,23 @@ open class RoutesScreensFundamentals() {
                 RoutesMain.entries.forEachIndexed { index, entry ->
                     NavigationBarItem(
                         selected = entry == barItemSelected,
-                        icon = {Icon(entry.route.icon, contentDescription = entry.route.contentDescription)},
-                        label = {Text(text = entry.route.label)},
+                        alwaysShowLabel = false,
+                        icon = {
+                            Icon(
+                                entry.route.icon,
+                                contentDescription = entry.route.contentDescription
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = entry.route.label,
+                                //fontSize = TextUnit(10f, TextUnitType.Sp),
+                                textAlign = TextAlign.Center,
+                                lineHeight = TextUnit(8f, TextUnitType.Sp),
+                                overflow = TextOverflow.Ellipsis,
+                                autoSize = TextAutoSize.StepBased(8.sp, 11.sp),
+                            )
+                        },
                         onClick = {
                             navController.navigate(entry.route.route)
                             barItemSelected = entry

@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
                     )
 
                     NavHost(navController,
-                        RoutesService.createUpdateGame.route.route,
+                        RoutesMain.home.route.route,
                         modifier = Modifier
                             .padding(innerPadding)
                             .fillMaxSize()

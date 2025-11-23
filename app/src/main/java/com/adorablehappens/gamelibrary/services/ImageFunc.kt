@@ -46,7 +46,7 @@ abstract class ImageFunc {
             uri?.let {
 
                 // Генерируем уникальное имя файла
-                val filename = "IMG_${System.currentTimeMillis()}.jpg"
+                val filename = getNewImageFilename()
 
                 // Открываем поток для записи
                 context.openFileOutput(filename, Context.MODE_PRIVATE).use {
@@ -82,5 +82,51 @@ abstract class ImageFunc {
             e.printStackTrace()
             null
         }
+    }
+
+    /**
+     * Показывает изображение из uri
+     */
+    fun previewImage(uri: Uri?): Bitmap?{
+        return try {
+            var image: Bitmap? = null
+            uri?.let {
+                // Читаем из URI
+                context.contentResolver.openInputStream(uri).use { inputStream ->
+                    image = BitmapFactory.decodeStream(inputStream)
+                }
+            }
+
+            image
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    /**
+     * Удаляет изображение
+     */
+    fun deleteImage(filename: String): Boolean{
+        return try {
+            if(filename.isNotEmpty()){
+                val imageFile = File(context.filesDir,filename)
+
+                return imageFile.delete()
+            }
+            return false
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    /**
+     * Определяет и возвращает новое уникальное имя изображения согласно паттерну
+     */
+    fun getNewImageFilename(): String{
+        return "IMG_${System.currentTimeMillis()}.jpg"
     }
 }

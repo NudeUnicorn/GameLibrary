@@ -1,6 +1,7 @@
 package com.adorablehappens.gamelibrary.navigation
 
 import android.app.Activity
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -47,6 +48,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.ImageBitmapConfig
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -61,6 +65,7 @@ import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.H
 import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.SpacerVerticalFill
 import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
 import java.util.Calendar
+import androidx.core.graphics.createBitmap
 
 object SCREENCreateUpdateGame : RoutesScreens(
     route = "CreateUpdateGame",
@@ -75,7 +80,6 @@ object SCREENCreateUpdateGame : RoutesScreens(
         val mod: Modifier =
             Modifier
                 .fillMaxSize()
-        val createOrUpdate = remember { mutableStateOf(false) }
 
         val name = rememberTextFieldState(stringResource(R.string.otw2_title))
         val subname = rememberTextFieldState("")
@@ -86,11 +90,13 @@ object SCREENCreateUpdateGame : RoutesScreens(
         val price = rememberTextFieldState("0")
 
         var uri: Uri? = null
+        var image: Bitmap? by remember { mutableStateOf(createBitmap(1, 1)) }
         val launcher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent(),
             onResult = { uriResult ->
                 if (uriResult !== null){
                     uri = uriResult
+                    image = vm.vmRepo.imageManager.previewImage(uri)
                 }
             }
         )
@@ -98,7 +104,8 @@ object SCREENCreateUpdateGame : RoutesScreens(
         Column(
             Modifier
                 .padding(0.dp)
-        ) {
+        )
+        {
             Column(
                 Modifier
                     .verticalScroll(
@@ -116,30 +123,25 @@ object SCREENCreateUpdateGame : RoutesScreens(
                         .height(200.dp)
                         .padding(16.dp, 16.dp, 16.dp, 0.dp)
                 ) {
-                    Text("Hello!")
-                    Image(
-                        imageVector = Icons.Filled.Games,
-                        contentDescription = "Select game splash image by clicking",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .fillMaxSize()
-                    )
+
+                        Image(
+                            bitmap = image?.asImageBitmap() ?: createBitmap(1,1).asImageBitmap(),
+                            contentDescription = "Select game splash image by clicking",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                        )
+
                 }
 
-
-                Card (
-                    Modifier
-                        .padding(16.dp, 16.dp, 16.dp, 0.dp),
-                ) {
-                    GameNewFields(
-                        name = name,
-                        subname = subname,
-                        worldStoryShort = worldStoryShort,
-                        description = description,
-                        comment = comment,
-                        price = price
-                    )
-                }
+                GameNewFields(
+                    name = name,
+                    subname = subname,
+                    worldStoryShort = worldStoryShort,
+                    description = description,
+                    comment = comment,
+                    price = price
+                )
 
                 Box(
                     Modifier
@@ -199,12 +201,7 @@ object SCREENCreateUpdateGame : RoutesScreens(
                 .fillMaxWidth()
                 .padding(16.dp)
         )
-        val cardColors = CardColors(
-            containerColor = Color.White,
-            contentColor = CardDefaults.cardColors().contentColor,
-            disabledContainerColor = CardDefaults.cardColors().disabledContainerColor,
-            disabledContentColor = CardDefaults.cardColors().disabledContentColor,
-        )
+
         val textFieldColors: TextFieldColors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color.Transparent,
             focusedContainerColor = Color.Transparent
@@ -230,7 +227,8 @@ object SCREENCreateUpdateGame : RoutesScreens(
                 state = subname,
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("🎮 Game subtitle") },
-                placeholder = { Text("Maybe game has a subtitle or slogan? Write it!") }
+                placeholder = { Text("Maybe game has a subtitle or slogan? Write it!") },
+                colors = textFieldColors
             )
             SpacerVerticalFill()
 
@@ -238,7 +236,8 @@ object SCREENCreateUpdateGame : RoutesScreens(
                 state = worldStoryShort,
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("📝 World story short") },
-                placeholder = { Text("Write a short world game story") }
+                placeholder = { Text("Write a short world game story") },
+                colors = textFieldColors
             )
             SpacerVerticalFill()
 
@@ -246,7 +245,8 @@ object SCREENCreateUpdateGame : RoutesScreens(
                 state = description,
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("📝 Description") },
-                placeholder = { Text("Just a field for short game description") }
+                placeholder = { Text("Just a field for short game description") },
+                colors = textFieldColors
             )
             SpacerVerticalFill()
 
@@ -254,12 +254,14 @@ object SCREENCreateUpdateGame : RoutesScreens(
                 state = comment,
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("🗒️ Comment") },
-                placeholder = { Text("It would be like a label") }
+                placeholder = { Text("It would be like a label") },
+                colors = textFieldColors
             )
             SpacerVerticalFill()
 
-            ElevatedCard (Modifier.padding(0.dp),
-                ) {
+            ElevatedCard(
+                Modifier.padding(0.dp),
+            ) {
                 Column(Modifier.padding(10.dp)) {
                     H2Text(text = "Genres")
 
@@ -346,7 +348,8 @@ object SCREENCreateUpdateGame : RoutesScreens(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("️💵 Price") },
                 placeholder = { Text("How much game cost?") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                colors = textFieldColors
             )
             SpacerVerticalFill()
 
