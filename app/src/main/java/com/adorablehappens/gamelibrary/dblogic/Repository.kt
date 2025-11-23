@@ -1,6 +1,7 @@
 package com.adorablehappens.gamelibrary.dblogic
 
 import android.content.Context
+import android.graphics.Bitmap
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LifecycleOwner
@@ -57,6 +58,7 @@ import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithGenres
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithTags
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithWalkthroughes
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOWalkthroughWithImages
+import com.adorablehappens.gamelibrary.services.ImageCacher
 import com.adorablehappens.gamelibrary.services.ImageFunc
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -197,6 +199,10 @@ object Repository {
     lateinit var allGameEnginesState: MutableState<List<GameEngineEntity>>
 
     val imageManager = object : ImageFunc(){}
+    val imageCacher = object : ImageCacher{
+        override val imagesCached: MutableMap<Long, Bitmap> = mutableMapOf()
+        override var imagesCachedMapMaxSize: Int = 20
+    }
 
 
     init {

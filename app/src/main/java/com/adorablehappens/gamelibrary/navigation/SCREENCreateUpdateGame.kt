@@ -43,6 +43,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -75,22 +76,24 @@ object SCREENCreateUpdateGame : RoutesScreens(
             Modifier
                 .fillMaxSize()
         val createOrUpdate = remember { mutableStateOf(false) }
-        var uri: Uri? = null
-        val launcher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.GetContent(),
-            onResult = { uriResult ->
-                if (uriResult !== null)
-                    uri = uriResult
-            }
-        )
 
         val name = rememberTextFieldState(stringResource(R.string.otw2_title))
         val subname = rememberTextFieldState("")
         val worldStoryShort = rememberTextFieldState(initialText = stringResource(R.string.otw2_worldStory))
-        val imageFilename = rememberTextFieldState("")
+        var imageFilename by remember { mutableStateOf("") }
         val description = rememberTextFieldState("Here will be a description")
         val comment = rememberTextFieldState("No comment for now")
         val price = rememberTextFieldState("0")
+
+        var uri: Uri? = null
+        val launcher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+            onResult = { uriResult ->
+                if (uriResult !== null){
+                    uri = uriResult
+                }
+            }
+        )
 
         Column(
             Modifier
@@ -150,12 +153,13 @@ object SCREENCreateUpdateGame : RoutesScreens(
                             //.height(40.dp)
                             ,
                             onClick = {
+                                imageFilename = vm.vmRepo.imageManager.saveImageToInternalStorage(uri) ?: ""
                                 vm.vmRepo.behGameRepo.addNew(GameEntity(
                                     id = 0,
                                     name = name.text.toString(),
                                     subname = subname.text.toString(),
                                     wordStoryShort = worldStoryShort.text.toString(),
-                                    image = "",
+                                    image = imageFilename,
                                     imageIcon = "",
                                     favorite = false,
                                     price = price.text.toString().toInt(),
