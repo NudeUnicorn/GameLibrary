@@ -46,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -82,12 +83,13 @@ object SCREENHome : RoutesScreens(
     override fun Content() {
 
         val vm: LibraryViewModel = viewModel()
-        val lifecycleOwner = LocalLifecycleOwner.current
-        var selectedPrimary by remember { mutableStateOf(0) }
-        var selectedSecondary by remember { mutableStateOf(0) }
 
-        val showCreateUpdateDialog = remember { mutableStateOf(false) }
-        val contentCreateUpdateDialog = remember { mutableStateOf(@Composable {}) }
+        val lifecycleOwner = LocalLifecycleOwner.current
+        var selectedPrimary by remember { vm.selectedPrimary }
+        var selectedSecondary by remember { vm.selectedSecondary }
+
+        val showCreateUpdateDialog = remember { vm.showCreateUpdateDialog }
+        val contentCreateUpdateDialog = remember { vm.contentCreateUpdateDialog }
 
         val games by vm.vmAllGamesLiveData.allGameEntitiesObj.observeAsState()
         val allGenreEntities by Repository.AllGamesLiveData.allGenreEntitiesObj.observeAsState()
@@ -99,13 +101,22 @@ object SCREENHome : RoutesScreens(
             TabInfo(
                 label = "Коллекция",
                 secondary = null,
-                content = { LibraryGrid(games) }
+                content = {
+                    LibraryGrid(
+                        games,
+                        vm,
+                        contentCreateUpdateDialog,
+                        showCreateUpdateDialog
+                    )
+                }
             ),
             TabInfo(
                 label = "Обзор",
                 secondary = null,
                 content = {
                     Text(text = vm.vmRepo.currentGameEntityID.toString())
+                    Text(text = vm.vmTest.value.let { return@let it + 1 }.toString())
+
                 }
             ),
             TabInfo(
@@ -317,7 +328,7 @@ object SCREENHome : RoutesScreens(
                 contentCreateUpdateDialog.value = {
                     GameCreateUpdate(
                         onDismissRequest = { showCreateUpdateDialog.value = false },
-                        onConfirmation = {name, subname, worldStoryShort, imageFilename, price, description, comment, entity, uri ->
+                        onConfirmation = {name, subname, worldStoryShort, imageFilename, price, description, comment, entity, uri, favorite ->
                             val imageFilename = vm.vmRepo.imageManager.saveImageToInternalStorage(uri) ?: ""
                             vm.vmRepo.behGameRepo.addNew(GameEntity(
                                 id = 0,
@@ -326,7 +337,7 @@ object SCREENHome : RoutesScreens(
                                 wordStoryShort = worldStoryShort,
                                 image = imageFilename,
                                 imageIcon = "",
-                                favorite = false,
+                                favorite = favorite,
                                 price = price.toInt(),
                                 startPlaying = 0,
                                 stopPlaying = 0,
@@ -345,7 +356,7 @@ object SCREENHome : RoutesScreens(
                 contentCreateUpdateDialog.value = {
                     GameCreateUpdate(
                         onDismissRequest = { showCreateUpdateDialog.value = false },
-                        onConfirmation = {name, subname, worldStoryShort, imageFilename, price, description, comment, entity, uri ->
+                        onConfirmation = {name, subname, worldStoryShort, imageFilename, price, description, comment, entity, uri, favorite ->
                             entity?.let{
                                 var imageFilename1: String = ""
                                 if (entity.image != imageFilename) {
@@ -363,7 +374,7 @@ object SCREENHome : RoutesScreens(
                                         wordStoryShort = worldStoryShort,
                                         image = imageFilename1,
                                         imageIcon = "",
-                                        favorite = false,
+                                        favorite = favorite,
                                         price = price,
                                         startPlaying = entity.startPlaying,
                                         stopPlaying = entity.stopPlaying,
@@ -412,7 +423,9 @@ object SCREENHome : RoutesScreens(
     @Composable
     fun LibraryGrid(
         games: List<GameEntity>?,
-        vm: LibraryViewModel = viewModel()
+        vm: LibraryViewModel,
+        contentCreateUpdateDialog: MutableState<@Composable ()-> Unit>,
+        showCreateUpdateDialog: MutableState<Boolean>
     ) {
 
         games?.let {gameEntities ->
@@ -422,7 +435,11 @@ object SCREENHome : RoutesScreens(
                     start = 0.dp,16.dp,16.dp,16.dp)
             ) {
                 item {
-                    CardAddGame(vm = vm)
+                    CardAddGame(
+                        vm = vm,
+                        contentCreateUpdateDialog = contentCreateUpdateDialog,
+                        showCreateUpdateDialog = showCreateUpdateDialog
+                        )
                 }
                 items(games.size) { it ->
                     CardGame(entity = games[it], vm = vm)
@@ -514,11 +531,38 @@ object SCREENHome : RoutesScreens(
     @Composable
     fun CardAddGame(
         modifier: Modifier = Modifier,
-        vm: LibraryViewModel? = null
+        vm: LibraryViewModel,
+        contentCreateUpdateDialog: MutableState<@Composable ()-> Unit>,
+        showCreateUpdateDialog: MutableState<Boolean>
     ) {
         Card (
             onClick = {
-
+                contentCreateUpdateDialog.value = {
+                    GameCreateUpdate(
+                        onDismissRequest = { showCreateUpdateDialog.value = false },
+                        onConfirmation = {name, subname, worldStoryShort, imageFilename, price, description, comment, entity, uri, favorite ->
+                            val imageFilename = vm.vmRepo.imageManager.saveImageToInternalStorage(uri) ?: ""
+                            vm.vmRepo.behGameRepo.addNew(GameEntity(
+                                id = 0,
+                                name = name,
+                                subname = subname,
+                                wordStoryShort = worldStoryShort,
+                                image = imageFilename,
+                                imageIcon = "",
+                                favorite = favorite,
+                                price = price.toInt(),
+                                startPlaying = 0,
+                                stopPlaying = 0,
+                                overallPlaying = 0,
+                                description = description,
+                                comment = comment,
+                                timestamp = Calendar.getInstance().timeInMillis
+                            ))
+                            showCreateUpdateDialog.value = false
+                        },
+                        vm = vm,
+                    )}
+                showCreateUpdateDialog.value = true
             },
             modifier = Modifier
                 .aspectRatio(0.8f)
@@ -741,9 +785,11 @@ object SCREENHome : RoutesScreens(
             comment: String,
             entity: GameEntity?,
             uri: Uri?,
+            favorite: Boolean,
         ) -> Unit,
     )
     {
+
         val name = rememberTextFieldState(entity?.name ?: "")
         val description = rememberTextFieldState(entity?.description ?: "")
         val comment = rememberTextFieldState(entity?.comment ?: "")
@@ -755,16 +801,23 @@ object SCREENHome : RoutesScreens(
         val subname = rememberTextFieldState(entity?.subname ?: "")
         val worldStoryShort = rememberTextFieldState(initialText = entity?.wordStoryShort ?: stringResource(R.string.otw2_worldStory))
         var imageFilename by remember { mutableStateOf(entity?.image ?: "") }
-        var favorite by remember { mutableStateOf(entity?.favorite ?: false) }
+        val favorite = rememberSaveable {
+            entity?.let {
+                vm.vmFavorite.value = it.favorite
+                vm.vmFavorite
+            } ?: vm.vmFavorite
+        }
+        println("Favorite - " + favorite.value)
         val price = rememberTextFieldState(entity?.price?.toString() ?: "0")
 
         val uri = remember { mutableStateOf(Uri.EMPTY) }
+
         var image: Bitmap? by remember {
-            mutableStateOf(
-                vm.vmRepo.imageCacher.imageGet(entity?.id ?: 0, imageFilename)
-                    ?:
-                    createBitmap(1, 1)
-            )
+            vm.vmRepo.imageCacher.imageGet(entity?.id ?: 0, imageFilename)?.let {
+                vm.vmImage.value = it
+                vm.vmImage
+            }?: vm.vmImage.apply { value = createBitmap(1,1) }
+            //vm.vmImage
         }
         val launcher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent(),
@@ -827,6 +880,7 @@ object SCREENHome : RoutesScreens(
                         name = name,
                         subname = subname,
                         worldStoryShort = worldStoryShort,
+                        favorite = favorite,
                         description = description,
                         comment = comment,
                         price = price
@@ -849,11 +903,12 @@ object SCREENHome : RoutesScreens(
                                         subname.text.toString(),
                                         worldStoryShort.text.toString(),
                                         imageFilename,
-                                        price.text.toString().toInt(),
+                                        price.text.toString().toIntOrNull() ?: 0,
                                         description.text.toString(),
                                         comment.text.toString(),
                                         entity,
-                                        uri.value
+                                        uri.value,
+                                        favorite.value
                                     )
                                 }) {
                                 Text(text = "Save game")

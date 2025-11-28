@@ -1,15 +1,12 @@
 package com.adorablehappens.gamelibrary
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,16 +16,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.adorablehappens.gamelibrary.navigation.OptionsPrefs
 import com.adorablehappens.gamelibrary.navigation.RoutesMain
 import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.BottomMenu
 import com.adorablehappens.gamelibrary.navigation.RoutesService
+import com.adorablehappens.gamelibrary.navigation.SCREENOptions.PREFS_FILENAME
 import com.adorablehappens.gamelibrary.ui.theme.GameLibraryTheme
-import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
+import com.adorablehappens.gamelibrary.viewmodels.AppOverallViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -55,15 +55,27 @@ class MainActivity : ComponentActivity() {
             val coroutineScope = rememberCoroutineScope()
             val navController = rememberNavController()
             var navStartDestination by remember { mutableStateOf(RoutesService.createUpdateGame.route.route) }
-            val vm: LibraryViewModel = viewModel()
-            vm.setNavController(navController)
+            val vm: AppOverallViewModel = viewModel()
+            vm.setNavHostController(navController)
 
-            GameLibraryTheme {
+            val sharedPrefs = LocalContext.current.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
+            val darkTheme = remember {
+                mutableStateOf(
+                    when (sharedPrefs.getInt(OptionsPrefs.theme.key, 0)) {
+                        0 -> false
+                        1 -> true
+                        else -> {false}
+                    }
+                )
+            }
+            GameLibraryTheme(
+                darkTheme = darkTheme.value
+            ) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {},
                     bottomBar = {
-                        BottomMenu(navController = navController)
+                        BottomMenu(navController = vm.getNavHostController(), vm = vm)
                     },
                     floatingActionButton = {
 //                        if (navStartDestination == RoutesMain.home.route.route)
@@ -76,12 +88,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
 
 
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-
-                    NavHost(navController,
+                    NavHost(vm.getNavHostController(),
                         RoutesMain.home.route.route,
                         modifier = Modifier
                             .padding(innerPadding)
@@ -93,6 +100,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(RoutesMain.favorites.route.route) {
                             navStartDestination = RoutesMain.favorites.route.route
+                            RoutesMain.favorites.route.Content()
                         }
                         composable(RoutesMain.randomise.route.route) {
                             navStartDestination = RoutesMain.randomise.route.route
@@ -151,7 +159,7 @@ fun GreetingPreview() {
         Greeting("Android")
 
         //Routes.createUpdateGame.Content()
-        BottomMenu(navController = rememberNavController())
+        //BottomMenu(navController = rememberNavController())
 
 
     }

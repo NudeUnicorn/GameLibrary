@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,16 +37,20 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -192,6 +197,7 @@ object SCREENCreateUpdateGame : RoutesScreens(
         name: TextFieldState = rememberTextFieldState(),
         subname: TextFieldState = rememberTextFieldState(),
         worldStoryShort: TextFieldState = rememberTextFieldState(),
+        favorite: MutableState<Boolean> = mutableStateOf(false),
         description: TextFieldState = rememberTextFieldState(),
         comment: TextFieldState = rememberTextFieldState(),
         price: TextFieldState = rememberTextFieldState(),
@@ -230,6 +236,24 @@ object SCREENCreateUpdateGame : RoutesScreens(
                 placeholder = { Text("Maybe game has a subtitle or slogan? Write it!") },
                 colors = textFieldColors
             )
+            SpacerVerticalFill()
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Is your favorite game?"
+                )
+                Switch(
+                    checked = favorite.value,
+                    onCheckedChange = {
+                        favorite.value = !favorite.value
+                    }
+                )
+            }
+
             SpacerVerticalFill()
 
             TextField(

@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.adorablehappens.gamelibrary.viewmodels.AppOverallViewModel
 
 
 /**
@@ -98,6 +99,7 @@ open class RoutesScreensFundamentals() {
         fun BottomMenu(
             modifier: Modifier = Modifier,
             navController: NavController,
+            vm: AppOverallViewModel,
             content: @Composable (() -> Unit) = {}
         ) {
             val mod: Modifier = modifier.then(
@@ -105,7 +107,7 @@ open class RoutesScreensFundamentals() {
                     .fillMaxSize()
             )
             val dropdownMenuExpanded = remember { mutableStateOf(false) }
-            var barItemSelected by remember { mutableStateOf(RoutesMain.home) }
+            var barItemSelected by remember { vm.navBarItemSelected }
             NavigationBar(
                 Modifier,
 
