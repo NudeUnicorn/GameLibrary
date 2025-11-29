@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,11 +24,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.adorablehappens.gamelibrary.navigation.OptionsPrefs
 import com.adorablehappens.gamelibrary.navigation.RoutesMain
 import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.BottomMenu
 import com.adorablehappens.gamelibrary.navigation.RoutesService
 import com.adorablehappens.gamelibrary.navigation.SCREENOptions.PREFS_FILENAME
+import com.adorablehappens.gamelibrary.services.OptionsVault
 import com.adorablehappens.gamelibrary.ui.theme.GameLibraryTheme
 import com.adorablehappens.gamelibrary.viewmodels.AppOverallViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -58,18 +60,23 @@ class MainActivity : ComponentActivity() {
             val vm: AppOverallViewModel = viewModel()
             vm.setNavHostController(navController)
 
-            val sharedPrefs = LocalContext.current.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
-            val darkTheme = remember {
-                mutableStateOf(
-                    when (sharedPrefs.getInt(OptionsPrefs.theme.key, 0)) {
-                        0 -> false
-                        1 -> true
-                        else -> {false}
+            val appOptions = vm.vmRepo.appOptions
+
+            val darkTheme = remember{appOptions.appTheme}
+            val darkThemeBool = remember { derivedStateOf {
+
+                when (darkTheme.value) {
+                    0 -> false
+                    1 -> true
+                    else -> {
+                        false
                     }
-                )
+                }
+            }
+
             }
             GameLibraryTheme(
-                darkTheme = darkTheme.value
+                darkTheme = darkThemeBool.value
             ) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),

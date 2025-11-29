@@ -178,7 +178,7 @@ object SCREENHome : RoutesScreens(
                         text = {
                             Text(
                                 text = tab.label,
-                                maxLines = 2,
+                                maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
                         },
@@ -197,7 +197,7 @@ object SCREENHome : RoutesScreens(
                             text = {
                                 Text(
                                     text = secondaryTab.label,
-                                    maxLines = 2,
+                                    maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
                             },

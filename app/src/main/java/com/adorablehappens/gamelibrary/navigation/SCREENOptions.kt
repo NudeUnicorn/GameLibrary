@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.adorablehappens.gamelibrary.viewmodels.AppOverallViewModel
 
 object SCREENOptions  : RoutesScreens(
     route = "Options",
@@ -28,10 +30,12 @@ object SCREENOptions  : RoutesScreens(
     const val PREFS_FILENAME: String = "app_prefs"
     @Composable
     override fun Content() {
+        val vm: AppOverallViewModel = viewModel()
         val context = LocalContext.current
         val sharedPrefs = context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
+        val appOptions = vm.vmRepo.appOptions
 
-        val appTheme = remember { mutableStateOf(sharedPrefs.getInt(OptionsPrefs.theme.key, 0)) }
+        val appTheme = remember { appOptions.appTheme }
 
 
         Column {

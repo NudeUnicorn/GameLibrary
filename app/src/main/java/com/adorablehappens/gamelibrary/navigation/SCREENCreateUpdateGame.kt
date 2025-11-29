@@ -242,7 +242,8 @@ object SCREENCreateUpdateGame : RoutesScreens(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
-            ) {
+            )
+            {
                 Text(
                     text = "Is your favorite game?"
                 )

@@ -58,8 +58,10 @@ import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithGenres
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithTags
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithWalkthroughes
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOWalkthroughWithImages
+import com.adorablehappens.gamelibrary.navigation.SCREENOptions.PREFS_FILENAME
 import com.adorablehappens.gamelibrary.services.ImageCacher
 import com.adorablehappens.gamelibrary.services.ImageFunc
+import com.adorablehappens.gamelibrary.services.OptionsVault
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -204,7 +206,7 @@ object Repository {
         override var imagesCachedMapMaxSize: Int = 20
     }
 
-
+    lateinit var appOptions: OptionsVault
     init {
 
     }
@@ -216,6 +218,11 @@ object Repository {
         db = DB.getInstance(context)
         coroutineScope = scope
         imageManager.setContext(context)
+        appOptions = object : OptionsVault(
+            {
+                context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
+            }
+        ){}
 
 //        daoAuthorRepo = db.createAuthorDAO()
 //        behAuthorRepo.setDAO(daoAuthorRepo)
