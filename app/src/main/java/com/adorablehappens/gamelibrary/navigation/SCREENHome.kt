@@ -91,8 +91,8 @@ object SCREENHome : RoutesScreens(
         val showCreateUpdateDialog = remember { vm.showCreateUpdateDialog }
         val contentCreateUpdateDialog = remember { vm.contentCreateUpdateDialog }
 
-        val games by vm.vmAllGamesLiveData.allGameEntitiesObj.observeAsState()
-        val allGenreEntities by Repository.AllGamesLiveData.allGenreEntitiesObj.observeAsState()
+        val games by vm.vmAllLiveData.allGameEntitiesObj.observeAsState()
+        val allGenreEntities by vm.vmAllLiveData.allGenreEntitiesObj.observeAsState()
 
 
 
@@ -114,8 +114,14 @@ object SCREENHome : RoutesScreens(
                 label = "Обзор",
                 secondary = null,
                 content = {
-                    Text(text = vm.vmRepo.currentGameEntityID.toString())
-                    Text(text = vm.vmTest.value.let { return@let it + 1 }.toString())
+                    TabGameOverview(
+                        vm = vm,
+                        contentCreateUpdateDialog = contentCreateUpdateDialog,
+                        showCreateUpdateDialog = showCreateUpdateDialog
+                    )
+//                    Text(text = vm.vmRepo.currentGameEntityID.toString())
+                    println("Current game ID - " + vm.vmRepo.currentGameEntityID.toString())
+//                    Text(text = vm.vmTest.value.let { return@let it + 1 }.toString())
 
                 }
             ),
@@ -232,6 +238,92 @@ object SCREENHome : RoutesScreens(
                     onConfirmation = {showCreateUpdateDialog.value = false},
                     content = {contentCreateUpdateDialog.value()}
                 )
+            }
+        }
+    }
+
+    @Composable
+    fun TabGameOverview(
+        vm: LibraryViewModel,
+        showCreateUpdateDialog: MutableState<Boolean>,
+        contentCreateUpdateDialog:  MutableState<@Composable ()-> Unit>,
+    )
+    {
+        GameOverview(
+            vm = vm,
+            addCheatBtnOnClick = {},
+            addWalkBtnOnClick = {},
+            startStopBtnOnClick = {},
+            modBtnOnClick = {},
+            delBtnOnClick = {},
+        )
+    }
+
+    @Composable
+    fun GameOverview(
+        modifier: Modifier = Modifier,
+        vm: LibraryViewModel,
+        addCheatBtnOnClick: ()->Unit = {},
+        addWalkBtnOnClick: ()->Unit = {},
+        startStopBtnOnClick: ()->Unit = {},
+        modBtnOnClick: (entityID: Long)->Unit = {},
+        delBtnOnClick: (entityID: Long)->Unit = {},
+        whatToAddText: String = "+ Add genre"
+    )
+    {
+        val currentGame = vm.vmAllCurrentLiveData.currentGameObj.observeAsState()
+        println("Current game in overview - " + currentGame.value?.name)
+
+        if (currentGame.value == null){
+
+        }
+        else{
+
+            var image: Bitmap? by remember {
+                vm.vmRepo.imageCacher.imageGet(currentGame.value?.id ?: 0, currentGame.value?.image)?.let {
+                    vm.vmImage.value = it
+                    vm.vmImage
+                } ?: vm.vmImage.apply { value = createBitmap(1, 1) }
+                //vm.vmImage
+            }
+
+            Column(
+                Modifier
+                    .padding(0.dp)
+            )
+            {
+                Column(
+                    Modifier
+                        .verticalScroll(
+                            state = rememberScrollState()
+                        )
+                        .weight(1f)
+                        .padding(bottom = 0.dp)
+                )
+                {
+                    Card(
+                        Modifier
+                            .height(200.dp)
+                            .padding(16.dp, 16.dp, 16.dp, 0.dp)
+                    )
+                    {
+
+                        Image(
+                            bitmap = image?.asImageBitmap() ?: createBitmap(1, 1).asImageBitmap(),
+                            contentDescription = "Game main image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                        )
+
+                    }
+
+
+                    Row {
+
+                    }
+                }
+
             }
         }
     }
@@ -483,6 +575,7 @@ object SCREENHome : RoutesScreens(
         Card (
             onClick = {
                 vm.vmRepo.currentGameEntityID = entity.id
+                vm.selectedPrimary.value = 1
             },
             modifier = Modifier
                 .aspectRatio(0.8f)
@@ -604,6 +697,7 @@ object SCREENHome : RoutesScreens(
         }
 
     }
+
     @Composable
     fun ListOfEntities(
         modifier: Modifier = Modifier,
@@ -838,7 +932,8 @@ object SCREENHome : RoutesScreens(
                 //.padding(16.dp)
             ,
             //shape = RoundedCornerShape(16.dp),
-        ) {
+        )
+        {
             Column(
                 modifier = Modifier
                     //.fillMaxSize()
@@ -855,7 +950,8 @@ object SCREENHome : RoutesScreens(
                         )
                         .weight(1f)
                         .padding(bottom = 0.dp)
-                ) {
+                )
+                {
                     Card(
                         onClick = {
                             launcher.launch("image/*")

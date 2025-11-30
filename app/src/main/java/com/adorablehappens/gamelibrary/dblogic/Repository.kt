@@ -156,7 +156,7 @@ object Repository {
 
     //Данные для одной выбранной сущности игры
     private lateinit var currentGameEntity: LiveData<GameEntity>
-    var currentGameEntityID: Long = 0
+    var currentGameEntityID: Long = 1
     private lateinit var currentCheatEntities: LiveData<POJOGameWithCheats>
     private lateinit var currentGenreEntities: LiveData<POJOGameWithGenres>
     private lateinit var currentTagEntities: LiveData<POJOGameWithTags>
@@ -395,20 +395,19 @@ object Repository {
         /**
          * Получает все данные об одной сущности игры
          */
-        fun getAllCurrentGameData(id: Long): AllGameCurrentLiveData {
+        fun getAllCurrentGameData(id: Long? = null): AllCurrentLiveData {
+            val localID = id ?: currentGameEntityID
 
-            currentGameEntityID = id
+            getAllGames(localID)
+            getAllCurrentCheats(localID)
+            getAllGameEngines(localID)
+            getAllGenres(localID)
+            getAllDevs(localID)
+            getAllTags(localID)
+            getAllCurrentWalkthroughes(localID)
+            getAllAuthors(localID)
 
-            getAllGames(id)
-            getAllCurrentCheats(id)
-            getAllGameEngines(id)
-            getAllGenres(id)
-            getAllDevs(id)
-            getAllTags(id)
-            getAllCurrentWalkthroughes(id)
-            getAllAuthors(id)
-
-            return AllGameCurrentLiveData
+            return AllCurrentLiveData
 
         }
 
@@ -423,15 +422,23 @@ object Repository {
     /**
      * Объект-обёртка для удобства получения всех ссылок с данными связанных сущностей
      */
-    object AllGameCurrentLiveData{
-        val gameEntityCurrentIDObj: Long = currentGameEntityID
-        val currentGameObj = currentGameEntity
-        val currentCheatsObj = currentCheatEntities
-        val currentTagsObj = currentTagEntities
-        val currentDevsObj = currentDevEntities
-        val currentGenresObj = currentGenreEntities
-        val currentGameEngineObj = currentGameEngineEntities
-        val currentWalkthroughesObj = currentWalkthroughEntities
+    object AllCurrentLiveData{
+        val gameEntityCurrentIDObj
+            get() = currentGameEntityID
+        val currentGameObj: LiveData<GameEntity>
+            get() = currentGameEntity
+        val currentCheatsObj
+            get() = currentCheatEntities
+        val currentTagsObj
+            get() = currentTagEntities
+        val currentDevsObj
+            get() = currentDevEntities
+        val currentGenresObj
+            get() = currentGenreEntities
+        val currentGameEngineObj
+            get() = currentGameEngineEntities
+        val currentWalkthroughesObj
+            get() = currentWalkthroughEntities
 
     }
 
@@ -450,7 +457,7 @@ object Repository {
     /**
      * Объект-обёртка для удобства получения всех ссылок с данными несвязанных сущностей
      */
-    object AllGamesLiveData{
+    object AllLiveData{
         val allGameEntitiesObj: LiveData<List<GameEntity>> = allGameEntities
         val allGenreEntitiesObj: LiveData<List<GenreEntity>> = allGenreEntities
         val allTagEntitiesObj: LiveData<List<TagEntity>> = allTagEntities
@@ -495,6 +502,9 @@ object Repository {
                 all.forEach { it ->
                     if (current.contains(it)){
                         comparedMap.put(it, true)
+                    }
+                    else{
+                        comparedMap.put(it, false)
                     }
                 }
             }

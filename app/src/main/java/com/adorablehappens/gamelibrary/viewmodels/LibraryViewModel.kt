@@ -19,7 +19,9 @@ import com.adorablehappens.gamelibrary.dblogic.entities.TagEntity
 class LibraryViewModel(): ViewModel() {
 
     val vmRepo = Repository
-    val vmAllGamesLiveData = Repository.AllGamesLiveData
+    val vmAllLiveData = Repository.AllLiveData
+    val vmAllCurrentLiveData
+        get() = Repository.Data.getAllCurrentGameData()
 
     val vmName: MutableState<String> = mutableStateOf("")
     val vmDescription: MutableState<String> = mutableStateOf("")

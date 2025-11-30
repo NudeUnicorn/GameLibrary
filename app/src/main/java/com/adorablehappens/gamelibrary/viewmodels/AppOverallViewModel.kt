@@ -10,7 +10,7 @@ import com.adorablehappens.gamelibrary.navigation.RoutesMain
 class AppOverallViewModel(): ViewModel() {
 
     val vmRepo = Repository
-    val vmAllGamesLiveData = Repository.AllGamesLiveData
+    val vmAllGamesLiveData = Repository.AllLiveData
 
     val vmName: MutableState<String?> = mutableStateOf(null)
     val navBarItemSelected = mutableStateOf(RoutesMain.home)
