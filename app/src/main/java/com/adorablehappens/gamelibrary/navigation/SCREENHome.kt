@@ -26,11 +26,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -274,10 +276,41 @@ object SCREENHome : RoutesScreens(
         val currentGame = vm.vmAllCurrentLiveData.currentGameObj.observeAsState()
         println("Current game in overview - " + currentGame.value?.name)
 
+        val calendar by remember { mutableStateOf(Calendar.getInstance()) }
+        var added by remember { mutableStateOf("") }
+        var startPlaying by remember { mutableStateOf("") }
+        var stopPlaying by remember { mutableStateOf("") }
+        var overallPlaying by remember { mutableStateOf("") }
+
+
         if (currentGame.value == null){
 
         }
         else{
+
+            calendar.timeInMillis = currentGame.value!!.timestamp
+            added = (
+                    calendar.get(Calendar.HOUR).toString() + ":" +
+                    calendar.get(Calendar.MINUTE).toString() + ":" +
+                    calendar.get(Calendar.SECOND).toString() + " / " +
+                    calendar.get(Calendar.DAY_OF_MONTH).toString() + "." +
+                    calendar.get(Calendar.MONTH).toString() + "." +
+                    calendar.get(Calendar.YEAR).toString()
+                    )
+            if (currentGame.value!!.startPlaying == 0.toLong()){
+                startPlaying = "не запускали"
+            }
+            else{
+                calendar.timeInMillis = currentGame.value!!.startPlaying
+                startPlaying = (
+                        calendar.get(Calendar.HOUR).toString() + ":" +
+                                calendar.get(Calendar.MINUTE).toString() + ":" +
+                                calendar.get(Calendar.SECOND).toString() + " / " +
+                                calendar.get(Calendar.DAY_OF_MONTH).toString() + "." +
+                                calendar.get(Calendar.MONTH).toString() + "." +
+                                calendar.get(Calendar.YEAR).toString()
+                        )
+            }
 
             var image: Bitmap? by remember {
                 vm.vmRepo.imageCacher.imageGet(currentGame.value?.id ?: 0, currentGame.value?.image)?.let {
@@ -319,8 +352,89 @@ object SCREENHome : RoutesScreens(
                     }
 
 
-                    Row {
-
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(128.dp)
+                            .padding(16.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.weight(0.35f),
+                            verticalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            Column {
+                                Text(
+                                    text = "добавлено",
+                                    fontSize = TextUnit(10f, TextUnitType.Sp),
+                                    lineHeight = TextUnit(10f, TextUnitType.Sp),
+                                )
+                                Text(
+                                    text = added,
+                                    fontSize = TextUnit(12f, TextUnitType.Sp),
+                                    //lineHeight = TextUnit(12f, TextUnitType.Sp),
+                                )
+                            }
+                            HorizontalDivider(Modifier.padding(vertical = 10.dp))
+                            Column {
+                                Text(
+                                    text = "впервые сыграно",
+                                    fontSize = TextUnit(10f, TextUnitType.Sp),
+                                    lineHeight = TextUnit(10f, TextUnitType.Sp),
+                                )
+                                Text(
+                                    text = startPlaying,
+                                    fontSize = TextUnit(12f, TextUnitType.Sp),
+                                    //lineHeight = TextUnit(12f, TextUnitType.Sp),
+                                )
+                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .weight(0.3f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            IconButton(
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                onClick = {}
+                            ) {
+                                Icon(
+                                    Icons.Filled.PlayCircle,
+                                    "",
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                )
+                            }
+                        }
+                        Column(
+                            modifier = Modifier.weight(0.35f)
+                        ) {
+                            Column {
+                                Text(
+                                    text = "всего сыграно",
+                                    fontSize = TextUnit(10f, TextUnitType.Sp),
+                                    lineHeight = TextUnit(10f, TextUnitType.Sp),
+                                )
+                                Text(
+                                    text = added,
+                                    fontSize = TextUnit(12f, TextUnitType.Sp),
+                                    //lineHeight = TextUnit(12f, TextUnitType.Sp),
+                                )
+                            }
+                            HorizontalDivider(Modifier.padding(vertical = 10.dp))
+                            Column {
+                                Text(
+                                    text = "окончание игры",
+                                    fontSize = TextUnit(10f, TextUnitType.Sp),
+                                    lineHeight = TextUnit(10f, TextUnitType.Sp),
+                                )
+                                Text(
+                                    text = startPlaying,
+                                    fontSize = TextUnit(12f, TextUnitType.Sp),
+                                    //lineHeight = TextUnit(12f, TextUnitType.Sp),
+                                )
+                            }
+                        }
                     }
                 }
 
