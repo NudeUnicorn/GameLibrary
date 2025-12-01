@@ -43,11 +43,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -72,7 +74,10 @@ import com.adorablehappens.gamelibrary.dblogic.entities.GenreEntity
 import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.SpacerVerticalFill
 import com.adorablehappens.gamelibrary.navigation.SCREENCreateUpdateGame.GameNewFields
 import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
+import kotlinx.coroutines.launch
 import java.util.Calendar
+import androidx.compose.runtime.collectAsState
+import com.adorablehappens.gamelibrary.services.GameTimeType
 
 object SCREENHome : RoutesScreens(
     route = "Home",
@@ -275,42 +280,22 @@ object SCREENHome : RoutesScreens(
     {
         val currentGame = vm.vmAllCurrentLiveData.currentGameObj.observeAsState()
         println("Current game in overview - " + currentGame.value?.name)
+        val coroutine = rememberCoroutineScope()
 
-        val calendar by remember { mutableStateOf(Calendar.getInstance()) }
-        var added by remember { mutableStateOf("") }
-        var startPlaying by remember { mutableStateOf("") }
-        var stopPlaying by remember { mutableStateOf("") }
-        var overallPlaying by remember { mutableStateOf("") }
+        val added by vm.vmRepo.gamesTimeManager.stateInitial.collectAsState()
+        val startPlaying by vm.vmRepo.gamesTimeManager.stateStartPlaying.collectAsState()
+        val stopPlaying by vm.vmRepo.gamesTimeManager.stateStopPlaying.collectAsState()
+        val overallPlaying by vm.vmRepo.gamesTimeManager.stateOverallPlayed.collectAsState()
 
 
         if (currentGame.value == null){
 
         }
         else{
-
-            calendar.timeInMillis = currentGame.value!!.timestamp
-            added = (
-                    calendar.get(Calendar.HOUR).toString() + ":" +
-                    calendar.get(Calendar.MINUTE).toString() + ":" +
-                    calendar.get(Calendar.SECOND).toString() + " / " +
-                    calendar.get(Calendar.DAY_OF_MONTH).toString() + "." +
-                    calendar.get(Calendar.MONTH).toString() + "." +
-                    calendar.get(Calendar.YEAR).toString()
-                    )
-            if (currentGame.value!!.startPlaying == 0.toLong()){
-                startPlaying = "не запускали"
-            }
-            else{
-                calendar.timeInMillis = currentGame.value!!.startPlaying
-                startPlaying = (
-                        calendar.get(Calendar.HOUR).toString() + ":" +
-                                calendar.get(Calendar.MINUTE).toString() + ":" +
-                                calendar.get(Calendar.SECOND).toString() + " / " +
-                                calendar.get(Calendar.DAY_OF_MONTH).toString() + "." +
-                                calendar.get(Calendar.MONTH).toString() + "." +
-                                calendar.get(Calendar.YEAR).toString()
-                        )
-            }
+            vm.vmRepo.gamesTimeManager.getFormatTimeS(currentGame.value!!.timestamp, GameTimeType.Init)
+            vm.vmRepo.gamesTimeManager.getFormatTimeS(currentGame.value!!.startPlaying, GameTimeType.Start)
+            vm.vmRepo.gamesTimeManager.getFormatTimeS(currentGame.value!!.stopPlaying, GameTimeType.Stop)
+            vm.vmRepo.gamesTimeManager.getFormatTimeS(currentGame.value!!.overallPlaying, GameTimeType.Overall)
 
             var image: Bitmap? by remember {
                 vm.vmRepo.imageCacher.imageGet(currentGame.value?.id ?: 0, currentGame.value?.image)?.let {
@@ -362,31 +347,18 @@ object SCREENHome : RoutesScreens(
                             modifier = Modifier.weight(0.35f),
                             verticalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            Column {
-                                Text(
-                                    text = "добавлено",
-                                    fontSize = TextUnit(10f, TextUnitType.Sp),
-                                    lineHeight = TextUnit(10f, TextUnitType.Sp),
-                                )
-                                Text(
-                                    text = added,
-                                    fontSize = TextUnit(12f, TextUnitType.Sp),
-                                    //lineHeight = TextUnit(12f, TextUnitType.Sp),
-                                )
-                            }
+
+                            GameTimeStatsInfo(
+                                label = "добавлено",
+                                time = added ?: ""
+                            )
+
                             HorizontalDivider(Modifier.padding(vertical = 10.dp))
-                            Column {
-                                Text(
-                                    text = "впервые сыграно",
-                                    fontSize = TextUnit(10f, TextUnitType.Sp),
-                                    lineHeight = TextUnit(10f, TextUnitType.Sp),
-                                )
-                                Text(
-                                    text = startPlaying,
-                                    fontSize = TextUnit(12f, TextUnitType.Sp),
-                                    //lineHeight = TextUnit(12f, TextUnitType.Sp),
-                                )
-                            }
+
+                            GameTimeStatsInfo(
+                                label = "впервые сыграно",
+                                time = startPlaying ?: ""
+                            )
                         }
                         Box(
                             modifier = Modifier
@@ -409,37 +381,43 @@ object SCREENHome : RoutesScreens(
                         Column(
                             modifier = Modifier.weight(0.35f)
                         ) {
-                            Column {
-                                Text(
-                                    text = "всего сыграно",
-                                    fontSize = TextUnit(10f, TextUnitType.Sp),
-                                    lineHeight = TextUnit(10f, TextUnitType.Sp),
-                                )
-                                Text(
-                                    text = added,
-                                    fontSize = TextUnit(12f, TextUnitType.Sp),
-                                    //lineHeight = TextUnit(12f, TextUnitType.Sp),
-                                )
-                            }
+
+                            GameTimeStatsInfo(
+                                label = "всего сыграно",
+                                time = overallPlaying ?: ""
+                            )
+
                             HorizontalDivider(Modifier.padding(vertical = 10.dp))
-                            Column {
-                                Text(
-                                    text = "окончание игры",
-                                    fontSize = TextUnit(10f, TextUnitType.Sp),
-                                    lineHeight = TextUnit(10f, TextUnitType.Sp),
-                                )
-                                Text(
-                                    text = startPlaying,
-                                    fontSize = TextUnit(12f, TextUnitType.Sp),
-                                    //lineHeight = TextUnit(12f, TextUnitType.Sp),
-                                )
-                            }
+
+                            GameTimeStatsInfo(
+                                label = "окончание игры",
+                                time = stopPlaying ?: ""
+                            )
                         }
                     }
                 }
 
             }
         }
+    }
+
+    @Composable
+    fun GameTimeStatsInfo(
+        label: String = "",
+        time: String? = ""
+    ){
+        Text(
+            text = label,
+            fontSize = TextUnit(9f, TextUnitType.Sp),
+            lineHeight = TextUnit(9f, TextUnitType.Sp),
+        )
+        Text(
+            text = time ?: "",
+            fontSize = TextUnit(11f, TextUnitType.Sp),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+            //lineHeight = TextUnit(12f, TextUnitType.Sp),
+        )
     }
 
     @Composable
@@ -579,7 +557,7 @@ object SCREENHome : RoutesScreens(
                                         subname = subname,
                                         wordStoryShort = worldStoryShort,
                                         image = imageFilename1,
-                                        imageIcon = "",
+                                        imageIcon = entity.imageIcon,
                                         favorite = favorite,
                                         price = price,
                                         startPlaying = entity.startPlaying,

@@ -59,6 +59,7 @@ import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithTags
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithWalkthroughes
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOWalkthroughWithImages
 import com.adorablehappens.gamelibrary.navigation.SCREENOptions.PREFS_FILENAME
+import com.adorablehappens.gamelibrary.services.GamesTimeManager
 import com.adorablehappens.gamelibrary.services.ImageCacher
 import com.adorablehappens.gamelibrary.services.ImageFunc
 import com.adorablehappens.gamelibrary.services.OptionsVault
@@ -205,6 +206,7 @@ object Repository {
         override val imagesCached: MutableMap<Long, Bitmap> = mutableMapOf()
         override var imagesCachedMapMaxSize: Int = 20
     }
+    val gamesTimeManager = GamesTimeManager
 
     lateinit var appOptions: OptionsVault
     init {
