@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.adorablehappens.gamelibrary.services.OptionsVault
 import com.adorablehappens.gamelibrary.viewmodels.AppOverallViewModel
 
 object SCREENOptions  : RoutesScreens(
@@ -27,12 +28,11 @@ object SCREENOptions  : RoutesScreens(
     label = "Меню",
     contentDescription = "Меню",
 ) {
-    const val PREFS_FILENAME: String = "app_prefs"
     @Composable
     override fun Content() {
         val vm: AppOverallViewModel = viewModel()
         val context = LocalContext.current
-        val sharedPrefs = context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
+        val sharedPrefs = context.getSharedPreferences(OptionsVault.PREFS_FILENAME, Context.MODE_PRIVATE)
         val appOptions = vm.vmRepo.appOptions
 
         val appTheme = remember { appOptions.appTheme }

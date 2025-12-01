@@ -58,7 +58,6 @@ import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithGenres
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithTags
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOGameWithWalkthroughes
 import com.adorablehappens.gamelibrary.dblogic.pojo.POJOWalkthroughWithImages
-import com.adorablehappens.gamelibrary.navigation.SCREENOptions.PREFS_FILENAME
 import com.adorablehappens.gamelibrary.services.GamesTimeManager
 import com.adorablehappens.gamelibrary.services.ImageCacher
 import com.adorablehappens.gamelibrary.services.ImageFunc
@@ -221,8 +220,8 @@ object Repository {
         coroutineScope = scope
         imageManager.setContext(context)
         appOptions = object : OptionsVault(
-            {
-                context.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
+            {prefsName ->
+                context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
             }
         ){}
 

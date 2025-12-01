@@ -683,7 +683,7 @@ object SCREENHome : RoutesScreens(
                 Image(
                     bitmap = image?.asImageBitmap() ?: createBitmap(1,1).asImageBitmap(),
                     contentDescription = entity.name,
-                    contentScale = ContentScale.FillHeight,
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()
 

@@ -27,7 +27,6 @@ import androidx.navigation.compose.rememberNavController
 import com.adorablehappens.gamelibrary.navigation.RoutesMain
 import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.BottomMenu
 import com.adorablehappens.gamelibrary.navigation.RoutesService
-import com.adorablehappens.gamelibrary.navigation.SCREENOptions.PREFS_FILENAME
 import com.adorablehappens.gamelibrary.services.OptionsVault
 import com.adorablehappens.gamelibrary.ui.theme.GameLibraryTheme
 import com.adorablehappens.gamelibrary.viewmodels.AppOverallViewModel
@@ -114,6 +113,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(RoutesMain.stats.route.route) {
                             navStartDestination = RoutesMain.stats.route.route
+                            RoutesMain.stats.route.Content()
                         }
                         composable(RoutesMain.options.route.route) {
                             navStartDestination = RoutesMain.options.route.route
