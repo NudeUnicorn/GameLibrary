@@ -43,8 +43,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -73,11 +73,9 @@ import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GenreEntity
 import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.SpacerVerticalFill
 import com.adorablehappens.gamelibrary.navigation.SCREENCreateUpdateGame.GameNewFields
-import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
-import kotlinx.coroutines.launch
-import java.util.Calendar
-import androidx.compose.runtime.collectAsState
 import com.adorablehappens.gamelibrary.services.GameTimeType
+import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
+import java.util.Calendar
 
 object SCREENHome : RoutesScreens(
     route = "Home",
@@ -801,55 +799,72 @@ object SCREENHome : RoutesScreens(
         whatToAddText: String = "+ Add genre"
     ) {
 
-        Column {  }
-        LazyColumn (
+        Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            item{
-                Button(
-                    onClick = {
-                        addBtnOnClick()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Text(text = whatToAddText)
-                }
-            }
-            allEntitiesData?.let { it ->
-                items(it.size){
-                    ListItem(
-                        headlineContent = {
-                            Text(text = allEntitiesData[it].name)
-                        },
-                        overlineContent = {
-                            Text(text = "ID " + allEntitiesData[it].id.toString())
-                        },
-                        supportingContent = {
-                            Text(text = allEntitiesData[it].description)
-                        },
-                        trailingContent = {
-                            Row {
 
-                                IconButton(
-                                    onClick = {
-                                        modBtnOnClick(allEntitiesData[it].id)
+            LazyColumn (
+                modifier = Modifier.weight(1f)
+            ) {
+                item{
+                    Button(
+                        onClick = {
+                            addBtnOnClick()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Text(text = whatToAddText)
+                    }
+                }
+                allEntitiesData?.let { it ->
+                    items(it.size){
+                        ListItem(
+                            headlineContent = {
+                                Text(text = allEntitiesData[it].name)
+                            },
+                            overlineContent = {
+                                Text(text = "ID " + allEntitiesData[it].id.toString())
+                            },
+                            supportingContent = {
+                                Text(text = allEntitiesData[it].description)
+                            },
+                            trailingContent = {
+                                Row {
+
+                                    IconButton(
+                                        onClick = {
+                                            modBtnOnClick(allEntitiesData[it].id)
+                                        }
+                                    ) {
+                                        Icon(Icons.Filled.AddCircle,"")
                                     }
-                                ) {
-                                    Icon(Icons.Filled.AddCircle,"")
-                                }
-                                IconButton(
-                                    onClick = {
-                                        delBtnOnClick(allEntitiesData[it].id)
+                                    IconButton(
+                                        onClick = {
+                                            delBtnOnClick(allEntitiesData[it].id)
+                                        }
+                                    ) {
+                                        Icon(Icons.Filled.RemoveCircle,"")
                                     }
-                                ) {
-                                    Icon(Icons.Filled.RemoveCircle,"")
                                 }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
+            }
+            Row(
+                modifier= Modifier.fillMaxWidth().padding(5.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Элементов - " + allEntitiesData?.size,
+                    fontSize = TextUnit(12f, TextUnitType.Sp),
+                    lineHeight = TextUnit(12f, TextUnitType.Sp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
         }
 
@@ -1172,7 +1187,7 @@ object SCREENHome : RoutesScreens(
     }
 
 
-        data class TabInfo(
+    data class TabInfo(
         val label: String = "Tab",
         val secondary: List<TabInfo>? = null,
         val content: @Composable () -> Unit = {}

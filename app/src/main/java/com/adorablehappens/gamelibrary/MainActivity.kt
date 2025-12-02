@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
             val darkTheme = remember{appOptions.appTheme}
             val darkThemeBool = remember { derivedStateOf {
 
-                when (darkTheme.value) {
+                when (darkTheme.intValue) {
                     0 -> false
                     1 -> true
                     else -> {
@@ -110,6 +110,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(RoutesMain.randomise.route.route) {
                             navStartDestination = RoutesMain.randomise.route.route
+                            RoutesMain.randomise.route.Content()
                         }
                         composable(RoutesMain.stats.route.route) {
                             navStartDestination = RoutesMain.stats.route.route

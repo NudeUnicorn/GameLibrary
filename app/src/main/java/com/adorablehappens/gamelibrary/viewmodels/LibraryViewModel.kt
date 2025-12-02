@@ -3,6 +3,7 @@ package com.adorablehappens.gamelibrary.viewmodels
 import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.graphics.createBitmap
 import androidx.lifecycle.ViewModel
@@ -30,13 +31,13 @@ class LibraryViewModel(): ViewModel() {
     val vmWorldStoryShort: MutableState<String> = mutableStateOf("")
     var vmImageFilename: MutableState<String> = mutableStateOf("")
     var vmFavorite: MutableState<Boolean> = mutableStateOf(false)
-    val vmPrice: MutableState<Int> = mutableStateOf(0)
+    val vmPrice: MutableState<Int> = mutableIntStateOf(0)
     var vmImage: MutableState<Bitmap?> = mutableStateOf(createBitmap(1, 1))
     private lateinit var vmNavController: NavController
 
-    val vmTest: MutableState<Int> = mutableStateOf(1)
-    val selectedPrimary: MutableState<Int> = mutableStateOf(0)
-    val selectedSecondary: MutableState<Int> = mutableStateOf(0)
+    val vmTest: MutableState<Int> = mutableIntStateOf(1)
+    val selectedPrimary: MutableState<Int> = mutableIntStateOf(0)
+    val selectedSecondary: MutableState<Int> = mutableIntStateOf(0)
     val showCreateUpdateDialog: MutableState<Boolean> = mutableStateOf(false)
     val contentCreateUpdateDialog: MutableState<@Composable () -> Unit> = mutableStateOf(@Composable {})
 

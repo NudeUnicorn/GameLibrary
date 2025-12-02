@@ -8,17 +8,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.content.edit
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.adorablehappens.gamelibrary.services.OptionsPrefsTheme
 import com.adorablehappens.gamelibrary.services.OptionsVault
 import com.adorablehappens.gamelibrary.viewmodels.AppOverallViewModel
 
@@ -37,42 +38,47 @@ object SCREENOptions  : RoutesScreens(
 
         val appTheme = remember { appOptions.appTheme }
 
+        val outerPadding = 16.dp
 
         Column {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(24.dp),
+                modifier = Modifier.fillMaxWidth().padding(outerPadding),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             )
             {
                 Text(text = "Switch app theme")
                 Switch(
-                    checked = appTheme.value != OptionsPrefsTheme.light.code,
+                    checked = appTheme.intValue != OptionsPrefsTheme.Light.code,
                     onCheckedChange = {
-                        if (appTheme.value == OptionsPrefsTheme.light.code) appTheme.value = OptionsPrefsTheme.dark.code else appTheme.value = OptionsPrefsTheme.light.code
+                        if (appTheme.intValue == OptionsPrefsTheme.Light.code) appTheme.intValue = OptionsPrefsTheme.Dark.code else appTheme.intValue = OptionsPrefsTheme.Light.code
 
-                        sharedPrefs.edit() {
-                            putInt(OptionsPrefs.theme.key, appTheme.value)
-                        }
+                        appOptions.appTheme = appTheme
                     }
                 )
             }
+
+            ListItem(
+                modifier = Modifier,
+                headlineContent = {
+                    Text(text = "Random game")
+                },
+                overlineContent = {
+
+                },
+                supportingContent = {
+                    Text(text = "you can try to get a new one the next day")
+                },
+                trailingContent = {
+                    Text(
+                        text = appOptions.randomGameTitle.value ?: "",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                        )
+                },
+            )
         }
     }
 
 }
 
-enum class OptionsPrefs(
-    val key: String,
-)
-{
-    theme("app_theme")
-}
-enum class OptionsPrefsTheme(
-    val key: String,
-    val code: Int
-)
-{
-    light("theme_light", 0),
-    dark("theme_dark", 1)
-}

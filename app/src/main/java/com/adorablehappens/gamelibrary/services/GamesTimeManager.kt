@@ -5,6 +5,8 @@ import com.adorablehappens.gamelibrary.dblogic.Repository
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 /**
  * Управляет подсчётом, сохранением и форматированием времени игры
@@ -70,23 +72,25 @@ object GamesTimeManager {
      * Функция внутри выполняется в фоне, в корутине репозитория.
      * Возвращает строку для общего времени игры
      */
-    fun overallPlayingS(time: Long): StateFlow<String> {
+    fun getFormatTimeOverallS(time: Long): StateFlow<String> {
         Repository.execCoroutine {
-            _stateOverallPlayed.value = getFormatTime(time)
+            _stateOverallPlayed.value = getFormatTimeOverall(time)
         }
         return stateOverallPlayed
     }
-    fun overallPlaying(time: Long): String {
+    fun getFormatTimeOverall(time: Long): String {
         if (time == 0.toLong()){
             return "не запускали"
         }
         else{
-            calendar.timeInMillis = time
-            return (
-                    calendar.get(java.util.Calendar.HOUR).toString() + ":" +
-                            calendar.get(java.util.Calendar.MINUTE).toString() + ":" +
-                            calendar.get(java.util.Calendar.SECOND).toString()
-                    )
+            val duration = time.toDuration(DurationUnit.MILLISECONDS)
+            var playtimeString = ""
+
+            duration.toComponents { days, hours, minutes, seconds, nanoseconds ->
+                playtimeString = "${days}d ${hours}h ${minutes}h ${seconds}h"
+            }
+
+            return playtimeString
         }
     }
 
@@ -127,12 +131,12 @@ object GamesTimeManager {
         return if (time == 0.toLong()){
             "не запускали"
         } else{
-            calendar.get(java.util.Calendar.HOUR).toString() + ":" +
-                    calendar.get(java.util.Calendar.MINUTE).toString() + ":" +
-                    calendar.get(java.util.Calendar.SECOND).toString() + " / " +
-                    calendar.get(java.util.Calendar.DAY_OF_MONTH).toString() + "." +
-                    calendar.get(java.util.Calendar.MONTH).toString() + "." +
-                    calendar.get(java.util.Calendar.YEAR).toString()
+            calendar.get(Calendar.HOUR).toString() + ":" +
+                    calendar.get(Calendar.MINUTE).toString() + ":" +
+                    calendar.get(Calendar.SECOND).toString() + " / " +
+                    calendar.get(Calendar.DAY_OF_MONTH).toString() + "." +
+                    calendar.get(Calendar.MONTH).toString() + "." +
+                    calendar.get(Calendar.YEAR).toString()
         }
     }
 
