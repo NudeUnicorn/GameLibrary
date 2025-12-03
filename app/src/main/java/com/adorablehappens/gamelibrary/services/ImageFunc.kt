@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import androidx.core.graphics.createBitmap
 import java.io.File
 
 abstract class ImageFunc {
@@ -47,6 +48,7 @@ abstract class ImageFunc {
 
                 // Генерируем уникальное имя файла
                 val filename = getNewImageFilename()
+                var bitmap = createBitmap(1,1)
 
                 // Открываем поток для записи
                 context.openFileOutput(filename, Context.MODE_PRIVATE).use {
@@ -54,8 +56,11 @@ abstract class ImageFunc {
 
                     // Читаем из URI
                     context.contentResolver.openInputStream(uri).use { inputStream ->
-                        inputStream?.copyTo(outputStream)
+                        //inputStream?.copyTo(outputStream)
+                        bitmap = BitmapFactory.decodeStream(inputStream)
                     }
+
+                    bitmap.compress(Bitmap.CompressFormat.WEBP, 80, outputStream)
                 }
 
                 // Возвращаем имя файла
@@ -110,7 +115,7 @@ abstract class ImageFunc {
      */
     fun deleteImage(filename: String): Boolean{
         return try {
-            if(filename.isNotEmpty()){
+            if(filename.isNotBlank()){
                 val imageFile = File(context.filesDir,filename)
 
                 return imageFile.delete()
@@ -127,6 +132,6 @@ abstract class ImageFunc {
      * Определяет и возвращает новое уникальное имя изображения согласно паттерну
      */
     fun getNewImageFilename(): String{
-        return "IMG_${System.currentTimeMillis()}.jpg"
+        return "IMG_${System.currentTimeMillis()}.webp"
     }
 }

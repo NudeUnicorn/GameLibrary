@@ -43,6 +43,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -75,6 +76,7 @@ import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.S
 import com.adorablehappens.gamelibrary.navigation.SCREENCreateUpdateGame.GameNewFields
 import com.adorablehappens.gamelibrary.services.GameTimeType
 import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
+import kotlinx.coroutines.coroutineScope
 import java.util.Calendar
 
 object SCREENHome : RoutesScreens(
@@ -586,7 +588,8 @@ object SCREENHome : RoutesScreens(
                         DeleteConfirmation(
                             onDismissRequest = {showCreateUpdateDialog.value = false},
                             onConfirmation = {
-                                    vm.vmRepo.behGameRepo.deleteOne(entity = entity)
+                                vm.vmRepo.imageManager.deleteImage(entity.image)
+                                vm.vmRepo.behGameRepo.deleteOne(entity = entity)
 
                                 showCreateUpdateDialog.value = false
                             },
@@ -660,53 +663,57 @@ object SCREENHome : RoutesScreens(
         entity: GameEntity,
         vm: LibraryViewModel
     ) {
-        val image: Bitmap? by remember { mutableStateOf(vm.vmRepo.imageCacher.imageGet(entity.id, entity.image)) }
+        var image by remember { mutableStateOf(vm.vmRepo.imageCacher.imageGet(entity.id, entity.image)) }
 
-        Card (
-            onClick = {
-                vm.vmRepo.currentGameEntityID = entity.id
-                vm.selectedPrimary.value = 1
-            },
-            modifier = Modifier
-                .aspectRatio(0.8f)
-                .padding(start = 16.dp, top = 16.dp),
-            ) {
-            ElevatedCard (
+        image?.let {
+        println("Image - id ${entity.id} - imageName ${entity.image}")
+
+            Card (
+                onClick = {
+                    vm.vmRepo.currentGameEntityID = entity.id
+                    vm.selectedPrimary.value = 1
+                },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-
+                    .aspectRatio(0.8f)
+                    .padding(start = 16.dp, top = 16.dp),
             ) {
-
-                Image(
-                    bitmap = image?.asImageBitmap() ?: createBitmap(1,1).asImageBitmap(),
-                    contentDescription = entity.name,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-
-                )
-            }
-            Box (
-                modifier= Modifier
-                    .fillMaxWidth()
-                    .weight(0.3f)
-                ,
-                contentAlignment = Alignment.Center
-            ){
-
-                Text(
-                    text = entity.name,
+                ElevatedCard (
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
+                        .weight(1f)
+
+                ) {
+
+                    Image(
+                        bitmap = image?.asImageBitmap() ?: createBitmap(1,1).asImageBitmap(),
+                        contentDescription = entity.name,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+
+                    )
+                }
+                Box (
+                    modifier= Modifier
+                        .fillMaxWidth()
+                        .weight(0.3f)
                     ,
-                    fontSize = TextUnit(10f, TextUnitType.Sp),
-                    textAlign = TextAlign.Center,
-                    lineHeight = TextUnit(10f, TextUnitType.Sp),
-                    overflow = TextOverflow.Ellipsis,
-                    //autoSize = TextAutoSize.StepBased()
-                )
+                    contentAlignment = Alignment.Center
+                ){
+
+                    Text(
+                        text = entity.name,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
+                        ,
+                        fontSize = TextUnit(10f, TextUnitType.Sp),
+                        textAlign = TextAlign.Center,
+                        lineHeight = TextUnit(10f, TextUnitType.Sp),
+                        overflow = TextOverflow.Ellipsis,
+                        //autoSize = TextAutoSize.StepBased()
+                    )
+                }
             }
         }
 
