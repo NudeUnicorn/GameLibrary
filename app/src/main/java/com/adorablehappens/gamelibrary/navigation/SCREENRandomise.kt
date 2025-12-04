@@ -18,9 +18,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.adorablehappens.gamelibrary.R
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.viewmodels.AppOverallViewModel
 import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
@@ -73,18 +75,18 @@ object SCREENRandomise  : RoutesScreens(
                         modifier = Modifier.size(128.dp)
                     ) {
                         Icon(Icons.Filled.Shuffle,
-                            "Click to get a random game",
+                            stringResource(R.string.randomise_randombutton_icon_description),
                             modifier = Modifier.fillMaxSize()
                         )
                     }
                     Text(
-                        text = "Click on button and will \nluck smile to you!",
+                        text = stringResource(R.string.randomise_welcometext),
                         textAlign = TextAlign.Center
                     )
                 }
                 else{
                     Text(
-                        text = "Congrats! Your game for today is",
+                        text = stringResource(R.string.randomise_congrats),
                         textAlign = TextAlign.Center
                     )
                     Text(

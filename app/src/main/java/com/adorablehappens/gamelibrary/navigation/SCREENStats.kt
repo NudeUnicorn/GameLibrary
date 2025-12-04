@@ -22,11 +22,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.adorablehappens.gamelibrary.R
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.services.GamesTimeManager
 import com.adorablehappens.gamelibrary.viewmodels.AppOverallViewModel
@@ -56,15 +58,15 @@ object SCREENStats  : RoutesScreens(
             ) {
                 Labels(
                     Modifier.weight(0.33f),
-                    "Всего игр",
+                    stringResource(R.string.stats_gamescount),
                     games?.size.toString())
                 Labels(
                     Modifier.weight(0.33f),
-                    "Стоимость всего",
+                    stringResource(R.string.stats_games_price),
                     priceAll.toString())
                 Labels(
                     Modifier.weight(0.33f),
-                    "Сыграно всего",
+                    stringResource(R.string.stats_overallplayed),
                     playingTimeAllStr)
             }
             ListGames(games)
@@ -89,7 +91,7 @@ object SCREENStats  : RoutesScreens(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(Icons.Filled.AccessTime,
-                                    "Overall playing time",
+                                    stringResource(R.string.stats_gamelist_entity_overallplayed),
                                     Modifier.height(height.dp)
                                 )
                                 Box(Modifier.padding(end = 5.dp))
@@ -99,7 +101,7 @@ object SCREENStats  : RoutesScreens(
                                 )
                                 Box(Modifier.padding(end = 5.dp))
                                 Icon(Icons.Filled.CurrencyRuble,
-                                    "Game price",
+                                    stringResource(R.string.stats_gamelist_entity_price),
                                     Modifier.height(height.dp)
                                     )
                                 Box(Modifier.padding(end = 5.dp))

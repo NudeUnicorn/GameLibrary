@@ -43,7 +43,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -76,7 +75,6 @@ import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.S
 import com.adorablehappens.gamelibrary.navigation.SCREENCreateUpdateGame.GameNewFields
 import com.adorablehappens.gamelibrary.services.GameTimeType
 import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
-import kotlinx.coroutines.coroutineScope
 import java.util.Calendar
 
 object SCREENHome : RoutesScreens(
@@ -106,7 +104,7 @@ object SCREENHome : RoutesScreens(
 
         val tabs = listOf<TabInfo>(
             TabInfo(
-                label = "Коллекция",
+                label = stringResource(R.string.tab_title_collection),
                 secondary = null,
                 content = {
                     LibraryGrid(
@@ -118,7 +116,7 @@ object SCREENHome : RoutesScreens(
                 }
             ),
             TabInfo(
-                label = "Обзор",
+                label = stringResource(R.string.tab_title_overview),
                 secondary = null,
                 content = {
                     TabGameOverview(
@@ -133,10 +131,10 @@ object SCREENHome : RoutesScreens(
                 }
             ),
             TabInfo(
-                label = "Дополнительно",
+                label = stringResource(R.string.tab_title_additional),
                 secondary = listOf<TabInfo>(
                     TabInfo(
-                        label = "Игры",
+                        label = stringResource(R.string.tab_title_games),
                         secondary = null,
                         content = {TabGames(
                             vm = vm,
@@ -146,7 +144,7 @@ object SCREENHome : RoutesScreens(
                         )}
                     ),
                     TabInfo(
-                        label = "Жанры",
+                        label = stringResource(R.string.tab_title_genres),
                         secondary = null,
                         content = {TabGenres(
                             vm = vm,
@@ -156,22 +154,22 @@ object SCREENHome : RoutesScreens(
                         )}
                     ),
                     TabInfo(
-                        label = "Тэги",
+                        label = stringResource(R.string.tab_title_tags),
                         secondary = null,
                         content = {}
                     ),
                     TabInfo(
-                        label = "Разработчики",
+                        label = stringResource(R.string.tab_title_devs),
                         secondary = null,
                         content = {}
                     ),
                     TabInfo(
-                        label = "Авторы",
+                        label = stringResource(R.string.tab_title_authors),
                         secondary = null,
                         content = {}
                     ),
                     TabInfo(
-                        label = "Игровые движки",
+                        label = stringResource(R.string.tab_title_gameengines),
                         secondary = null,
                         content = {}
                     ),
@@ -328,7 +326,7 @@ object SCREENHome : RoutesScreens(
 
                         Image(
                             bitmap = image?.asImageBitmap() ?: createBitmap(1, 1).asImageBitmap(),
-                            contentDescription = "Game main image",
+                            contentDescription = stringResource(R.string.tab_overview_image_description),
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxSize()
@@ -349,14 +347,14 @@ object SCREENHome : RoutesScreens(
                         ) {
 
                             GameTimeStatsInfo(
-                                label = "добавлено",
+                                label = stringResource(R.string.tab_overview_stats_added),
                                 time = added ?: ""
                             )
 
                             HorizontalDivider(Modifier.padding(vertical = 10.dp))
 
                             GameTimeStatsInfo(
-                                label = "впервые сыграно",
+                                label = stringResource(R.string.tab_overview_stats_firstlyplayed),
                                 time = startPlaying ?: ""
                             )
                         }
@@ -372,7 +370,7 @@ object SCREENHome : RoutesScreens(
                             ) {
                                 Icon(
                                     Icons.Filled.PlayCircle,
-                                    "",
+                                    stringResource(R.string.tab_overview_playbutton_description),
                                     modifier = Modifier
                                         .fillMaxSize(),
                                 )
@@ -383,14 +381,14 @@ object SCREENHome : RoutesScreens(
                         ) {
 
                             GameTimeStatsInfo(
-                                label = "всего сыграно",
+                                label = stringResource(R.string.tab_overview_stats_overallplayed),
                                 time = overallPlaying ?: ""
                             )
 
                             HorizontalDivider(Modifier.padding(vertical = 10.dp))
 
                             GameTimeStatsInfo(
-                                label = "окончание игры",
+                                label = stringResource(R.string.tab_overview_stats_endedplaying),
                                 time = stopPlaying ?: ""
                             )
                         }
@@ -431,7 +429,7 @@ object SCREENHome : RoutesScreens(
 //        var showCreateUpdateDialog = showCreateUpdateDialog1
         ListOfEntities(
             vm = vm,
-            whatToAddText = "+ Add genre",
+            whatToAddText = stringResource(R.string.tab_genges_addgenre),
             addBtnOnClick = {
                 contentCreateUpdateDialog.value = {
                     GenreCreateUpdate(
@@ -507,7 +505,7 @@ object SCREENHome : RoutesScreens(
 
         ListOfEntities(
             vm = vm,
-            whatToAddText = "+ Add game",
+            whatToAddText = stringResource(R.string.tab_games_addgame),
             addBtnOnClick = {
                 contentCreateUpdateDialog.value = {
                     GameCreateUpdate(
@@ -767,7 +765,7 @@ object SCREENHome : RoutesScreens(
 
                 Image(
                     Icons.Filled.Add,
-                    contentDescription = "",
+                    contentDescription = stringResource(R.string.card_addgame_image_description),
                     modifier = Modifier
                         .fillMaxSize()
 
@@ -781,7 +779,7 @@ object SCREENHome : RoutesScreens(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Add game",
+                    text = stringResource(R.string.card_addgame_text_addgame),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp),
@@ -861,12 +859,14 @@ object SCREENHome : RoutesScreens(
                 }
             }
             Row(
-                modifier= Modifier.fillMaxWidth().padding(5.dp),
+                modifier= Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Элементов - " + allEntitiesData?.size,
+                    text = stringResource(R.string.listofentities_elements) + allEntitiesData?.size,
                     fontSize = TextUnit(12f, TextUnitType.Sp),
                     lineHeight = TextUnit(12f, TextUnitType.Sp),
                     maxLines = 1,
@@ -926,27 +926,27 @@ object SCREENHome : RoutesScreens(
             ) {
 
                 Text(
-                    text = "Create or update existing genre",
+                    text = stringResource(R.string.dialog_create_genre),
                     modifier = Modifier.padding(16.dp),
                 )
                 TextField(
                     state = name,
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("📝 Genre title") },
-                    placeholder = { Text("How genre named?") },
+                    label = { Text(stringResource(R.string.dialog_create_genre_name_label)) },
+                    placeholder = { Text(stringResource(R.string.dialog_create_genre_name_placeholder)) },
 
                 )
                 TextField(
                     state = description,
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("📝 Description") },
-                    placeholder = { Text("Describe genre") }
+                    label = { Text(stringResource(R.string.dialog_create_genre_description_label)) },
+                    placeholder = { Text(stringResource(R.string.dialog_create_genre_description_placeholder)) }
                 )
                 TextField(
                     state = comment,
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("📝 Comment") },
-                    placeholder = { Text("Write a comment") }
+                    label = { Text(stringResource(R.string.dialog_create_genre_comment_label)) },
+                    placeholder = { Text(stringResource(R.string.dialog_create_genre_comment_placeholder)) }
                 )
                 Row(
                     modifier = Modifier
@@ -959,7 +959,7 @@ object SCREENHome : RoutesScreens(
                         },
                         modifier = Modifier.padding(8.dp),
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.dialog_create_genre_dismiss))
                     }
                     TextButton(
                         onClick = {
@@ -972,7 +972,7 @@ object SCREENHome : RoutesScreens(
                         },
                         modifier = Modifier.padding(8.dp),
                     ) {
-                        Text("Save")
+                        Text(stringResource(R.string.dialog_create_genre_confirmation))
                     }
                 }
             }
@@ -1078,7 +1078,7 @@ object SCREENHome : RoutesScreens(
 
                         Image(
                             bitmap = image?.asImageBitmap() ?: createBitmap(1,1).asImageBitmap(),
-                            contentDescription = "Select game splash image by clicking",
+                            contentDescription = stringResource(R.string.dialog_create_game_image_description),
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxSize()
@@ -1121,7 +1121,7 @@ object SCREENHome : RoutesScreens(
                                         favorite.value
                                     )
                                 }) {
-                                Text(text = "Save game")
+                                Text(text = stringResource(R.string.dialog_create_game_confirmation))
                             }
 
                             SpacerVerticalFill()
@@ -1157,11 +1157,11 @@ object SCREENHome : RoutesScreens(
             ) {
 
                 Text(
-                    text = "Are you sure?",
+                    text = stringResource(R.string.dialog_delete_text1),
                     modifier = Modifier.padding(16.dp),
                 )
                 Text(
-                    text = "You really want to delete? \n $descr",
+                    text = stringResource(R.string.dialog_delete_text2) + descr,
                     modifier = Modifier.padding(16.dp),
                     textAlign = TextAlign.Center
                 )
@@ -1177,7 +1177,7 @@ object SCREENHome : RoutesScreens(
                         },
                         modifier = Modifier.padding(8.dp),
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.dialog_delete_dismiss))
                     }
                     TextButton(
                         onClick = {
@@ -1185,7 +1185,7 @@ object SCREENHome : RoutesScreens(
                         },
                         modifier = Modifier.padding(8.dp),
                     ) {
-                        Text("Delete")
+                        Text(stringResource(R.string.dialog_delete_confirmation))
                     }
                 }
             }

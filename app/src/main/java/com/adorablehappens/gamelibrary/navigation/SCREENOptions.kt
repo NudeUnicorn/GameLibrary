@@ -16,9 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.adorablehappens.gamelibrary.R
 import com.adorablehappens.gamelibrary.services.OptionsPrefsTheme
 import com.adorablehappens.gamelibrary.services.OptionsVault
 import com.adorablehappens.gamelibrary.viewmodels.AppOverallViewModel
@@ -42,12 +44,14 @@ object SCREENOptions  : RoutesScreens(
 
         Column {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(outerPadding),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(outerPadding),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             )
             {
-                Text(text = "Switch app theme")
+                Text(text = stringResource(R.string.options_apptheme))
                 Switch(
                     checked = appTheme.intValue != OptionsPrefsTheme.Light.code,
                     onCheckedChange = {
@@ -61,13 +65,13 @@ object SCREENOptions  : RoutesScreens(
             ListItem(
                 modifier = Modifier,
                 headlineContent = {
-                    Text(text = "Random game")
+                    Text(text = stringResource(R.string.options_random_game))
                 },
                 overlineContent = {
 
                 },
                 supportingContent = {
-                    Text(text = "you can try to get a new one the next day")
+                    Text(text = stringResource(R.string.options_random_game_nextday_tip))
                 },
                 trailingContent = {
                     Text(
