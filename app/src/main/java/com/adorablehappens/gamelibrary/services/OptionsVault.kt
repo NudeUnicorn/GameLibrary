@@ -4,6 +4,8 @@ import android.content.SharedPreferences
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateSetOf
+import androidx.compose.runtime.setValue
 import androidx.core.content.edit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,6 +42,16 @@ abstract class OptionsVault(
         get() = _randomGameTime
         set(value) = sharedPrefs.edit() {
             putLong(OptionsPrefs.RandomGameTime.key, value.longValue)
+        }
+    private val strSet: Set<String>
+        get() = sharedPrefs.getStringSet(OptionsPrefs.WishlistSet.key, emptySet<String>())!!.toSet()
+
+    private val _wishlistSet
+        get() = mutableStateOf(strSet)
+    var wishlistSet
+        get() = _wishlistSet
+        set(value) = sharedPrefs.edit() {
+            putStringSet(OptionsPrefs.WishlistSet.key, value.value)
         }
     private val _canChooseRandomGame = MutableStateFlow<Boolean>(canChooseRandom())
     val canChooseRandomGame: StateFlow<Boolean> = _canChooseRandomGame
@@ -91,6 +103,7 @@ enum class OptionsPrefs(
     Theme("app_theme"),
     RandomGameTitle("app_random_game_title"),
     RandomGameTime("app_random_game_time"),
+    WishlistSet("app_wishlist_set"),
 }
 enum class OptionsPrefsTheme(
     val key: String,

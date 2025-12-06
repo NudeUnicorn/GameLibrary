@@ -71,6 +71,7 @@ import com.adorablehappens.gamelibrary.dblogic.Repository
 import com.adorablehappens.gamelibrary.dblogic.dao.EntityBase
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.dblogic.entities.GenreEntity
+import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.ElementsCounter
 import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.SpacerVerticalFill
 import com.adorablehappens.gamelibrary.navigation.SCREENCreateUpdateGame.GameNewFields
 import com.adorablehappens.gamelibrary.services.GameTimeType
@@ -611,23 +612,26 @@ object SCREENHome : RoutesScreens(
         showCreateUpdateDialog: MutableState<Boolean>
     ) {
 
-        games?.let {gameEntities ->
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                contentPadding = PaddingValues(
-                    start = 0.dp,16.dp,16.dp,16.dp)
-            ) {
-                item {
-                    CardAddGame(
-                        vm = vm,
-                        contentCreateUpdateDialog = contentCreateUpdateDialog,
-                        showCreateUpdateDialog = showCreateUpdateDialog
+        Column {
+
+            games?.let {gameEntities ->
+                LazyVerticalGrid(
+                    modifier = Modifier.weight(1f),
+                    columns = GridCells.Fixed(3),
+                    contentPadding = PaddingValues(
+                        start = 0.dp,16.dp,16.dp,16.dp)
+                ) {
+                    item {
+                        CardAddGame(
+                            vm = vm,
+                            contentCreateUpdateDialog = contentCreateUpdateDialog,
+                            showCreateUpdateDialog = showCreateUpdateDialog
                         )
+                    }
+                    items(games.size) { it ->
+                        CardGame(entity = games[it], vm = vm)
+                    }
                 }
-                items(games.size) { it ->
-                    CardGame(entity = games[it], vm = vm)
-                }
-            }
 
 
 //                if (games.isEmpty()) {
@@ -653,6 +657,9 @@ object SCREENHome : RoutesScreens(
 //            ) {
 //                Text(text = "Card 1")
 //            }
+            }
+
+            ElementsCounter(games?.size ?: 0)
         }
     }
     @Composable
