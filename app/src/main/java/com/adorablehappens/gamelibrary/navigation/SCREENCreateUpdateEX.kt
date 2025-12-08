@@ -11,6 +11,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CurrencyRuble
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -20,16 +21,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-object SCREENCreateUpdateEX : RoutesScreens(
-    route = "CreateUpdateEX",
-    icon = Icons.Filled.Home,
-    label = "Дополнительно",
-    contentDescription = "",
-) {
+object SCREENCreateUpdateEX : RoutesScreens() {
+    override val route: String = "CreateUpdateEX"
+    override val icon: ImageVector = Icons.Filled.Home
+    override val label: String = "Дополнительно"
+    override val contentDescription: String = ""
 
     @Composable
     fun Content(

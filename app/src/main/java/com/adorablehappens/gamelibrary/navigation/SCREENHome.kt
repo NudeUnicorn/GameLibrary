@@ -25,6 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.CurrencyRuble
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.RemoveCircle
@@ -55,6 +56,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -78,12 +80,12 @@ import com.adorablehappens.gamelibrary.services.GameTimeType
 import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
 import java.util.Calendar
 
-object SCREENHome : RoutesScreens(
-    route = "Home",
-    icon = Icons.Filled.Home,
-    label = "Главный",
-    contentDescription = "Главный экран",
-) {
+object SCREENHome : RoutesScreens() {
+    override val route: String = "Home"
+    override val icon: ImageVector = Icons.Filled.Home
+    override val label: String = "Главный"
+    override val contentDescription: String = "Главный экран"
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {

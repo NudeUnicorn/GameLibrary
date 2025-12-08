@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import com.adorablehappens.gamelibrary.App
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHAuthor
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHCheat
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHCountry
@@ -220,10 +221,12 @@ object Repository {
 
     }
 
+    private lateinit var app: App
     /**
      * Функция для передачи контекста в объект репозитория для создания синглтона базы данных
      */
-    fun initDB(context: Context, scope: CoroutineScope){
+    fun initDB(context: Context, scope: CoroutineScope, appF: App){
+        app = appF
         db = DB.getInstance(context)
         coroutineScope = scope
         imageManager.setContext(context)
@@ -265,6 +268,25 @@ object Repository {
 //        oneGameFullInfoBehaviourRepo.setDAO(oneGameFullInfoDAORepo)
 
 
+    }
+
+    /**
+     * Позволяет получить строку из ресурсов там, где нет возможности получить context
+     */
+    fun getStringResRepo(stringResID: Int): String{
+        return app.applicationContext.getString(stringResID)
+    }
+    /**
+     * Позволяет получить строку из ресурсов там, где нет возможности получить context. С форматированием.
+     */
+    fun getStringResRepo(stringResID: Int,vararg formatArgs: Any): String{
+        return app.applicationContext.getString(stringResID, formatArgs)
+    }
+    /**
+     * Возвращает контекст приложения
+     */
+    fun getAppContext(): Context? {
+        return app.applicationContext
     }
 
     /**

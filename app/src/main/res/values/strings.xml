@@ -52,4 +52,6 @@
     <string name="stats_overallplayed">Сыграно всего</string>
     <string name="stats_gamelist_entity_overallplayed">Overall playing time</string>
     <string name="stats_gamelist_entity_price">Game price</string>
+    <string name="screen_stats_label">Стоимость</string>
+    <string name="screen_stats_contentDescription">Стоимость всего</string>
 </resources>

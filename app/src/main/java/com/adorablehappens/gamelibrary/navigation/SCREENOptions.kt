@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CurrencyRuble
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Switch
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -29,12 +31,12 @@ import com.adorablehappens.gamelibrary.services.OptionsPrefsTheme
 import com.adorablehappens.gamelibrary.services.OptionsVault
 import com.adorablehappens.gamelibrary.viewmodels.AppOverallViewModel
 
-object SCREENOptions  : RoutesScreens(
-    route = "Options",
-    icon = Icons.Filled.Menu,
-    label = "Меню",
-    contentDescription = "Меню",
-) {
+object SCREENOptions  : RoutesScreens() {
+    override val route: String = "Options"
+    override val icon: ImageVector = Icons.Filled.Menu
+    override val label: String = "Меню"
+    override val contentDescription: String = "Меню"
+
     @Composable
     override fun Content() {
         val vm: AppOverallViewModel = viewModel()

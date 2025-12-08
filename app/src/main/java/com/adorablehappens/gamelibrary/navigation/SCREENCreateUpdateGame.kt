@@ -27,6 +27,7 @@ import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.CurrencyRuble
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Games
 import androidx.compose.material3.Button
@@ -56,6 +57,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.ImageBitmapConfig
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -72,12 +74,11 @@ import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
 import java.util.Calendar
 import androidx.core.graphics.createBitmap
 
-object SCREENCreateUpdateGame : RoutesScreens(
-    route = "CreateUpdateGame",
-    icon = Icons.Filled.Create,
-    label = "",
-    contentDescription = "",
-) {
+object SCREENCreateUpdateGame : RoutesScreens() {
+    override val route: String = "CreateUpdateGame"
+    override val icon: ImageVector = Icons.Filled.Create
+    override val label: String = ""
+    override val contentDescription: String = ""
 
     @Composable
     override fun Content() {

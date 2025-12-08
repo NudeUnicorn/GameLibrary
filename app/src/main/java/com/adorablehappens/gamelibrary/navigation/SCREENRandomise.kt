@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CurrencyRuble
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material3.Icon
@@ -18,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -27,12 +29,12 @@ import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.viewmodels.AppOverallViewModel
 import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
 
-object SCREENRandomise  : RoutesScreens(
-    route = "Randomise",
-    icon = Icons.Filled.Shuffle,
-    label = "Случайное",
-    contentDescription = "Случайный список",
-) {
+object SCREENRandomise  : RoutesScreens() {
+    override val route: String = "Randomise"
+    override val icon: ImageVector = Icons.Filled.Shuffle
+    override val label: String = "Случайное"
+    override val contentDescription: String = "Случайный список"
+
     @Composable
     override fun Content() {
         val vm: AppOverallViewModel = viewModel()

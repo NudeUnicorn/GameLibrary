@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
@@ -29,16 +30,17 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.adorablehappens.gamelibrary.R
+import com.adorablehappens.gamelibrary.dblogic.Repository
 import com.adorablehappens.gamelibrary.dblogic.entities.GameEntity
 import com.adorablehappens.gamelibrary.services.GamesTimeManager
 import com.adorablehappens.gamelibrary.viewmodels.AppOverallViewModel
 
-object SCREENStats  : RoutesScreens(
-    route = "Stats",
-    icon = Icons.Filled.CurrencyRuble,
-    label = "Стоимость",
-    contentDescription = "Стоимость всего",
-) {
+object SCREENStats  : RoutesScreens() {
+    override val route: String = "Stats"
+    override val icon: ImageVector = Icons.Filled.CurrencyRuble
+    override val label: String = Repository.getStringResRepo(R.string.screen_stats_label)
+    override val contentDescription: String = Repository.getStringResRepo(R.string.screen_stats_contentDescription)
+
     @Composable
     override fun Content() {
         val vm: AppOverallViewModel = viewModel()

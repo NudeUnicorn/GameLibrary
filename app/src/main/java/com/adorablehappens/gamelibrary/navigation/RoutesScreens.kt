@@ -6,14 +6,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 /**
  * Реализация экранов(конечных точек) навигации
  */
-sealed class RoutesScreens(
-    val route: String,
-    val icon: ImageVector,
-    val label: String,
-    val contentDescription: String,
-//    val icon: VectorDrawable,
-//    val label: String,
-) : RoutesScreensFundamentals() {
+sealed class RoutesScreens() : RoutesScreensFundamentals() {
+    abstract val route: String
+    abstract val icon: ImageVector
+    abstract val label: String
+    abstract val contentDescription: String
 
     //abstract val content: KFunction<T>
 //    @Composable

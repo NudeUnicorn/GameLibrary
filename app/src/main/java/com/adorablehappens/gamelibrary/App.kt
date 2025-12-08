@@ -15,7 +15,7 @@ class App: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        repository.initDB(applicationContext, repositoryCoroutineScope)
+        repository.initDB(applicationContext, repositoryCoroutineScope, this)
 
     }
 

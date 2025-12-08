@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.RemoveCircleOutline
+import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,17 +31,18 @@ import androidx.compose.runtime.snapshots.SnapshotStateSet
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.adorablehappens.gamelibrary.navigation.RoutesScreensFundamentals.UI.ElementsCounter
 import com.adorablehappens.gamelibrary.viewmodels.LibraryViewModel
 
-object SCREENFavorites  : RoutesScreens(
-    route = "Favorites",
-    icon = Icons.Filled.Favorite,
-    label = "Избранное",
-    contentDescription = "Список избранного",
-) {
+object SCREENFavorites  : RoutesScreens() {
+    override val route: String = "Favorites"
+    override val icon: ImageVector = Icons.Filled.Favorite
+    override val label: String = "Избранное"
+    override val contentDescription: String = "Список избранного"
+
     @Composable
     override fun Content() {
         val vm: LibraryViewModel = viewModel()
