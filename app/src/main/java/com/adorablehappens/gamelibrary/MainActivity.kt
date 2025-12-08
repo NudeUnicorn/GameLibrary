@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,12 +56,13 @@ class MainActivity : ComponentActivity() {
             val vm: AppOverallViewModel = viewModel()
             vm.setNavHostController(navController)
 
-            val appOptions = vm.vmRepo.appOptions
+            //val appOptions = vm.vmRepo.appOptions
+            val appOptionsDS = vm.vmRepo.appOptionsDataStore
 
-            val darkTheme = remember{appOptions.appTheme}
+            val darkTheme = appOptionsDS.appTheme.collectAsState(0)
             val darkThemeBool = remember { derivedStateOf {
 
-                when (darkTheme.intValue) {
+                when (darkTheme.value) {
                     0 -> false
                     1 -> true
                     else -> {

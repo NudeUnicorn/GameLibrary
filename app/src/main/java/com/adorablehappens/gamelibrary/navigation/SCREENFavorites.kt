@@ -21,6 +21,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
@@ -42,31 +44,35 @@ object SCREENFavorites  : RoutesScreens(
     @Composable
     override fun Content() {
         val vm: LibraryViewModel = viewModel()
-        val appOptions = vm.vmRepo.appOptions
+        //val appOptions = vm.vmRepo.appOptions
+        val appOptionsDS = vm.vmRepo.appOptionsDataStore
+        val setStrDS = appOptionsDS.wishlistSet.collectAsState(emptySet())
 
         val isVisibleAddToWishlistTextField = remember { mutableStateOf(false) }
-        val strSet = remember { mutableStateSetOf(*(appOptions.wishlistSet.value.toTypedArray())) }
+        val strSet = remember { derivedStateOf { mutableSetOf(*(setStrDS.value.toTypedArray())) } }
 
-        println("Wishlist - " + appOptions.wishlistSet.value)
+        println("Wishlist - " + setStrDS.value)
         Column {
             Wishlist(
                 modifier = Modifier.weight(1f),
                 onRemove = {element->
-                        strSet.remove(element)
-                        appOptions.wishlistSet = mutableStateOf(strSet.toSet())
+                        strSet.value.remove(element)
+                        //appOptions.wishlistSet = mutableStateOf(strSet.toSet())
+                        appOptionsDS.saveWishlist(strSet.value.toSet())
                 },
-                strSet = strSet,
+                strSet = strSet.value,
             )
             WishlistControlPanel(
                 modifier = Modifier.fillMaxWidth(),
                 onConfirmation = {newSetItem ->
                     if (newSetItem.isNotBlank()){
-                        strSet.add(newSetItem)
-                        appOptions.wishlistSet = mutableStateOf(strSet.toSet())
+                        strSet.value.add(newSetItem)
+                        //appOptions.wishlistSet = mutableStateOf(strSet.toSet())
+                        appOptionsDS.saveWishlist(strSet.value.toSet())
                     }
                 },
                 isVisibleAddField = isVisibleAddToWishlistTextField,
-                size = strSet.size
+                size = strSet.value.size
             )
         }
     }
@@ -75,7 +81,7 @@ object SCREENFavorites  : RoutesScreens(
     fun Wishlist(
         modifier: Modifier = Modifier,
         onRemove: (item: String)-> Unit = {},
-        strSet: SnapshotStateSet<String>,
+        strSet: MutableSet<String>,
     ){
         val mod = modifier.then(Modifier)
         if (strSet.isEmpty()) {

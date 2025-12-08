@@ -54,23 +54,21 @@ object SCREENRandomise  : RoutesScreens(
         vm: AppOverallViewModel,
         entities: List<GameEntity>?
     ){
+        val title = vm.vmRepo.appOptionsDataStore.randomGameTitle.collectAsState("")
+
         var entity: GameEntity
         entities?.let {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceAround
             ) {
-                if (vm.vmRepo.appOptions.canChooseRandomGame.collectAsState().value){
+                if (vm.vmRepo.appOptionsDataStore.canChooseRandomGame.collectAsState().value){
                     IconButton(
                         onClick = {
                             entity = entities.random()
                             println("Random game is - " + entity.name)
 
-                            val title = vm.vmRepo.appOptions.randomGameTitle
-                            vm.vmRepo.appOptions.randomGameTitle.value = entity.name
-                            vm.vmRepo.appOptions.randomGameTitle =
-                                vm.vmRepo.appOptions.randomGameTitle
-                            //vm.vmRepo.appOptions.setChooseRandomTime()
+                            vm.vmRepo.appOptionsDataStore.saveRandomGameTitle(entity.name)
                         },
                         modifier = Modifier.size(128.dp)
                     ) {
@@ -90,7 +88,7 @@ object SCREENRandomise  : RoutesScreens(
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = vm.vmRepo.appOptions.randomGameTitle.value ?: "",
+                        text = title.value,
                         textAlign = TextAlign.Center
                     )
                 }

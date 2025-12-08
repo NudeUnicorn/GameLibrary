@@ -4,6 +4,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.datastore.dataStoreFile
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import com.adorablehappens.gamelibrary.dblogic.behaviour.BEHAuthor
@@ -62,6 +65,8 @@ import com.adorablehappens.gamelibrary.services.GamesTimeManager
 import com.adorablehappens.gamelibrary.services.ImageCacher
 import com.adorablehappens.gamelibrary.services.ImageFunc
 import com.adorablehappens.gamelibrary.services.OptionsVault
+import com.adorablehappens.gamelibrary.services.OptionsVaultDataStore
+import com.adorablehappens.gamelibrary.services.OptionsVaultDataStore.Companion.PREFS_FILENAME
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -208,6 +213,9 @@ object Repository {
     val gamesTimeManager = GamesTimeManager
 
     lateinit var appOptions: OptionsVault
+    private val Context.dataStore by preferencesDataStore(PREFS_FILENAME)
+
+    lateinit var appOptionsDataStore: OptionsVaultDataStore
     init {
 
     }
@@ -224,6 +232,17 @@ object Repository {
                 context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
             }
         ){}
+        appOptionsDataStore = object : OptionsVaultDataStore(
+            {prefsName->
+                context.dataStore
+            }){}
+//        appOptionsDataStore = object : OptionsVaultDataStore(
+//            {prefsName ->
+//                PreferenceDataStoreFactory.create {
+//                    context.dataStoreFile(prefsName)
+//                }
+//            }
+//        ){}
 
 //        daoAuthorRepo = db.createAuthorDAO()
 //        behAuthorRepo.setDAO(daoAuthorRepo)

@@ -12,7 +12,11 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -37,8 +41,12 @@ object SCREENOptions  : RoutesScreens(
         val context = LocalContext.current
         val sharedPrefs = context.getSharedPreferences(OptionsVault.PREFS_FILENAME, Context.MODE_PRIVATE)
         val appOptions = vm.vmRepo.appOptions
+        val appOptionsDS = vm.vmRepo.appOptionsDataStore
 
-        val appTheme = remember { appOptions.appTheme }
+        //val appTheme = remember { appOptions.appTheme }
+        var appThemeInt by remember { mutableIntStateOf(0) }
+        val appThemeDS = appOptionsDS.appTheme.collectAsState(0)
+        val randomGameTitleDS = appOptionsDS.randomGameTitle.collectAsState("")
 
         val outerPadding = 16.dp
 
@@ -53,11 +61,12 @@ object SCREENOptions  : RoutesScreens(
             {
                 Text(text = stringResource(R.string.options_apptheme))
                 Switch(
-                    checked = appTheme.intValue != OptionsPrefsTheme.Light.code,
+                    checked = appThemeDS.value != OptionsPrefsTheme.Light.code,
                     onCheckedChange = {
-                        if (appTheme.intValue == OptionsPrefsTheme.Light.code) appTheme.intValue = OptionsPrefsTheme.Dark.code else appTheme.intValue = OptionsPrefsTheme.Light.code
+                        appThemeInt =
+                            if (appThemeDS.value == OptionsPrefsTheme.Light.code) OptionsPrefsTheme.Dark.code else OptionsPrefsTheme.Light.code
 
-                        appOptions.appTheme = appTheme
+                        appOptionsDS.saveAppTheme(appThemeInt)
                     }
                 )
             }
@@ -75,7 +84,7 @@ object SCREENOptions  : RoutesScreens(
                 },
                 trailingContent = {
                     Text(
-                        text = appOptions.randomGameTitle.value ?: "",
+                        text = randomGameTitleDS.value,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                         )
