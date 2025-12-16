@@ -1,0 +1,40 @@
+package com.adorablehappens.gamelibrary.dblogic.entities
+
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.Companion.CASCADE
+import androidx.room.Index
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINEntity
+import com.adorablehappens.gamelibrary.dblogic.dao.JOINEntityBase
+
+/**
+ * Класс-таблица(join-таблица) для связи WalkthroughEntity и WalkthroughImageEntity по id
+ *
+ * @see WalkthroughEntity
+ * @see WalkthroughImageEntity
+ */
+@Entity(tableName = "walkthrough_image_join",
+    primaryKeys = [JOINEntity.Companion.PARENTIDNAME, JOINEntity.Companion.CHILDIDNAME],
+    foreignKeys = [
+        ForeignKey(
+            entity = WalkthroughEntity::class,
+            parentColumns = ["id"],
+            childColumns = [JOINEntity.Companion.PARENTIDNAME],
+            onDelete = CASCADE
+    ),
+        ForeignKey(
+            entity = WalkthroughImageEntity::class,
+            parentColumns = ["id"],
+            childColumns = [JOINEntity.Companion.CHILDIDNAME],
+            onDelete = CASCADE
+        )
+    ],
+    indices = [
+        Index(JOINEntity.Companion.PARENTIDNAME),
+        Index(JOINEntity.Companion.CHILDIDNAME),
+    ]
+    )
+data class UWalkthroughWithImages(
+    override val parentEntityID: Long,
+    override val childEntityID: Long
+): JOINEntityBase

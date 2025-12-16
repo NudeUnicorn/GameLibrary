@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">GameLibrary</string>
+    <string name="otw2_title">The Outer Worlds 2</string>
+    <string name="otw2_worldStory">
+        Продвижение по этому миру - непростая задача, ведь каждое решение имеет вес. Вселенная The Outer Worlds 2 определяется фракциями, у каждой из которых своя программа действий и свое видение будущего. Игрок - не просто сторонний наблюдатель, а активный участник непрекращающегося конфликта между этими могущественными группировками. Независимо от того, присоединяется ли он к одной из фракций или старается сохранять нейтралитет, последствия этих взаимодействий распространяются по всей колонии.
+
+Это мир, где альянсы могут меняться, а предательство всегда не за горами. Каждая встреча, каждый диалог и каждое действие вносят свой вклад в формирование общей истории, непредсказуемой и глубоко личной. В основе лежит развитие персонажа. У геймеров есть возможность создать своего героя или антигероя, выбирая из множества способностей и навыков, которые определяют их подход к делу.
+    </string>
+    <string name="options_random_game">Random game</string>
+    <string name="options_random_game_nextday_tip">you can try to get a new one the next day</string>
+    <string name="options_apptheme">Switch app theme</string>
+    <string name="tab_title_collection">Коллекция</string>
+    <string name="tab_title_overview">Обзор</string>
+    <string name="tab_title_additional">Дополнительно</string>
+    <string name="tab_title_games">Игры</string>
+    <string name="tab_title_genres">Жанры</string>
+    <string name="tab_title_tags">Тэги</string>
+    <string name="tab_title_devs">Разработчики</string>
+    <string name="tab_title_authors">Авторы</string>
+    <string name="tab_title_gameengines">Игровые движки</string>
+    <string name="tab_overview_image_description">Game main image</string>
+    <string name="tab_overview_stats_added">добавлено</string>
+    <string name="tab_overview_stats_firstlyplayed">впервые сыграно</string>
+    <string name="tab_overview_stats_overallplayed">всего сыграно</string>
+    <string name="tab_overview_stats_endedplaying">окончание игры</string>
+    <string name="tab_overview_playbutton_description">Press button to start counting played time</string>
+    <string name="tab_genges_addgenre">+ Add genre</string>
+    <string name="tab_games_addgame">+ Add game</string>
+    <string name="card_addgame_image_description">Add game to library</string>
+    <string name="card_addgame_text_addgame">Add game</string>
+    <string name="listofentities_elements">"Элементов - "</string>
+    <string name="dialog_create_genre">Create or update existing genre</string>
+    <string name="dialog_create_genre_name_label">📝 Genre title</string>
+    <string name="dialog_create_genre_name_placeholder">How genre named?</string>
+    <string name="dialog_create_genre_description_label">📝 Description</string>
+    <string name="dialog_create_genre_description_placeholder">Describe genre</string>
+    <string name="dialog_create_genre_comment_label">📝 Comment</string>
+    <string name="dialog_create_genre_comment_placeholder">Write a comment</string>
+    <string name="dialog_create_genre_dismiss">Cancel</string>
+    <string name="dialog_create_genre_confirmation">Save</string>
+    <string name="dialog_create_game_image_description">Select game splash image by clicking</string>
+    <string name="dialog_create_game_confirmation">Save game</string>
+    <string name="dialog_delete_text1">Are you sure?</string>
+    <string name="dialog_delete_text2">"You really want to delete? \n "</string>
+    <string name="dialog_delete_dismiss">Cancel</string>
+    <string name="dialog_delete_confirmation">Delete</string>
+    <string name="randomise_randombutton_icon_description">Click to get a random game</string>
+    <string name="randomise_welcometext">Click on button and will \nluck smile to you!</string>
+    <string name="randomise_congrats">Congrats! Your game for today is</string>
+    <string name="stats_gamescount">Всего игр</string>
+    <string name="stats_games_price">Стоимость всего</string>
+    <string name="stats_overallplayed">Сыграно всего</string>
+    <string name="stats_gamelist_entity_overallplayed">Overall playing time</string>
+    <string name="stats_gamelist_entity_price">Game price</string>
+    <string name="screen_stats_label">Стоимость</string>
+    <string name="screen_stats_contentDescription">Стоимость всего</string>
+</resources>
